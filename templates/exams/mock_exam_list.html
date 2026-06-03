@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+
+{% block title %}Mock Exams - Test Your French Skills{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --text-dark: #1f2937;
+        --gold: #FFD700;
+        --light-bg: #f8fafc;
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        background: #f8fafc;
+    }
+
+    /* Library Header */
+    .library-header {
+        background: #0055A4;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        color: white;
+        text-align: center;
+        border-bottom: 4px solid var(--gold);
+    }
+
+    .library-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .library-subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Stats Ribbon */
+    .stats-ribbon {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: -2rem;
+        margin-bottom: 4rem;
+        z-index: 10;
+        position: relative;
+    }
+
+    .stat-badge {
+        background: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-width: 200px;
+    }
+
+    .stat-badge i {
+        font-size: 1.5rem;
+        color: var(--book-primary);
+    }
+
+    .stat-badge-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        display: block;
+    }
+
+    .stat-badge-label {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    /* Card Container */
+    .exam-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
+        padding-bottom: 5rem;
+    }
+
+    /* Modern Exam Card */
+    .exam-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .exam-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-top {
+        padding: 2.5rem 2rem;
+        background: linear-gradient(135deg, #0055A4 0%, #003366 100%);
+        color: white;
+        text-align: center;
+        position: relative;
+    }
+
+    .level-badge {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: var(--gold);
+        color: #000;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .icon-wrapper i {
+        font-size: 2.5rem;
+        color: var(--gold);
+    }
+
+    .exam-name {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .exam-desc {
+        color: #64748b;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .meta-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-top: 1px solid #f1f5f9;
+        margin-bottom: 2rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .meta-item i {
+        color: #0055A4;
+    }
+
+    /* Buttons */
+    .card-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .btn-primary-exam {
+        background: #0055A4;
+        color: rgb(0, 0, 0);
+        border: none;
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-exam:hover {
+        background: #003366;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .btn-purchase-exam {
+        background: #f1f5f9;
+        color: #475569 !important;
+        border: 2px dashed #cbd5e1;
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-purchase-exam:hover {
+        background: rgba(0, 85, 164, 0.05);
+        border-color: #0055A4;
+        color: #0055A4 !important;
+    }
+
+    .status-indicator {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-locked {
+        background: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .status-unlocked {
+        background: #22c55e;
+        color: white;
+        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .library-title { font-size: 2.5rem; }
+        .stats-ribbon { flex-direction: column; align-items: center; }
+        .exam-grid { grid-template-columns: 1fr; }
+        .card-actions { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid page-content">
+    <!-- Library Header -->
+    <div class="library-header">
+        <div class="library-header-content">
+            <h1 class="library-title">DELF Exam Library</h1>
+            <p class="library-subtitle">
+                Choose your examination from our curated collection of DELF mock exams
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Ribbon -->
+        <div class="stats-ribbon">
+            <div class="stat-badge">
+                <i class="fas fa-book"></i>
+                <div class="stat-badge-content">
+                    <span class="stat-badge-value">{{ exams|length }}</span>
+                    <span class="stat-badge-label">Available Exams</span>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-certificate"></i>
+                <div class="stat-badge-content">
+                    <span class="stat-badge-value">DELF</span>
+                    <span class="stat-badge-label">Certified Format</span>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-chart-line"></i>
+                <div class="stat-badge-content">
+                    <span class="stat-badge-value">Track</span>
+                    <span class="stat-badge-label">Your Progress</span>
+                </div>
+            </div>
+        </div>
+
+    <!-- Bookshelf Section -->
+    <div class="container px-4">
+        <h2 class="shelf-title mb-5">Examination Collection</h2>
+
+        {% if exams %}
+        <div class="exam-grid">
+            {% for exam in exams %}
+            <div class="exam-card">
+                <div class="card-top">
+                    {% if exam.has_access %}
+                    <div class="status-indicator status-unlocked">
+                        <i class="fas fa-unlock"></i>
+                        <span>ENROLLED</span>
+                    </div>
+                    {% else %}
+                    <div class="status-indicator status-locked">
+                        <i class="fas fa-lock"></i>
+                        <span>LOCKED</span>
+                    </div>
+                    {% endif %}
+                    <span class="level-badge">{{ exam.level.code }}</span>
+                    <div class="icon-wrapper">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="exam-name">{{ exam.title }}</h3>
+                </div>
+
+                <div class="card-body">
+                    <p class="exam-desc">{{ exam.description|truncatewords:20 }}</p>
+
+                    <div class="meta-row">
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>{{ exam.duration_minutes }} Mins</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span>{{ exam.total_marks }} Points</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        {% if exam.has_access %}
+                        <a href="{% url 'exams:start_mock_exam' exam.id %}" class="btn-primary-exam" style="background: #0055A4; color: white !important; grid-column: span 2;">
+                            <span>START EXAM NOW</span>
+                            <i class="fas fa-play-circle"></i>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'exams:pricing' %}" class="btn-purchase-exam" style="grid-column: span 2;">
+                            <span>PURCHASE NOW</span>
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-library">
+            <div class="empty-library-icon">
+                <i class="fas fa-book-dead"></i>
+            </div>
+            <h3>The Library is Empty</h3>
+            <p>No examinations are currently available. Please check back soon!</p>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+</div>
+{% endblock %}

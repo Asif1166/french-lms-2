@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Success Stories - FrenchLMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .story-hero {
+        background: #f8fafc;
+        padding: 80px 0;
+        text-align: center;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .story-card {
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        margin-bottom: 40px;
+        border: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+    }
+
+    .story-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .student-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 30px;
+        object-fit: cover;
+        box-shadow: 0 10px 20px rgba(0, 85, 164, 0.1);
+    }
+
+    .quote-icon {
+        font-size: 3rem;
+        color: #e2e8f0;
+        line-height: 1;
+    }
+
+    .testimony-text {
+        font-size: 1.25rem;
+        line-height: 1.8;
+        color: #1e293b;
+        font-style: italic;
+    }
+
+    .student-info h4 {
+        color: #0055A4;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+    
+    .level-badge {
+        background: #0055A4;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="story-hero">
+    <div class="container">
+        <h1 class="display-3 font-weight-bold mb-3">Our Students, <span class="text-primary">Their Stories</span></h1>
+        <p class="lead text-muted max-width-700 mx-auto">Real experiences from students who transformed their French proficiency with FrenchLMS.</p>
+    </div>
+</div>
+
+<div class="container py-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% for story in stories %}
+            <div class="story-card">
+                <div class="row align-items-center g-4">
+                    <div class="col-md-3 text-center">
+                        {% if story.photo %}
+                        <img src="{{ story.photo.url }}" alt="{{ story.student_name }}" class="student-img mb-3">
+                        {% else %}
+                        <div class="student-img mb-3 d-flex align-items-center justify-content-center bg-light text-muted mx-auto">
+                            <i class="fas fa-user fa-3x"></i>
+                        </div>
+                        {% endif %}
+                        <div class="student-info">
+                            <h4>{{ story.student_name }}</h4>
+                            <span class="level-badge mt-2 d-inline-block">{{ story.level }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="quote-icon mb-2">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimony-text">"{{ story.testimony }}"</p>
+                        <div class="text-end mt-3">
+                            <small class="text-muted">Student at FrenchLMS</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="fas fa-star fa-4x text-light mb-4"></i>
+                <h3 class="text-muted">New stories coming soon!</h3>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

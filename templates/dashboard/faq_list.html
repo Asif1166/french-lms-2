@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FAQs - French Learning Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --faq-primary: #0055A4;
+        --faq-secondary: #003366;
+        --faq-accent: #3b82f6;
+        --faq-bg: #f8fafc;
+    }
+
+    .faq-hero {
+        background: linear-gradient(135deg, var(--faq-secondary) 0%, var(--faq-primary) 100%);
+        padding: 120px 0 160px;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://www.transparenttextures.com/patterns/cubes.png');
+        opacity: 0.1;
+    }
+
+    .faq-hero h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 4rem;
+        font-weight: 800;
+        letter-spacing: -2px;
+        margin-bottom: 20px;
+        text-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .faq-hero p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 0 auto;
+        opacity: 0.9;
+    }
+
+    .faq-search-container {
+        margin-top: -60px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .faq-search-box {
+        background: white;
+        padding: 12px;
+        border-radius: 100px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .faq-search-box input {
+        border: none;
+        padding: 20px 35px;
+        font-size: 1.1rem;
+        flex-grow: 1;
+        border-radius: 100px;
+        outline: none;
+    }
+
+    .faq-search-box .btn {
+        background: var(--faq-primary);
+        color: white;
+        padding: 18px 45px;
+        border-radius: 100px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .faq-search-box .btn:hover {
+        background: var(--faq-secondary);
+        transform: scale(1.02);
+        box-shadow: 0 10px 20px rgba(0, 85, 164, 0.3);
+    }
+
+    .faq-main-section {
+        padding: 80px 0;
+        background: var(--faq-bg);
+    }
+
+    .card-category {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 100px;
+    }
+
+    .category-title {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #94a3b8;
+        font-weight: 800;
+        margin-bottom: 25px;
+        display: block;
+    }
+
+    .nav-category {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .category-item {
+        margin-bottom: 8px;
+    }
+
+    .category-link {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        border-radius: 16px;
+        color: #475569;
+        text-decoration: none !important;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .category-link i {
+        margin-right: 15px;
+        font-size: 1.1rem;
+        opacity: 0.4;
+    }
+
+    .category-link:hover {
+        background: #f1f5f9;
+        color: var(--faq-primary);
+    }
+
+    .category-link.active {
+        background: #eff6ff;
+        color: var(--faq-primary);
+        box-shadow: inset 0 0 0 2px #dbeafe;
+    }
+
+    .category-link.active i {
+        opacity: 1;
+        color: var(--faq-primary);
+    }
+
+    .faq-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 35px;
+        letter-spacing: -1px;
+    }
+
+    .faq-accordion .accordion-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px !important;
+        margin-bottom: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-accordion .accordion-item:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+
+    .faq-accordion .accordion-button {
+        padding: 24px 30px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1e293b;
+        background: transparent;
+        box-shadow: none !important;
+    }
+
+    .faq-accordion .accordion-button:not(.collapsed) {
+        color: var(--faq-primary);
+        background: #f8fafc;
+    }
+
+    .faq-accordion .accordion-body {
+        padding: 0 30px 30px;
+        color: #475569;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    @media (max-width: 991px) {
+        .faq-hero h1 { font-size: 3rem; }
+        .faq-search-box { flex-direction: column; border-radius: 24px; padding: 10px; }
+        .faq-search-box input { text-align: center; width: 100%; }
+        .faq-search-box .btn { width: 100%; border-radius: 18px; margin-top: 10px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="faq-hero">
+    <div class="container">
+        <h1>Help Center</h1>
+        <p>Expert guidance and answers to help you master the French language.</p>
+    </div>
+</div>
+
+<div class="faq-search-container">
+    <div class="container">
+        <div class="faq-search-box">
+            <input type="text" placeholder="What can we help you with today?">
+            <button class="btn">Search</button>
+        </div>
+    </div>
+</div>
+
+<div class="faq-main-section">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="card-category">
+                    <span class="category-title">Categories</span>
+                    <div class="nav-category">
+                        {% for category in categories %}
+                        <div class="category-item">
+                            <a href="{% url 'dashboard:faq_category' category.slug %}" 
+                               class="category-link {% if active_category.id == category.id %}active{% endif %}">
+                                <i class="fas fa-bookmark"></i>
+                                {{ category.name|title }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-8">
+                {% if active_category %}
+                <h2 class="faq-title">{{ active_category.name|title }}</h2>
+                
+                <div class="accordion faq-accordion" id="faqAccordion">
+                    {% for faq in faqs %}
+                    <div class="accordion-item shadow-none">
+                        <h2 class="accordion-header" id="heading{{ faq.id }}">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" 
+                                    type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ faq.id }}" 
+                                    aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+                                {{ faq.question }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ faq.id }}" 
+                             class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                             data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                {{ faq.answer|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 bg-white rounded-4 border">
+                        <p class="text-muted mb-0">No questions found in this category.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 bg-white rounded-5 border shadow-sm">
+                    <div class="mb-4">
+                        <i class="fas fa-lightbulb fa-4x text-primary opacity-25"></i>
+                    </div>
+                    <h2 class="h3 font-weight-bold mb-3">Welcome to Knowledge Base</h2>
+                    <p class="text-muted mx-auto" style="max-width: 400px;">
+                        Select a category from the left to explore frequently asked questions and guides.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

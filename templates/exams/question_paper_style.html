@@ -1,0 +1,105 @@
+{% load static exam_filters %}
+
+<div class="paper-question-item mb-5">
+    <!-- Question Row: Number + Content -->
+    <div class="d-flex align-items-start">
+        <!-- Number Column -->
+        <div class="question-number-col me-3">
+            <div class="question-number-badge">{{ question_num }}</div>
+        </div>
+
+        <!-- Content Column -->
+        <div class="question-content-col flex-grow-1">
+
+            <!-- Question Content Wrapper with Icon -->
+            <div class="d-flex align-items-center mb-2">
+                <!-- Icon (simulated based on type) -->
+                <div class="question-icon me-3 border border-dark px-2 rounded-1">
+                    {% if question.audio_url %}
+                    <i class="fas fa-headphones"></i>
+                    {% elif "écrivez" in question.text|lower or "votre" in question.text|lower %}
+                    <i class="fas fa-pen-alt"></i>
+                    {% else %}
+                    <i class="fas fa-pencil-alt"></i>
+                    {% endif %}
+                </div>
+
+                <!-- Actual Question Text -->
+                <div class="question-text fw-normal fs-5">
+                    {% if question.question_type == 'FILL_BLANK' and '_____' in question.text %}
+                    {{ question.text|render_inline_blanks:question.id }}
+                    {% else %}
+                    {{ question.text|linebreaksbr }}
+                    {% endif %}
+                </div>
+
+                <!-- Points (Floated right) -->
+                <div class="ms-auto italic small text-muted fst-italic">
+                    {{ question.marks }} point{% if question.marks != 1 %}s{% endif %}
+                </div>
+            </div>
+
+            <!-- Audio Player if needed -->
+            {% if question.audio_url %}
+            <div class="mb-3">
+                <audio controls class="w-100 h-25">
+                    <source src="{{ question.audio_url }}" type="audio/mpeg">
+                </audio>
+            </div>
+            {% endif %}
+
+            <!-- Answer Section -->
+            <div class="paper-answers mt-2">
+
+                {% if question.question_type == 'MCQ_SINGLE' or question.question_type == 'MCQ_MULTIPLE' %}
+                <div class="d-flex flex-column gap-2">
+                    {% for option in question.options.all %}
+                    <div class="paper-check-option d-flex align-items-center">
+                        <div class="me-3 fw-bold">{{ forloop.counter|stringformat:"c"|upper }}</div>
+                        <div class="form-check square-check">
+                            <input class="form-check-input border-2 border-dark rounded-0"
+                                type="{% if question.question_type == 'MCQ_SINGLE' %}radio{% else %}checkbox{% endif %}"
+                                name="question_{{ question.id }}{% if question.question_type == 'MCQ_MULTIPLE' %}[]{% endif %}"
+                                id="option_{{ option.id }}" value="{{ option.id }}" {% if question.question_type == 'MCQ_SINGLE' %}required{% endif %}>
+                            <label class="form-check-label ps-2" for="option_{{ option.id }}">
+                                {{ option.text }}
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% elif question.question_type == 'TRUE_FALSE' %}
+                <div class="d-flex gap-4">
+                    {% for option in question.options.all %}
+                    <div class="form-check square-check">
+                        <input class="form-check-input border-2 border-dark rounded-0" type="radio"
+                            name="question_{{ question.id }}" id="option_{{ option.id }}" value="{{ option.id }}"
+                            required>
+                        <label class="form-check-label ps-2" for="option_{{ option.id }}">
+                            {{ option.text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% elif question.question_type == 'FILL_BLANK' %}
+                {% if '_____' not in question.text %}
+                <!-- Traditional dotted line area -->
+                <div class="dotted-lines-container w-100 mt-2">
+                    <input type="text" class="paper-dotted-input w-100" name="question_{{ question.id }}"
+                        placeholder="..................................................................................................................................................."
+                        required>
+                </div>
+                {% endif %}
+
+                {% else %}
+                <!-- Default fallback -->
+                <textarea class="form-control paper-textarea" name="question_{{ question.id }}" rows="2"
+                    placeholder="Écrivez votre réponse ici..."></textarea>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,419 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --book-accent: #0055A4;
+        --shelf-wood: #f0fdfa;
+        --page-cream: #ffffff;
+        --text-dark: #1f2937;
+        --gold: #0055A4;
+        --shadow-book: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        background-attachment: fixed;
+    }
+
+    .edit-profile-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 200px);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--book-primary) 0%, var(--book-secondary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+
+    .page-header-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .page-title {
+        font-family: 'Georgia', serif;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-subtitle {
+        opacity: 0.95;
+        font-style: italic;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        border: 2px solid #f9fafb;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #f9fafb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+
+    .form-control-custom:focus {
+        outline: none;
+        border-color: var(--gold);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15);
+    }
+
+    .profile-picture-preview-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-picture-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid var(--gold);
+        object-fit: cover;
+        margin: 0 auto 1rem;
+        display: block;
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-picture-icon {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid var(--gold);
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--book-primary);
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .file-input-wrapper input[type=file] {
+        position: absolute;
+        left: -9999px;
+    }
+
+    .btn-file {
+        padding: 0.75rem 2rem;
+        background: var(--book-primary);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+    }
+
+    .btn-file:hover {
+        background: var(--book-secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    }
+
+    .file-name {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .btn-save {
+        padding: 1rem 2.5rem;
+        background: var(--gold);
+        color: var(--text-dark);
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    }
+
+    .btn-save:hover {
+        background: #FFC700;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6);
+    }
+
+    .btn-cancel {
+        padding: 1rem 2.5rem;
+        background: transparent;
+        color: var(--book-primary);
+        border: 2px solid var(--book-primary);
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background: var(--book-primary);
+        color: white;
+        transform: translateY(-3px);
+        text-decoration: none;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .form-help {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .form-card {
+            padding: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-save,
+        .btn-cancel {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">
+                    <i class="fas fa-user-edit me-2"></i>
+                    Edit Profile
+                </h1>
+                <p class="page-subtitle">Update your personal information</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card">
+                    <form method="post" enctype="multipart/form-data" id="editProfileForm">
+                        {% csrf_token %}
+
+                        <!-- Profile Picture -->
+                        <div class="profile-picture-preview-container">
+                            {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}"
+                                class="profile-picture-preview" id="imagePreview">
+                            {% else %}
+                            <div class="profile-picture-icon" id="iconPreview">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <img src="" alt="Preview" class="profile-picture-preview" id="imagePreview"
+                                style="display: none;">
+                            {% endif %}
+
+                            <div class="file-input-wrapper">
+                                <label for="profile_picture" class="btn-file">
+                                    <i class="fas fa-camera"></i>
+                                    Choose Photo
+                                </label>
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+                            </div>
+                            <div class="file-name" id="fileName">No file chosen</div>
+                            <div class="form-help">Maximum file size: 5MB. Accepted formats: JPG, PNG, GIF</div>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="form-group">
+                            <label for="first_name" class="form-label">
+                                <i class="fas fa-user me-2"></i>First Name
+                            </label>
+                            <input type="text" class="form-control-custom" id="first_name" name="first_name"
+                                value="{{ user.first_name }}" placeholder="Enter your first name">
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-group">
+                            <label for="last_name" class="form-label">
+                                <i class="fas fa-user me-2"></i>Last Name
+                            </label>
+                            <input type="text" class="form-control-custom" id="last_name" name="last_name"
+                                value="{{ user.last_name }}" placeholder="Enter your last name">
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Phone Number
+                            </label>
+                            <input type="tel" class="form-control-custom" id="phone" name="phone"
+                                value="{{ user.phone|default:'' }}" placeholder="Enter your phone number">
+                            <div class="form-help">Optional: Include country code (e.g., +1234567890)</div>
+                        </div>
+
+                        <!-- Read-only fields for reference -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            <input type="text" class="form-control-custom" value="{{ user.email }}" readonly
+                                style="background: #ffffff; cursor: not-allowed;">
+                            <div class="form-help">Email cannot be changed</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user-tag me-2"></i>Account Role
+                            </label>
+                            <input type="text" class="form-control-custom" value="{{ user.get_role_display }}" readonly
+                                style="background: #ffffff; cursor: not-allowed;">
+                            <div class="form-help">Role is managed by administrators</div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save me-2"></i>
+                                Save Changes
+                            </button>
+                            <a href="{% url 'dashboard:profile' %}" class="btn-cancel">
+                                <i class="fas fa-times me-2"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Image preview functionality
+    document.getElementById('profile_picture').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        const fileName = document.getElementById('fileName');
+        const imagePreview = document.getElementById('imagePreview');
+        const iconPreview = document.getElementById('iconPreview');
+
+        if (file) {
+            fileName.textContent = file.name;
+
+            // Show image preview
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                if (iconPreview) {
+                    iconPreview.style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Validate file size
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                alert('File size must be less than 5MB');
+                e.target.value = '';
+                fileName.textContent = 'No file chosen';
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please select a valid image file (JPG, PNG, or GIF)');
+                e.target.value = '';
+                fileName.textContent = 'No file chosen';
+                return;
+            }
+        } else {
+            fileName.textContent = 'No file chosen';
+        }
+    });
+
+    // Form validation
+    document.getElementById('editProfileForm').addEventListener('submit', function (e) {
+        const firstName = document.getElementById('first_name').value.trim();
+        const lastName = document.getElementById('last_name').value.trim();
+
+        // Optional: Add custom validation here if needed
+        // For now, we'll allow empty names
+
+        return true;
+    });
+</script>
+{% endblock %}

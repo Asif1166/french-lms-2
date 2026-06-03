@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Available Courses - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #46178f; /* Kahoot Purple */
+        --book-secondary: #33106b;
+    }
+
+    body {
+        background-color: #ffffff !important;
+    }
+
+    .courses-wrapper {
+        padding: 5rem 0 10rem;
+    }
+
+    .header-area {
+        text-align: center;
+        margin-bottom: 5rem;
+    }
+
+    .header-area h2 {
+        font-size: 2.22rem;
+        font-weight: 700;
+        color: #000;
+        margin: 0;
+    }
+
+    /* Reference-style Grid */
+    .course-grid-grouped {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7rem 2.5rem; /* Large vertical gap for overlapping labels */
+    }
+
+    .course-card-minimal {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    /* Force Perfect Square Container */
+    .square-img-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* Perfect 1:1 Aspect Ratio */
+        overflow: visible; /* To show the 50/50 label */
+        background: #fbfbfb;
+    }
+
+    .square-img-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        transition: transform 0.4s ease;
+    }
+
+    /* The 50/50 Name Badge (Solid White) */
+    .name-badge-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 50%); /* Exactly 50% in, 50% out */
+        background: #ffffff !important; /* Forces solid white background */
+        color: #000000;
+        padding: 12px 18px;
+        width: 75%; 
+        min-width: 140px;
+        text-align: center;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.85rem;
+        border: 2px solid #ffffff; /* White border to separate from image */
+        box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        z-index: 20;
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    }
+
+    /* Hover effect triggered by the parent card */
+    .course-card-minimal:hover .name-badge-overlay {
+        background: var(--book-primary) !important;
+        color: #ffffff;
+        border-color: var(--book-primary);
+        box-shadow: 0 4px 0 0 var(--book-secondary), 0 10px 25px rgba(70, 23, 143, 0.3);
+    }
+
+    .course-card-minimal:hover img {
+        transform: scale(1.03);
+    }
+
+    /* Filter Design */
+    .filters-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; /* CRITICAL: Wraps on mobile */
+        gap: 12px;
+        margin-bottom: 4rem;
+        padding: 0 1rem;
+    }
+
+    .filter-btn-pill {
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #555;
+        background: #fff;
+        border: 1px solid #eee;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .filter-btn-pill.active {
+        background: var(--book-primary);
+        color: #fff;
+        border-color: var(--book-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .course-grid-grouped { 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 6rem 2rem; 
+            padding: 0 1rem;
+        }
+        .header-area h2 { font-size: 1.8rem; }
+    }
+    @media (max-width: 600px) {
+        .courses-wrapper { padding: 3rem 0; }
+        .header-area { margin-bottom: 3rem; }
+        .header-area h2 { font-size: 1.5rem; }
+        .filters-row { margin-bottom: 4rem; gap: 8px; }
+        .filter-btn-pill { padding: 6px 15px; font-size: 0.8rem; }
+        
+        .course-grid-grouped { 
+            grid-template-columns: 1fr; 
+            max-width: 320px; 
+            margin: 0 auto;
+            gap: 5.5rem 0;
+            padding: 0 15px;
+        }
+
+        .name-badge-overlay {
+            width: 85%;
+            font-size: 0.8rem;
+            padding: 10px 12px;
+        }
+    }
+
+    /* Pricing Section (Kahoot Style) */
+    .price-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #eee;
+        position: relative;
+        height: 100%;
+    }
+
+    .price-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .price-card-header {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: white;
+        letter-spacing: 1px;
+    }
+
+    .level-A1 .price-card-header { background: #1368ce; } /* Kahoot Blue */
+    .level-A2 .price-card-header { background: #26890c; } /* Kahoot Green */
+    .level-B1 .price-card-header { background: #ffa602; } /* Kahoot Yellow */
+    .level-B2 .price-card-header { background: #e21b3c; } /* Kahoot Red */
+
+    .price-card.level-A1 { background: linear-gradient(to bottom, #ffffff, #f5f3ff); }
+    .price-card.level-A2 { background: linear-gradient(to bottom, #ffffff, #faf5ff); }
+    .price-card.level-B1 { background: linear-gradient(to bottom, #ffffff, #fff1f2); }
+    .price-card.level-B2 { background: linear-gradient(to bottom, #ffffff, #ecfeff); }
+
+    .price-card-body {
+        padding: 40px 30px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .level-logo-box {
+        margin-bottom: 24px;
+    }
+
+    .level-logo-text {
+        font-size: 48px;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }
+
+    .level-A1 .level-logo-text { color: #1368ce; }
+    .level-A2 .level-logo-text { color: #26890c; }
+    .level-B1 .level-logo-text { color: #ffa602; }
+    .level-B2 .level-logo-text { color: #e21b3c; }
+
+    .level-tagline {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+    }
+
+    .level-features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 30px 0;
+        text-align: left;
+    }
+
+    .level-features-list li {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .level-features-list li i {
+        color: #26890c;
+        font-size: 12px;
+    }
+
+    .price-box {
+        margin-top: auto;
+        padding: 20px 0;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .price-from {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .price-amount {
+        font-size: 32px;
+        font-weight: 800;
+        color: #1a1a1a;
+    }
+
+    .price-currency {
+        font-size: 18px;
+        font-weight: 600;
+        margin-right: 4px;
+    }
+
+    .price-card-footer {
+        padding: 0 30px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .btn-pricing-get {
+        background: var(--book-primary) !important;
+        color: white !important;
+        padding: 16px;
+        border-radius: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        text-align: center;
+        font-size: 15px;
+        box-shadow: 0 4px 0 0 var(--book-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-pricing-get:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 0 0 var(--book-secondary), 0 10px 20px rgba(70, 23, 143, 0.2);
+        color: white !important;
+    }
+
+    .btn-pricing-get:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container courses-wrapper">
+    <div class="header-area">
+        <h2>আমাদের কোর্সসমূহ</h2>
+    </div>
+
+    <!-- Courses Grouped by Level -->
+    {% for level in levels %}
+    <div class="level-group-section mb-5 pb-5">
+        <div class="d-flex align-items-center gap-3 mb-5">
+            <div style="width: 50px; height: 50px; background: var(--book-primary); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.25rem;">
+                {{ level.code }}
+            </div>
+            <div>
+                <h3 class="mb-0" style="font-weight: 800; color: #1a1a1a;">{{ level.title }}</h3>
+                <p class="text-muted mb-0 small">{{ level.description|truncatewords:20 }}</p>
+            </div>
+        </div>
+
+        <div class="course-grid-grouped mb-5">
+            {% for course in level.courses.all %}
+            {% if course.is_active %}
+            <div class="course-card-minimal">
+                <div class="square-img-container">
+                    <a href="{% url 'courses:course_detail' course.id %}">
+                        {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                        {% else %}
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee;">
+                            <i class="fas fa-image fa-3x text-light"></i>
+                        </div>
+                        {% endif %}
+                    </a>
+
+                    <!-- 50/50 Overlay Label Button -->
+                    <a href="{% if user.is_authenticated %}{% url 'payments:create_payment' course.id %}{% else %}{% url 'accounts:login' %}?next={{ request.path }}{% endif %}" 
+                       class="name-badge-overlay">
+                        {{ course.name }}
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <div class="col-12 text-center py-4 bg-light rounded-4">
+                <p class="text-muted mb-0">এই লেভেলে বর্তমানে কোনো কোর্স নেই।</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Full Level Packages (Now at the Bottom) -->
+    <div class="header-area mt-5 pt-5">
+        <h2>সম্পূর্ণ লেভেল কিনুন (বন্ডল অফার)</h2>
+        <p class="text-muted">একটি লেভেলের সব কোর্স একসাথে কিনুন এবং সাশ্রয় করুন।</p>
+    </div>
+
+    <div class="level-packages mb-5 mt-4">
+        <div class="row g-4" id="levelPackageContainer">
+            {% for level in levels %}
+            <div class="col-md-6 col-lg-3 level-package-card">
+                <div class="price-card level-{{ level.code }}">
+                    <div class="price-card-header">
+                        {% if level.code == 'A1' %}FOR BEGINNERS
+                        {% elif level.code == 'A2' %}FOR ELEMENTARY
+                        {% elif level.code == 'B1' %}FOR INTERMEDIATE
+                        {% elif level.code == 'B2' %}FOR PROFESSIONALS{% endif %}
+                    </div>
+                    <div class="price-card-body">
+                        <div class="level-logo-box">
+                            <div class="level-logo-text">{{ level.code }}</div>
+                        </div>
+                        <h3 class="level-tagline">{{ level.title }}</h3>
+                        <p class="level-desc" style="font-size: 13px; color: #666; height: 50px; overflow: hidden;">{{ level.description|truncatewords:10 }}</p>
+                        
+                        <ul class="level-features-list">
+                            <li><i class="fas fa-check-circle"></i> {{ level.courses.count }} Courses</li>
+                            <li><i class="fas fa-check-circle"></i> {{ level.chapters.count }} Chapters</li>
+                            <li><i class="fas fa-check-circle"></i> Lifetime Access</li>
+                        </ul>
+
+                        <div class="price-box">
+                            <span class="price-from">Full Access for</span>
+                            <div class="price-amount">
+                                <span class="price-currency">{{ level.currency }}</span>
+                                {% if level.discounted_price %}{{ level.discounted_price }}{% else %}{{ level.price }}{% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Decorative Background Icon -->
+                        <div style="position: absolute; bottom: -15px; right: -10px; font-size: 80px; opacity: 0.03; pointer-events: none;">
+                            {% if level.code == 'A1' %}<i class="fas fa-graduation-cap"></i>
+                            {% elif level.code == 'A2' %}<i class="fas fa-book"></i>
+                            {% elif level.code == 'B1' %}<i class="fas fa-language"></i>
+                            {% elif level.code == 'B2' %}<i class="fas fa-briefcase"></i>{% endif %}
+                        </div>
+                    </div>
+                    <div class="price-card-footer">
+                        <a href="{% url 'payments:create_level_payment' level.id %}" class="btn-pricing-get">Enroll Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Filtering logic removed as content is now grouped by level -->
+{% endblock %}

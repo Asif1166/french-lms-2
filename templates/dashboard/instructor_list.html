@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Instructors - FrenchLMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .instructor-card {
+        background: white;
+        border-radius: 25px;
+        padding: 35px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #f1f5f9;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .instructor-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-color: #0055A4;
+    }
+
+    .instructor-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 25px;
+        border: 5px solid #f8fafc;
+        transition: all 0.3s ease;
+    }
+
+    .instructor-card:hover .instructor-avatar {
+        border-color: #0055A4;
+        transform: scale(1.05);
+    }
+
+    .instructor-expertise {
+        background: #f0f7ff;
+        color: #0055A4;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .instructor-bio {
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .social-btns .btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 5px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .instructor-hero {
+        background: linear-gradient(135deg, #0055A4 0%, #003366 100%);
+        padding: 80px 0 120px;
+        color: white;
+        text-align: center;
+        border-radius: 0 0 50px 50px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="instructor-hero">
+    <div class="container">
+        <h1 class="display-4 font-weight-bold mb-3">Learn from the Best</h1>
+        <p class="lead opacity-75">Our certified native instructors are dedicated to your success.</p>
+    </div>
+</div>
+
+<div class="container mt-n5 pb-5">
+    <div class="row g-4 mt-n5">
+        {% for instructor in instructors %}
+        <div class="col-lg-4 col-md-6">
+            <div class="instructor-card">
+                {% if instructor.photo %}
+                <img src="{{ instructor.photo.url }}" alt="{{ instructor.user.get_full_name }}" class="instructor-avatar">
+                {% else %}
+                <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar" class="instructor-avatar">
+                {% endif %}
+                
+                <h3 class="h4 font-weight-bold mb-1">{{ instructor.user.get_full_name|default:instructor.user.username }}</h3>
+                <div class="mb-2">
+                    <span class="instructor-expertise">{{ instructor.expertise }}</span>
+                </div>
+                
+                {% if instructor.designation %}
+                <p class="text-muted small mb-3">{{ instructor.designation }}</p>
+                {% endif %}
+
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <div class="text-center">
+                        <span class="d-block font-weight-bold text-dark small">{{ instructor.experience_years }}+</span>
+                        <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase;">Years</span>
+                    </div>
+                    <div class="text-center border-start border-end px-3">
+                        <span class="d-block font-weight-bold text-dark small">{{ instructor.total_students }}+</span>
+                        <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase;">Students</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="d-block font-weight-bold text-dark small">{{ instructor.rating }}</span>
+                        <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase;">Rating</span>
+                    </div>
+                </div>
+                
+                <p class="instructor-bio">{{ instructor.bio|truncatewords:15 }}</p>
+                
+                <div class="d-flex flex-column gap-3">
+                    <a href="{% url 'dashboard:instructor_detail' instructor.pk %}" class="btn btn-primary rounded-pill py-2 px-4 font-weight-bold">
+                        View Profile
+                    </a>
+                    
+                    <div class="social-btns">
+                        {% if instructor.facebook_url %}
+                        <a href="{{ instructor.facebook_url }}" class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i></a>
+                        {% endif %}
+                        {% if instructor.linkedin_url %}
+                        <a href="{{ instructor.linkedin_url }}" class="btn btn-outline-primary"><i class="fab fa-linkedin-in"></i></a>
+                        {% endif %}
+                        {% if instructor.twitter_url %}
+                        <a href="{{ instructor.twitter_url }}" class="btn btn-outline-primary"><i class="fab fa-twitter"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="bg-white p-5 rounded-lg shadow-sm">
+                <i class="fas fa-user-tie fa-4x text-light mb-4"></i>
+                <h3 class="text-muted">No instructors registered yet.</h3>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

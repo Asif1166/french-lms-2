@@ -1,0 +1,590 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Learning Dashboard - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --book-accent: #0055A4;
+        --shelf-wood: #f0fdfa;
+        --page-cream: #ffffff;
+        --text-dark: #1f2937;
+        --gold: #0055A4;
+    }
+
+    body {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        background-attachment: fixed;
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        background: #0055A4;
+        padding: 5rem 0;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-text {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 0.5rem;
+    }
+
+    .date-text {
+        color: #ffffff;
+        opacity: 0.8;
+        font-weight: 500;
+        font-size: 1.1rem;
+    }
+
+    .btn-find-courses {
+        background: var(--gold);
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-find-courses:hover {
+        background: #ffffff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        color: var(--text-dark);
+         color: black;
+    }
+
+    /* Stats Cards */
+    .stats-section {
+        margin-top: -50px;
+        position: relative;
+        z-index: 3;
+        margin-bottom: 3rem;
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border: 2px solid #f9fafb;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .stats-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stats-info h3 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1;
+        color: #000000;
+    }
+
+    .stats-info p {
+        margin: 0.3rem 0 0;
+        color: #64748b;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .bg-soft-blue {
+        background: #e0f2fe;
+        color: #0055A4;
+    }
+
+    .bg-soft-purple {
+        background: #f3e8ff;
+        color: #7c3aed;
+    }
+
+    .bg-soft-green {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    /* Course Cards */
+    .courses-section {
+        padding: 2rem 0 4rem;
+    }
+
+    /* Horizontal Course Cards */
+    .courses-section {
+        padding: 2rem 0 4rem;
+    }
+
+    .section-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--book-primary);
+        border-radius: 2px;
+    }
+
+    .my-course-row {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #edf2f7;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s ease;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .my-course-row:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 85, 164, 0.12);
+        border-color: rgba(0, 85, 164, 0.2);
+    }
+
+    .row-thumb-wrapper {
+        width: 320px;
+        position: relative;
+        flex-shrink: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .row-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        min-height: 100%;
+        transition: transform 0.6s ease;
+    }
+
+    .my-course-row:hover .row-thumb {
+        transform: scale(1.05);
+    }
+
+    .row-content {
+        padding: 2.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .row-course-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .course-meta {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .meta-item i {
+        color: var(--book-primary);
+        margin-right: 0.5rem;
+    }
+
+    .row-progress-container {
+        max-width: 500px;
+        margin-bottom: 1.5rem;
+    }
+
+    .row-progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        font-size: 0.9rem;
+    }
+
+    .row-progress-bar-bg {
+        height: 8px;
+        background: #f1f5f9;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .row-progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0055A4, #00A3FF);
+        border-radius: 4px;
+        transition: width 1s ease;
+    }
+
+    .row-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-continue-video {
+        background: #0055A4;
+        color: black !important;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 85, 164, 0.2);
+    }
+
+    .btn-continue-video:hover {
+        background: #004485;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 85, 164, 0.3);
+        color: white !important;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        background: white;
+        border-radius: 16px;
+        border: 2px dashed #f9fafb;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        color: var(--book-accent);
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-family: 'Georgia', serif;
+        color: var(--text-dark);
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .btn-browse {
+        background: var(--gold);
+        color: var(--text-dark);
+        padding: 0.875rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        text-decoration: none;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-browse:hover {
+        background: #FFC700;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        color: var(--text-dark);
+    }
+
+    @media (max-width: 992px) {
+        .row-thumb-wrapper {
+            width: 260px;
+        }
+        .row-course-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .my-course-row {
+            flex-direction: column;
+        }
+        
+        .row-thumb-wrapper {
+            width: 100%;
+            height: 200px;
+        }
+
+        .row-content {
+            padding: 1.5rem;
+        }
+
+        .row-actions {
+            flex-direction: column;
+        }
+
+        .btn-continue-video {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <div class="container header-content">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="welcome-text">Welcome back, {{ request.user.first_name|default:request.user.username }}! 👋
+                </h1>
+                <p class="date-text mb-0">Ready to continue your French learning journey?</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{% url 'courses:course_list' %}" class="btn-find-courses">
+                    <i class="fas fa-search me-2"></i>Find New Courses
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Stats Row -->
+    <div class="stats-section">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-icon bg-soft-blue">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3>{{ stats.total }}</h3>
+                        <p>Total Enrolled</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-icon bg-soft-purple">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3>{{ stats.active }}</h3>
+                        <p>In Progress</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-icon bg-soft-green">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3>{{ stats.completed }}</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Courses List -->
+    <div class="courses-section">
+        <h3 class="section-title">Your Active Courses</h3>
+
+        {% if enrollments %}
+        <div class="courses-list mt-4">
+            {% for enrollment in enrollments %}
+            <div class="my-course-row">
+                <div class="row-thumb-wrapper">
+                    {% if enrollment.course and enrollment.course.image %}
+                    <img src="{{ enrollment.course.image.url }}" alt="{{ enrollment.course.name }}" class="row-thumb">
+                    {% elif enrollment.level %}
+                    <!-- For Level Bundles, show a placeholder with the Level Code -->
+                    <div style="width: 100%; height: 100%; background: #0055A4; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                        <span style="color: white; font-size: 4rem; font-weight: 900; opacity: 0.9;">{{ enrollment.level.code }}</span>
+                        <span style="color: white; font-size: 1.1rem; font-weight: 800; opacity: 0.7; letter-spacing: 2px;">FULL ACCESS</span>
+                    </div>
+                    {% else %}
+                    <div style="width: 100%; height: 100%; background: #0055A4; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-book fa-3x" style="color: white; opacity: 0.3;"></i>
+                    </div>
+                    {% endif %}
+                    
+                    {% if enrollment.course and enrollment.course.level %}
+                    <span class="level-badge" style="top: 10px; left: 10px; right: auto;">{{ enrollment.course.level.code }}</span>
+                    {% elif enrollment.level %}
+                    <span class="level-badge" style="top: 10px; left: 10px; right: auto;">{{ enrollment.level.code }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="row-content">
+                    <h4 class="row-course-title">
+                        {% if enrollment.course %}{{ enrollment.course.name }}{% else %}{{ enrollment.level.code }} - Full Level Access{% endif %}
+                    </h4>
+                    <p class="text-muted small mb-3">
+                        {% if enrollment.course %}{{ enrollment.course.description|truncatewords:20 }}{% else %}{{ enrollment.level.description|truncatewords:20 }}{% endif %}
+                    </p>
+                    
+                    <div class="course-meta">
+                        <span class="meta-item">
+                            <i class="far fa-calendar-alt"></i>
+                            Started: {{ enrollment.enrolled_at|date:"M d, Y" }}
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-play-circle"></i>
+                            {{ enrollment.completed_count }}/{{ enrollment.total_videos }} Lessons
+                        </span>
+                    </div>
+
+                    <div class="row-progress-container">
+                        <div class="row-progress-label">
+                            <span>Overall Progress</span>
+                            <span>{{ enrollment.progress_percent }}%</span>
+                        </div>
+                        <div class="row-progress-bar-bg">
+                            <div class="row-progress-bar-fill" style="width: {{ enrollment.progress_percent }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="row-actions">
+                        {% if enrollment.next_video_id %}
+                        <a href="{% url 'courses:video_detail' enrollment.next_video_id %}" class="btn-continue-video">
+                            <i class="fas fa-play"></i> 
+                            Continue Learning
+                        </a>
+                        {% endif %}
+                        {% if enrollment.course %}
+                        <a href="{% url 'courses:course_detail' enrollment.course.id %}" class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                            Course Details
+                        </a>
+                        {% else %}
+                        <a href="{% url 'courses:level_detail' enrollment.level.id %}" class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                            Level Details
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3>No Active Courses Found</h3>
+            <p class="text-muted mb-4">It looks like you haven't started any courses yet. Explore our library to begin
+                your learning journey!</p>
+            <a href="{% url 'courses:course_list' %}" class="btn-browse">
+                <i class="fas fa-book-open me-2"></i>Browse Library
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Mock Exam Packages Section -->
+    {% if purchased_packages %}
+    <div class="courses-section mt-5">
+        <h3 class="section-title">Your Mock Exam Packages</h3>
+
+        <div class="courses-list mt-4">
+            {% for purchase in purchased_packages %}
+            <div class="my-course-row">
+                <div class="row-thumb-wrapper">
+                    <div style="width: 100%; height: 100%; min-height: 200px; background: #0055A4; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem;">
+                        <i class="fas fa-file-alt fa-3x" style="color: white; opacity: 0.8; margin-bottom: 1rem;"></i>
+                        <div style="color: white; font-size: 1.8rem; font-weight: 800;">{{ purchase.package.exam_count }}</div>
+                        <div style="color: white; font-size: 0.9rem; opacity: 0.8; font-weight: 600;">Mock Exams</div>
+                    </div>
+                    {% if purchase.package.level %}
+                    <span class="level-badge" style="top: 10px; left: 10px; right: auto;">{{ purchase.package.level }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="row-content">
+                    <h4 class="row-course-title">{{ purchase.package.name }}</h4>
+                    
+                    <div class="course-meta">
+                        <span class="meta-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            Purchased: {{ purchase.purchase_date|date:"M d, Y" }}
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            Status: <span class="text-success fw-bold">Active</span>
+                        </span>
+                    </div>
+
+                    <div class="row-progress-container mb-4">
+                        <div style="background: #f8fafc; padding: 1.25rem; border-radius: 12px; border-left: 4px solid #0055A4;">
+                            <p class="mb-0 text-muted" style="font-size: 0.95rem;">
+                                <i class="fas fa-info-circle me-2 text-primary"></i>
+                                Includes access to {{ purchase.package.exam_count }} mock exam{{ purchase.package.exam_count|pluralize }}.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row-actions">
+                        <a href="{% url 'exams:mock_exam_list' %}" class="btn-continue-video">
+                            <i class="fas fa-play-circle"></i>
+                            Open Exam
+                        </a>
+                        <a href="{% url 'exams:my_purchases' %}" class="btn btn-outline-secondary px-4 py-2 rounded-3" style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+                            <i class="fas fa-clipboard-list"></i>
+                            View Exams
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

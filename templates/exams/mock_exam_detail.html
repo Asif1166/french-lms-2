@@ -1,0 +1,740 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ exam.title }} - Mock Exam{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --book-accent: #0055A4;
+        --shelf-wood: #f0fdfa;
+        --page-cream: #ffffff;
+        --text-dark: #1f2937;
+        --gold: #0055A4;
+        --shadow-book: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        background-attachment: fixed;
+    }
+
+    /* Book Header */
+    .book-header {
+        background: #0055A4;
+        padding: 3rem 0;
+        margin-top: -20px;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .book-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+
+    .book-header-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--page-cream);
+    }
+
+    .book-badge {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--text-dark);
+        padding: 0.5rem 1.5rem;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .book-header-title {
+        font-family: 'Georgia', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .book-header-description {
+        font-family: 'Georgia', serif;
+        font-size: 1.1rem;
+        opacity: 0.95;
+        font-style: italic;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Open Book Layout */
+    .open-book-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .book-pages {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    /* Book Page */
+    .book-page {
+        background: var(--page-cream);
+        padding: 2.5rem;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        border: 1px solid #d4c5a9;
+    }
+
+    .book-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 20px;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, #d4c5a9 10%, #d4c5a9 90%, transparent);
+    }
+
+    .book-page-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--book-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .book-page-title i {
+        color: var(--gold);
+        font-size: 1.5rem;
+    }
+
+    /* Chapter Cards (Sections) */
+    .chapter-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        border: 2px solid #f9fafb;
+        border-left: 5px solid;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .chapter-card:hover {
+        transform: translateX(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .chapter-card.listening {
+        border-left-color: #4299e1;
+    }
+
+    .chapter-card.reading {
+        border-left-color: #48bb78;
+    }
+
+    .chapter-card.writing {
+        border-left-color: #ed8936;
+    }
+
+    .chapter-card.speaking {
+        border-left-color: #f56565;
+    }
+
+    .chapter-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .chapter-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chapter-icon.listening {
+        background: linear-gradient(135deg, #4299e1, #3182ce);
+        color: white;
+    }
+
+    .chapter-icon.reading {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .chapter-icon.writing {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    .chapter-icon.speaking {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        color: white;
+    }
+
+    .chapter-content {
+        flex-grow: 1;
+    }
+
+    .chapter-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .chapter-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+    }
+
+    .chapter-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .chapter-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: var(--text-dark);
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid #dee2e6;
+    }
+
+    .chapter-badge i {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    /* Info Panel */
+    .info-panel {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 2px solid #f9fafb;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .info-panel-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-panel-title i {
+        color: var(--gold);
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-icon-box {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(139, 69, 19, 0.3);
+    }
+
+    .info-icon-box i {
+        font-size: 1.1rem;
+    }
+
+    .info-text {
+        flex-grow: 1;
+    }
+
+    .info-label {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .info-value {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    /* Start Button */
+    .start-exam-panel {
+        background: #0055A4;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 30px rgba(0, 80, 75, 0.3);
+        border: 3px solid var(--gold);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .start-exam-panel::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+    }
+
+    .start-exam-panel>* {
+        position: relative;
+        z-index: 1;
+    }
+
+    .start-exam-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--page-cream);
+        margin-bottom: 0.75rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .start-exam-text {
+        color: rgba(255, 248, 220, 0.95);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-start-exam {
+        width: 100%;
+        background: var(--gold);
+        color: var(--text-dark);
+        border: none;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-start-exam:hover {
+        background: #FFC700;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        color: var(--text-dark);
+    }
+
+    .btn-start-exam i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-start-exam:hover i {
+        transform: scale(1.2);
+    }
+
+    /* Instructions Panel */
+    .instructions-panel {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 2px solid #f9fafb;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .instructions-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .instructions-title i {
+        color: var(--gold);
+    }
+
+    .instruction-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .instruction-item:last-child {
+        border-bottom: none;
+    }
+
+    .instruction-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        box-shadow: 0 3px 10px rgba(72, 187, 120, 0.3);
+    }
+
+    .instruction-text {
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        padding-top: 0.25rem;
+    }
+
+    /* Empty State */
+    .no-sections {
+        background: rgba(255, 255, 255, 0.7);
+        border: 2px dashed var(--book-primary);
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+
+    .no-sections i {
+        font-size: 3rem;
+        color: var(--book-secondary);
+        margin-bottom: 1rem;
+        opacity: 0.6;
+    }
+
+    .no-sections h4 {
+        font-family: 'Georgia', serif;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .no-sections p {
+        color: #666;
+        font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .book-pages {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .book-header-title {
+            font-size: 2rem;
+        }
+
+        .book-page {
+            padding: 2rem 1.5rem;
+        }
+
+        .chapter-card:hover {
+            transform: translateX(5px);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .book-header-title {
+            font-size: 1.75rem;
+        }
+
+        .book-header-description {
+            font-size: 1rem;
+        }
+
+        .book-page-title {
+            font-size: 1.5rem;
+        }
+
+        .chapter-header {
+            flex-direction: column;
+        }
+
+        .chapter-icon {
+            align-self: flex-start;
+        }
+
+        .chapter-badges {
+            flex-direction: column;
+        }
+
+        .chapter-badge {
+            width: fit-content;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Book Header -->
+<section class="book-header">
+    <div class="book-header-content">
+        <div class="book-badge">
+            <i class="fas fa-layer-group me-2"></i>{{ exam.level.code }}
+        </div>
+        <h1 class="book-header-title">{{ exam.title }}</h1>
+        <p class="book-header-description">{{ exam.description }}</p>
+    </div>
+</section>
+
+<!-- Open Book Layout -->
+<div class="open-book-container">
+    <div class="book-pages">
+        <!-- Left Page - Chapters/Sections -->
+        <div class="book-page">
+            <h2 class="book-page-title">
+                <i class="fas fa-book-open"></i>
+                Examination Chapters
+            </h2>
+
+            {% if exam.sections.all %}
+            {% for section in exam.sections.all %}
+            <div class="chapter-card {{ section.category.name|lower }}">
+                <div class="chapter-header">
+                    <div class="chapter-icon {{ section.category.name|lower }}">
+                        {% if section.category.name == 'LISTENING' %}
+                        <i class="fas fa-headphones"></i>
+                        {% elif section.category.name == 'READING' %}
+                        <i class="fas fa-book"></i>
+                        {% elif section.category.name == 'WRITING' %}
+                        <i class="fas fa-pen"></i>
+                        {% elif section.category.name == 'SPEAKING' %}
+                        <i class="fas fa-microphone"></i>
+                        {% endif %}
+                    </div>
+                    <div class="chapter-content">
+                        <h3 class="chapter-title">{{ section.title }}</h3>
+                        <p class="chapter-description">{{ section.description }}</p>
+                        <div class="chapter-badges">
+                            <span class="chapter-badge">
+                                <i class="fas fa-clock"></i>
+                                {{ section.duration_minutes }} minutes
+                            </span>
+                            <span class="chapter-badge">
+                                <i class="fas fa-star"></i>
+                                {{ section.marks }} marks
+                            </span>
+                            <span class="chapter-badge">
+                                <i class="fas fa-question-circle"></i>
+                                {{ section.questions.count }} questions
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="no-sections">
+                <i class="fas fa-book-dead"></i>
+                <h4>No Chapters Available</h4>
+                <p>This examination is still being prepared.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Page - Info & Actions -->
+        <div class="book-page">
+            <!-- Exam Information -->
+            <div class="info-panel">
+                <h3 class="info-panel-title">
+                    <i class="fas fa-info-circle"></i>
+                    Examination Details
+                </h3>
+
+                <div class="info-row">
+                    <div class="info-icon-box">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Level</div>
+                        <div class="info-value">{{ exam.level.code }} - {{ exam.level.title }}</div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon-box">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Total Duration</div>
+                        <div class="info-value">{{ exam.duration_minutes }} minutes</div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon-box">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Total Marks</div>
+                        <div class="info-value">{{ exam.total_marks }} points</div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon-box">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Sections</div>
+                        <div class="info-value">{{ exam.sections.count }} chapters</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Exam Panel -->
+            {% if attempt and attempt.status == 'IN_PROGRESS' %}
+            <div class="start-exam-panel">
+                <h3 class="start-exam-title">Continue Your Examination</h3>
+                <p class="start-exam-text">
+                    You have an examination in progress. Continue where you left off and complete your test.
+                </p>
+                <a href="{% url 'exams:take_mock_exam' exam.id attempt.id %}" class="btn btn-start-exam">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Continue Exam</span>
+                </a>
+            </div>
+            {% else %}
+            <div class="start-exam-panel">
+                <h3 class="start-exam-title">Ready to Begin?</h3>
+                <p class="start-exam-text">
+                    Ensure you have sufficient time to complete the examination. Once started, you cannot pause the
+                    test.
+                </p>
+                <form method="post" action="{% url 'exams:start_mock_exam' exam.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-start-exam">
+                        <i class="fas fa-book-reader"></i>
+                        <span>Begin Examination</span>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- Instructions -->
+            <div class="instructions-panel">
+                <h3 class="instructions-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    Instructions
+                </h3>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="instruction-text">
+                        Read all questions carefully before answering
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="instruction-text">
+                        Manage your time wisely across all sections
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="instruction-text">
+                        Review your answers before final submission
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="instruction-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="instruction-text">
+                        You cannot return once you submit the examination
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

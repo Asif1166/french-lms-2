@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Submission{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Review Submission</h2>
+        <p class="text-muted">Student: {{ submission.user.email }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Question</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Type:</strong> {{ submission.question.get_question_type_display }}</p>
+                <p><strong>Marks:</strong> {{ submission.max_score }}</p>
+                <div class="p-3 bg-light border rounded">
+                    {{ submission.question.text|linebreaks }}
+                </div>
+                {% if submission.question.passage %}
+                <div class="mt-3 p-3 bg-light border rounded">
+                    <strong>Passage:</strong>
+                    {{ submission.question.passage|linebreaks }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Student Answer</h5>
+            </div>
+            <div class="card-body">
+                {% if submission.answer_text %}
+                <div class="p-3 bg-light border rounded">
+                    {{ submission.answer_text|linebreaks }}
+                </div>
+                {% endif %}
+                {% if submission.file_upload %}
+                <div class="mt-3">
+                    <strong>File Upload:</strong>
+                    <a href="{{ submission.file_upload.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-download me-1"></i>Download File
+                    </a>
+                </div>
+                {% endif %}
+                {% if submission.selected_options.all %}
+                <div class="mt-3">
+                    <strong>Selected Options:</strong>
+                    <ul>
+                        {% for option in submission.selected_options.all %}
+                        <li>{{ option.text }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Grade Submission</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="score" class="form-label">Score (out of {{ submission.max_score }})</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="score" 
+                               name="score" 
+                               min="0" 
+                               max="{{ submission.max_score }}" 
+                               step="0.1"
+                               value="{% if submission.score %}{{ submission.score }}{% else %}0{% endif %}"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feedback" class="form-label">Feedback</label>
+                        <textarea class="form-control" 
+                                  id="feedback" 
+                                  name="feedback" 
+                                  rows="5"
+                                  placeholder="Provide feedback to the student...">{{ submission.feedback }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check me-2"></i>Submit Review
+                    </button>
+                    <a href="{% url 'exams:submission_review' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

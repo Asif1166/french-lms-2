@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --auth-primary: #46178f; /* Kahoot Purple */
+        --auth-bg: #f2f2f2;
+        --input-border: #f2f2f2;
+        --text-main: #333333;
+        --text-muted: #666666;
+    }
+
+    body {
+        background-color: var(--auth-bg);
+    }
+
+    .auth-wrapper {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .auth-card {
+        background: white;
+        width: 100%;
+        max-width: 440px;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .auth-logo {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        padding: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .auth-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .auth-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+
+    .auth-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Social Login */
+    .social-auth {
+        margin-bottom: 24px;
+    }
+
+    .btn-google {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        background: white;
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        color: var(--text-main);
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .btn-google:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-google img {
+        width: 20px;
+        margin-right: 12px;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 24px 0;
+        color: #cbd5e1;
+        font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .divider:not(:empty)::before {
+        margin-right: .75em;
+    }
+
+    .divider:not(:empty)::after {
+        margin-left: .75em;
+    }
+
+    /* Form Styles */
+    .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--input-border);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: #f8fafc;
+    }
+
+    .form-control-custom:focus {
+        outline: none;
+        border-color: var(--auth-primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(0, 85, 164, 0.1);
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 16px;
+        background: var(--auth-primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        transition: all 0.2s ease;
+        margin-top: 10px;
+        box-shadow: 0 4px 0 0 #33106b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-submit:hover {
+        background: var(--auth-primary);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 0 0 #33106b, 0 12px 24px rgba(70, 23, 143, 0.2);
+    }
+
+    .btn-submit:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 32px;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+    }
+
+    .auth-footer a {
+        color: var(--auth-primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <img src="{% static 'images/logo.png' %}" alt="French LMS">
+            </div>
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Join us to start learning French</p>
+        </div>
+
+        <div class="social-auth">
+            <a href="#" class="btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Continue with Google
+            </a>
+        </div>
+
+        <div class="divider">OR</div>
+
+        <form method="post" id="registerForm">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control-custom" id="username" name="username" placeholder="johndoe" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control-custom" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control-custom" id="password" name="password" placeholder="At least 8 characters" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="password_confirm" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control-custom" id="password_confirm" name="password_confirm" placeholder="Repeat your password" required>
+                <div id="passwordError" style="color: #e53e3e; font-size: 0.85rem; margin-top: 5px; display: none;">Passwords do not match</div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Sign Up</button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const form = document.getElementById('registerForm');
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('password_confirm');
+    const errorMsg = document.getElementById('passwordError');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function validatePasswords() {
+        if (confirm.value && password.value !== confirm.value) {
+            errorMsg.style.display = 'block';
+            confirm.style.borderColor = '#e53e3e';
+            return false;
+        } else {
+            errorMsg.style.display = 'none';
+            confirm.style.borderColor = '';
+            return true;
+        }
+    }
+
+    password.addEventListener('input', validatePasswords);
+    confirm.addEventListener('input', validatePasswords);
+
+    form.addEventListener('submit', function (e) {
+        if (!validatePasswords()) {
+            e.preventDefault();
+            return;
+        }
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating account...';
+    });
+</script>
+{% endblock %}

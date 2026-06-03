@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Complete Payment - {{ package.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #0055A4;
+        --secondary: #002654;
+        --accent: #FFD700;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --glass: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    body {
+        background-color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+    }
+
+    .payment-container {
+        position: relative;
+        padding: 6rem 1rem;
+        background: var(--primary);
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(255, 215, 0, 0.1) 0, transparent 50%), 
+            radial-gradient(at 100% 0%, rgba(0, 85, 164, 0.8) 0, transparent 50%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .checkout-wrapper {
+        max-width: 500px;
+        width: 100%;
+        position: relative;
+        z-index: 10;
+    }
+
+    .payment-card {
+        background: var(--glass);
+        backdrop-filter: blur(25px);
+        border-radius: 32px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--glass-border);
+        overflow: hidden;
+    }
+
+    .secure-header {
+        background: var(--secondary);
+        padding: 2rem;
+        color: white;
+        text-align: center;
+    }
+
+    .header-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .badge-secure {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        padding: 0.4rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .payment-body {
+        padding: 2.5rem;
+    }
+
+    .order-summary-mini {
+        background: #f1f5f9;
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .summary-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .item-name {
+        font-weight: 800;
+        color: var(--secondary);
+        font-size: 1.1rem;
+    }
+
+    .item-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .level-badge-mini {
+        background: var(--primary);
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        width: fit-content;
+    }
+
+    .price-tag {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .form-wrapper {
+        margin-top: 2rem;
+    }
+
+    .form-label {
+        font-weight: 800;
+        color: var(--secondary);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    #card-element {
+        padding: 1.25rem;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s;
+    }
+
+    #card-element:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(0, 85, 164, 0.1);
+    }
+
+    #card-errors {
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #ef4444;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .btn-pay {
+        width: 100%;
+        padding: 1.5rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin-top: 2.5rem;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 25px rgba(0, 85, 164, 0.3);
+        cursor: pointer;
+    }
+
+    .btn-pay:hover:not(:disabled) {
+        background: var(--secondary);
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0, 85, 164, 0.4);
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(0, 85, 164, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(0, 85, 164, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 85, 164, 0); }
+    }
+
+    .btn-pay:not(:disabled) {
+        animation: pulse 2s infinite;
+    }
+
+    .btn-pay:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .security-footer {
+        margin-top: 2rem;
+        text-align: center;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 2rem;
+    }
+
+    .security-note {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .powered-by {
+        font-size: 0.75rem;
+        color: #94a3b8;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    {% if stripe_public_key %}
+    var stripe = Stripe('{{ stripe_public_key }}');
+    var elements = stripe.elements();
+
+    var style = {
+        base: {
+            color: '#1e293b',
+            fontFamily: '"Inter", sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#94a3b8'
+            }
+        },
+        invalid: {
+            color: '#ef4444',
+            iconColor: '#ef4444'
+        }
+    };
+
+    var cardElement = elements.create('card', {
+        style: style,
+        hidePostalCode: true
+    });
+
+    cardElement.mount('#card-element');
+
+    var form = document.getElementById('payment-form');
+    var submitButton = document.getElementById('submit-button');
+    var errorElement = document.getElementById('card-errors');
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        submitButton.disabled = true;
+
+        // Save original button content
+        const originalContent = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> PROCESSING...';
+
+        stripe.confirmCardPayment('{{ client_secret }}', {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name: '{{ user.get_full_name|default:user.email }}',
+                    email: '{{ user.email }}',
+                },
+            }
+        }).then(function (result) {
+            if (result.error) {
+                // Show error
+                errorElement.textContent = result.error.message;
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalContent;
+
+                // Shake animation for error
+                cardElement.focus();
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    window.location.href = "{% url 'exams:payment_success' %}?transaction_id={{ purchase.transaction_id }}";
+                }
+            }
+        });
+    });
+
+    cardElement.on('change', function (event) {
+        if (event.error) {
+            errorElement.textContent = event.error.message;
+        } else {
+            errorElement.textContent = '';
+        }
+    });
+
+    {% else %}
+    document.getElementById('card-element').innerHTML = '<div class="alert alert-danger">Stripe configuration missing.</div>';
+    {% endif %}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="checkout-wrapper">
+        <div class="payment-card">
+            <div class="secure-header">
+                <h3 class="header-title">
+                    <i class="fas fa-shield-check"></i>
+                    CHECKOUT
+                    <div class="badge-secure">
+                        <i class="fas fa-lock"></i> SECURE
+                    </div>
+                </h3>
+            </div>
+
+            <div class="payment-body">
+                <div class="order-summary-mini">
+                    <div class="summary-info">
+                        <span class="level-badge-mini">{{ package.level }}</span>
+                        <span class="item-name">{{ package.name }}</span>
+                        <div class="item-desc">
+                            <i class="fas fa-check-circle text-primary me-1"></i>
+                            {{ package.exam_count }} Full Mock Exams
+                        </div>
+                    </div>
+                    <span class="price-tag">{{ package.currency }} {{ package.price|floatformat:0 }}</span>
+                </div>
+
+                <form id="payment-form">
+                    <div class="form-wrapper">
+                        <label class="form-label">Payment Information</label>
+                        <div id="card-element">
+                            <!-- Stripe Elements -->
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+
+                    <button type="submit" id="submit-button" class="btn-pay">
+                        CONFIRM PAYMENT
+                    </button>
+
+                    <div class="security-footer">
+                        <div class="security-note">
+                            <i class="fas fa-badge-check text-success"></i>
+                            Encrypted 256-bit SSL transaction
+                        </div>
+                        <div class="powered-by">
+                            Verified by Stripe © French LMS
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

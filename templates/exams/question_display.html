@@ -1,0 +1,299 @@
+{% load static exam_filters %}
+
+<div class="question-item mb-4 p-3" style="border-bottom: 2px solid #dee2e6; padding-bottom: 1.5rem;">
+    <!-- Question Header -->
+    <div class="question-header mb-3">
+        <span class="question-number" style="font-size: 1.2em; font-weight: bold; color: #0d6efd;">
+            Question {{ question_num }}.
+        </span>
+        <span class="badge bg-secondary ms-2">{{ question.get_question_type_display }}</span>
+        <span class="badge bg-info ms-2">{{ question.marks }} mark{% if question.marks != 1 %}s{% endif %}</span>
+    </div>
+    
+    <!-- Instruction -->
+    {% if question.instruction %}
+    <div class="question-instruction mb-3 p-2" style="background: #e9ecef; border-left: 4px solid #0d6efd; font-style: italic;">
+        <strong>Instruction:</strong> {{ question.instruction }}
+    </div>
+    {% endif %}
+    
+    <!-- Reading Passage (for reading questions) -->
+    {% if question.passage %}
+    <div class="passage-box mb-3 p-3" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px;">
+        <h6 style="font-weight: bold; margin-bottom: 1rem;">Read the following passage:</h6>
+        <div style="line-height: 1.8; text-align: justify;">
+            {{ question.passage|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Audio Player (for listening questions) -->
+    {% if question.audio_url %}
+    <div class="audio-box mb-3 p-3" style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
+        <h6 style="font-weight: bold; margin-bottom: 1rem;">
+            <i class="fas fa-headphones me-2"></i>Listen to the audio:
+        </h6>
+        <audio controls class="w-100">
+            <source src="{{ question.audio_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p class="small text-muted mt-2">
+            <i class="fas fa-info-circle me-1"></i>You can listen to this audio multiple times.
+        </p>
+    </div>
+    {% endif %}
+    
+    
+    
+    <!-- Image (for image-based questions) -->
+    {% if question.image %}
+    <div class="image-box mb-3 text-center">
+        <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid" style="max-height: 400px; border: 2px solid #dee2e6; border-radius: 4px;">
+    </div>
+    {% endif %}
+    
+    <!-- Question Text -->
+    {% if question.question_type == 'FILL_BLANK' and '_____' in question.text %}
+        <!-- Skip question text for inline blanks, it's shown in the answer section -->
+    {% else %}
+    <div class="question-text mb-3" style="font-size: 1.1em; line-height: 1.6;">
+        {{ question.text|linebreaks }}
+    </div>
+    {% endif %}
+    
+    <!-- Answer Options based on Question Type -->
+    <div class="answer-section">
+        {% if question.question_type == 'MCQ_SINGLE' or question.question_type == 'MCQ_MULTIPLE' %}
+            <!-- Multiple Choice Options -->
+            {% with has_images=question.options.all|first %}
+            {% if has_images.file %}
+                <!-- Image-based options in grid layout -->
+                <div class="row g-3">
+                    {% for option in question.options.all %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="image-option-card text-center p-3" style="border: 2px solid #dee2e6; border-radius: 8px; background: #ffffff; transition: all 0.3s;">
+                            <label for="option_{{ option.id }}" style="cursor: pointer; width: 100%;">
+                                {% if option.file %}
+                                <img src="{{ option.file.url }}" alt="Option {{ forloop.counter }}" class="img-fluid mb-3" style="max-height: 150px; border-radius: 4px;">
+                                {% endif %}
+                                {% if option.text %}
+                                <div class="option-text mb-2" style="font-size: 0.95rem; color: #495057;">
+                                    {{ option.text }}
+                                </div>
+                                {% endif %}
+                                <div class="form-check d-flex justify-content-center align-items-center mt-2">
+                                    <input class="form-check-input me-2" 
+                                           type="{% if question.question_type == 'MCQ_SINGLE' %}radio{% else %}checkbox{% endif %}" 
+                                           name="question_{{ question.id }}{% if question.question_type == 'MCQ_MULTIPLE' %}[]{% endif %}" 
+                                           id="option_{{ option.id }}" 
+                                           value="{{ option.id }}"
+                                           {% if question.question_type == 'MCQ_SINGLE' %}required{% endif %}>
+                                    <label class="form-check-label fw-bold" for="option_{{ option.id }}" style="cursor: pointer;">
+                                        {{ forloop.counter|stringformat:"c"|upper }}
+                                    </label>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Text-based options (original layout) -->
+                <div class="options-list">
+                    {% for option in question.options.all %}
+                    <div class="form-check mb-2 p-2" style="background: #ffffff; border: 1px solid #dee2e6; border-radius: 4px;">
+                        <input class="form-check-input" 
+                               type="{% if question.question_type == 'MCQ_SINGLE' %}radio{% else %}checkbox{% endif %}" 
+                               name="question_{{ question.id }}{% if question.question_type == 'MCQ_MULTIPLE' %}[]{% endif %}" 
+                               id="option_{{ option.id }}" 
+                               value="{{ option.id }}"
+                               {% if question.question_type == 'MCQ_SINGLE' %}required{% endif %}>
+                        <label class="form-check-label" for="option_{{ option.id }}" style="cursor: pointer; width: 100%;">
+                            <strong style="color: #495057;">{{ forloop.counter|stringformat:"c"|upper }}.</strong> {{ option.text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+        
+        {% elif question.question_type == 'TRUE_FALSE' %}
+            <!-- True/False Options -->
+            <div class="options-list">
+                {% for option in question.options.all %}
+                <div class="form-check mb-2 p-2" style="background: #ffffff; border: 1px solid #dee2e6; border-radius: 4px;">
+                    <input class="form-check-input" 
+                           type="radio" 
+                           name="question_{{ question.id }}" 
+                           id="option_{{ option.id }}" 
+                           value="{{ option.id }}" 
+                           required>
+                    <label class="form-check-label" for="option_{{ option.id }}" style="cursor: pointer; font-size: 1.1em;">
+                        {{ option.text }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        
+        {% elif question.question_type == 'FILL_BLANK' %}
+            <!-- Fill in the Blank -->
+            {% if '_____' in question.text %}
+                <!-- Inline blank mode: Replace _____ with input fields -->
+                <div class="fill-blank-inline mb-3" style="font-size: 1.1em; line-height: 2;">
+                    {{ question.text|render_inline_blanks:question.id }}
+                </div>
+            {% else %}
+                <!-- Traditional textarea mode -->
+                <div class="fill-blank-box p-3" style="background: #ffffff; border: 2px dashed #0d6efd; border-radius: 4px;">
+                    <textarea class="form-control" 
+                              name="question_{{ question.id }}" 
+                              rows="3" 
+                              placeholder="Type your answer here..." 
+                              required></textarea>
+                </div>
+            {% endif %}
+        
+        {% elif question.question_type == 'MATCHING' %}
+            <!-- Matching Questions -->
+            <div class="matching-box">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-2"><strong>Column A</strong></h6>
+                        {% for option in question.options.all %}
+                            {% if not option.match_key %}
+                            <div class="p-2 mb-2" style="background: #e9ecef; border-radius: 4px;">
+                                <strong>{{ forloop.counter }}.</strong> {{ option.text }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-2"><strong>Column B</strong></h6>
+                        <select class="form-select mb-2" name="question_{{ question.id }}_match" required>
+                            <option value="">Select match...</option>
+                            {% for option in question.options.all %}
+                                {% if option.match_key %}
+                                <option value="{{ option.id }}">{{ option.text }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        
+        {% elif question.question_type == 'YES_NO_NOT_MENTIONED' %}
+            <!-- Yes/No/Not Mentioned -->
+            <div class="options-list">
+                <div class="form-check mb-2 p-2" style="background: #ffffff; border: 1px solid #dee2e6; border-radius: 4px;">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="yes_{{ question.id }}" value="YES" required>
+                    <label class="form-check-label" for="yes_{{ question.id }}" style="cursor: pointer; font-size: 1.1em;">
+                        <strong>YES</strong> - The statement is true according to the passage
+                    </label>
+                </div>
+                <div class="form-check mb-2 p-2" style="background: #ffffff; border: 1px solid #dee2e6; border-radius: 4px;">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="no_{{ question.id }}" value="NO" required>
+                    <label class="form-check-label" for="no_{{ question.id }}" style="cursor: pointer; font-size: 1.1em;">
+                        <strong>NO</strong> - The statement is false according to the passage
+                    </label>
+                </div>
+                <div class="form-check mb-2 p-2" style="background: #ffffff; border: 1px solid #dee2e6; border-radius: 4px;">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="not_mentioned_{{ question.id }}" value="NOT_MENTIONED" required>
+                    <label class="form-check-label" for="not_mentioned_{{ question.id }}" style="cursor: pointer; font-size: 1.1em;">
+                        <strong>NOT MENTIONED</strong> - The information is not given in the passage
+                    </label>
+                </div>
+            </div>
+        
+        {% elif question.question_type == 'EMAIL_WRITING' or question.question_type == 'SHORT_PARAGRAPH' or question.question_type == 'OPINION_TEXT' %}
+            <!-- Writing Questions -->
+            <div class="writing-box p-3" style="background: #ffffff; border: 2px solid #0d6efd; border-radius: 4px;">
+                <div class="mb-2">
+                    <label class="form-label"><strong>Your Answer:</strong></label>
+                    <textarea class="form-control" 
+                              name="question_{{ question.id }}" 
+                              rows="{% if question.question_type == 'EMAIL_WRITING' %}8{% elif question.question_type == 'SHORT_PARAGRAPH' %}6{% else %}10{% endif %}" 
+                              placeholder="Write your answer here..." 
+                              required></textarea>
+                </div>
+                <p class="small text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    {% if question.question_type == 'EMAIL_WRITING' %}
+                        Write a formal or informal email as requested. Pay attention to format and structure.
+                    {% elif question.question_type == 'SHORT_PARAGRAPH' %}
+                        Write a short paragraph (50-100 words) on the given topic.
+                    {% else %}
+                        Write your opinion on the given topic. Support your arguments with examples.
+                    {% endif %}
+                </p>
+            </div>
+        
+        {% elif question.question_type == 'ROLE_PLAY' or question.question_type == 'IMAGE_DESCRIPTION' or question.question_type == 'TOPIC_MONOLOGUE' %}
+            <!-- Speaking Questions -->
+            <div class="speaking-box p-3" style="background: #d1ecf1; border: 2px solid #0dcaf0; border-radius: 4px;">
+                <div class="mb-3">
+                    <h6><i class="fas fa-microphone me-2"></i>Speaking Task</h6>
+                    <p class="mb-2">
+                        {% if question.question_type == 'ROLE_PLAY' %}
+                            Prepare a role-play conversation based on the scenario described above.
+                        {% elif question.question_type == 'IMAGE_DESCRIPTION' %}
+                            Describe the image above in detail. Talk about what you see, the setting, and any actions.
+                        {% else %}
+                            Give a monologue on the given topic. Speak for 2-3 minutes.
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label"><strong>Record or Upload Your Response:</strong></label>
+                    <input type="file" 
+                           class="form-control" 
+                           name="question_{{ question.id }}_file" 
+                           accept="audio/*,video/*"
+                           required>
+                </div>
+                <p class="small text-muted mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    You can record audio/video or upload a pre-recorded file. Maximum file size: 10MB.
+                </p>
+            </div>
+        
+        {% else %}
+            <!-- Default Text Answer -->
+            <div class="text-answer-box p-3" style="background: #ffffff; border: 2px solid #dee2e6; border-radius: 4px;">
+                <textarea class="form-control" 
+                          name="question_{{ question.id }}" 
+                          rows="4" 
+                          placeholder="Type your answer here..." 
+                          required></textarea>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.question-item {
+    page-break-inside: avoid;
+}
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+.form-check-label:hover {
+    background-color: #f8f9fa;
+    padding: 0.25rem;
+    border-radius: 4px;
+}
+.image-option-card:hover {
+    border-color: #0d6efd !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    transform: translateY(-2px);
+}
+.image-option-card input:checked ~ * {
+    opacity: 1;
+}
+.image-option-card:has(input:checked) {
+    border-color: #0d6efd !important;
+    background-color: #f0f8ff !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+</style>
+

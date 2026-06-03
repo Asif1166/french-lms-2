@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Complete Payment - {{ course.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --book-accent: #0055A4;
+        --shelf-wood: #f0fdfa;
+        --page-cream: #ffffff;
+        --text-dark: #1f2937;
+        --gold: #0055A4;
+    }
+
+    .payment-container {
+        min-height: calc(100vh - 140px);
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        background-attachment: fixed;
+        padding: 3rem 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .checkout-wrapper {
+        max-width: 550px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        border: 2px solid #f9fafb;
+        overflow: hidden;
+    }
+
+    .secure-header {
+        background: #0055A4;
+        padding: 1.5rem 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .secure-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+
+    .header-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .badge-secure {
+        background: rgba(255, 215, 0, 0.2);
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        border: 1px solid rgba(255, 215, 0, 0.4);
+        color: var(--gold);
+    }
+
+    .payment-body {
+        padding: 2rem;
+    }
+
+    .order-summary-mini {
+        background: rgba(139, 69, 19, 0.05);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 2px solid #f9fafb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .item-name {
+        font-family: 'Georgia', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-desc {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .price-tag {
+        font-family: 'Georgia', serif;
+        font-size: 1.75rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--book-primary), var(--gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Stripe Elements */
+    .form-label {
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
+    }
+
+    #card-element {
+        padding: 1rem;
+        border: 2px solid #f9fafb;
+        border-radius: 8px;
+        background: white;
+        transition: all 0.2s;
+    }
+
+    #card-element:focus-within {
+        border-color: var(--book-primary);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+    }
+
+    #card-errors {
+        margin-top: 0.75rem;
+        font-size: 0.85rem;
+        color: #ef4444;
+        font-weight: 500;
+    }
+
+    .btn-pay {
+        width: 100%;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-top: 2rem;
+        transition: all 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    }
+
+    .btn-pay:hover {
+        background: linear-gradient(135deg, var(--book-secondary), var(--book-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(139, 69, 19, 0.5);
+    }
+
+    .btn-pay:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .security-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        border-top: 2px solid #f9fafb;
+        padding-top: 1.5rem;
+    }
+
+    .security-note {
+        font-size: 0.85rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .powered-by {
+        font-size: 0.75rem;
+        color: #94a3b8;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    {% if stripe_public_key %}
+    var stripe = Stripe('{{ stripe_public_key }}');
+    var elements = stripe.elements();
+
+    var style = {
+        base: {
+            color: '#1f2937',
+            fontFamily: '"Georgia", serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#94a3b8'
+            }
+        },
+        invalid: {
+            color: '#ef4444',
+            iconColor: '#ef4444'
+        }
+    };
+
+    var cardElement = elements.create('card', {
+        style: style,
+        hidePostalCode: true
+    });
+
+    cardElement.mount('#card-element');
+
+    var form = document.getElementById('payment-form');
+    var submitButton = document.getElementById('submit-button');
+    var errorElement = document.getElementById('card-errors');
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        submitButton.disabled = true;
+
+        // Save original button content
+        const originalContent = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        stripe.confirmCardPayment('{{ client_secret }}', {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name: '{{ user.get_full_name|default:user.email }}',
+                },
+            }
+        }).then(function (result) {
+            if (result.error) {
+                // Show error
+                errorElement.textContent = result.error.message;
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalContent;
+
+                // Shake animation for error
+                cardElement.focus();
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    window.location.href = "{% url 'payments:payment_success' %}?transaction_id={{ transaction.transaction_id }}";
+                }
+            }
+        });
+    });
+
+    cardElement.on('change', function (event) {
+        if (event.error) {
+            errorElement.textContent = event.error.message;
+        } else {
+            errorElement.textContent = '';
+        }
+    });
+
+    {% else %}
+    document.getElementById('card-element').innerHTML = '<div class="alert alert-danger">Stripe configuration missing.</div>';
+    {% endif %}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="checkout-wrapper">
+        <div class="payment-card">
+            <div class="secure-header">
+                <h3 style="color: white;" class="header-title">
+                    <span>Payment Details</span>
+                    <div class="badge-secure">
+                        <i class="fas fa-lock"></i> Secure
+                    </div>
+                </h3>
+            </div>
+
+            <div class="payment-body">
+                <div class="order-summary-mini">
+                    <div>
+                        <span class="item-name">{{ course.name }}</span>
+                        <span class="item-desc">One-time payment</span>
+                    </div>
+                    <span class="price-tag">{{ course.currency }} {{ course.price|floatformat:0 }}</span>
+                </div>
+
+                <form id="payment-form">
+                    <div class="mb-4">
+                        <label class="form-label">Card Information</label>
+                        <div id="card-element">
+                            <!-- Stripe Elements -->
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+
+                    <button type="submit" id="submit-button" class="btn-pay">
+                        <i class="fas fa-lock me-2"></i>
+                        Pay {{ course.currency }} {{ course.price|floatformat:0 }}
+                    </button>
+
+                    <div class="security-footer">
+                        <div class="security-note">
+                            <i class="fas fa-shield-alt text-success"></i>
+                            Your payment info is stored securely
+                        </div>
+                        <div class="powered-by">
+                            Processed by Stripe • 256-bit SSL Encrypted
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

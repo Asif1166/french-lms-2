@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify Email - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+        background-size: cover;
+        opacity: 0.3;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+        max-width: 500px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        animation: slideUp 0.6s ease;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+    
+    .auth-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+    
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .auth-subtitle {
+        opacity: 0.9;
+        font-size: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .auth-body {
+        padding: 2.5rem;
+    }
+    
+    .verification-info {
+        background: #f0f4ff;
+        border-left: 4px solid #667eea;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .verification-info p {
+        margin: 0;
+        color: #4a5568;
+    }
+    
+    .verification-info strong {
+        color: #667eea;
+    }
+    
+    .code-input-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+    
+    .code-input {
+        width: 60px;
+        height: 70px;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f7fafc;
+        transition: all 0.3s ease;
+    }
+    
+    .code-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        transform: scale(1.05);
+    }
+    
+    .code-input-single {
+        width: 100%;
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        text-align: center;
+        letter-spacing: 0.5rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f7fafc;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .code-input-single:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn-auth {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+    
+    .btn-auth::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-auth:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-resend {
+        background: transparent;
+        border: 2px solid #667eea;
+        color: #667eea;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .btn-resend:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .auth-footer {
+        text-align: center;
+        padding: 1.5rem 2.5rem;
+        background: #f7fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .auth-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .timer {
+        text-align: center;
+        color: #667eea;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <h2 class="auth-title">Verify Your Email</h2>
+            <p class="auth-subtitle">Enter the 6-digit code sent to your email</p>
+        </div>
+        
+        <div class="auth-body">
+            <div class="verification-info">
+                <p>
+                    <i class="fas fa-info-circle me-2"></i>
+                    We've sent a verification code to <strong>{{ email }}</strong>
+                </p>
+            </div>
+            
+            <form method="post" id="verifyForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="code" class="form-label text-center d-block mb-3">
+                        <i class="fas fa-key me-2"></i>Verification Code
+                    </label>
+                    <input type="text" 
+                           class="code-input-single" 
+                           id="code" 
+                           name="code" 
+                           placeholder="000000"
+                           maxlength="6"
+                           pattern="[0-9]{6}"
+                           required
+                           autocomplete="off"
+                           autofocus>
+                    <div class="timer" id="timer">
+                        Code expires in: <span id="countdown">10:00</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-auth" id="verifyBtn">
+                    <span>Verify Email</span>
+                </button>
+            </form>
+            
+            <form method="post" action="{% url 'accounts:resend_verification' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-resend">
+                    <i class="fas fa-redo me-2"></i>Resend Code
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <p class="mb-0">
+                Wrong email? 
+                <a href="{% url 'accounts:register' %}">Register again</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-format code input (only numbers, max 6 digits)
+document.getElementById('code').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+    
+    // Auto-submit when 6 digits are entered
+    if (this.value.length === 6) {
+        document.getElementById('verifyForm').submit();
+    }
+});
+
+// Countdown timer (10 minutes)
+let timeLeft = 600; // 10 minutes in seconds
+const countdownElement = document.getElementById('countdown');
+
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (timeLeft > 0) {
+        timeLeft--;
+        setTimeout(updateTimer, 1000);
+    } else {
+        countdownElement.textContent = 'Expired';
+        countdownElement.style.color = '#f56565';
+    }
+}
+
+updateTimer();
+
+// Form submission loading state
+document.getElementById('verifyForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('verifyBtn');
+    const span = btn.querySelector('span');
+    btn.disabled = true;
+    span.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying...';
+});
+</script>
+{% endblock %}
+

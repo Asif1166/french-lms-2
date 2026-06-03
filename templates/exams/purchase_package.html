@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Purchase {{ package.name }} - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #00504b;
+        --secondary: #002654;
+        --accent: #FFD700;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --glass: rgba(255, 255, 255, 0.9);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    body {
+        background: #f1f5f9;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: radial-gradient(circle at 0% 0%, rgba(0, 80, 75, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 100% 100%, rgba(0, 38, 84, 0.1) 0%, transparent 50%);
+    }
+
+    .pass-container {
+        display: flex;
+        max-width: 900px;
+        width: 100%;
+        background: white;
+        border-radius: 40px;
+        overflow: hidden;
+        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Left Panel: Pass Hero */
+    .pass-visual {
+        flex: 1.2;
+        background: var(--primary);
+        padding: 4rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .pass-visual::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .v-line {
+        position: absolute;
+        right: 0;
+        top: 10%;
+        height: 80%;
+        width: 1px;
+        background: rgba(255,255,255,0.1);
+        border-right: 1px dashed rgba(255,255,255,0.2);
+    }
+
+    .pass-level {
+        font-size: 5rem;
+        font-weight: 900;
+        line-height: 1;
+        opacity: 0.2;
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+    }
+
+    .pass-type {
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--accent);
+        margin-bottom: 2rem;
+    }
+
+    .pass-title {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+    }
+
+    .pass-price {
+        font-size: 3.5rem;
+        font-weight: 800;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+    }
+
+    .pass-price span {
+        font-size: 1.25rem;
+        opacity: 0.7;
+    }
+
+    /* Right Panel: Pass Content */
+    .pass-content {
+        flex: 1;
+        padding: 4rem;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .content-header {
+        margin-bottom: 3rem;
+    }
+
+    .content-label {
+        font-weight: 800;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.7rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .features-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 3rem;
+    }
+
+    .features-list li {
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .features-list i {
+        color: #10b981;
+    }
+
+    .btn-action {
+        background: var(--primary);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 40px -10px rgba(0, 80, 75, 0.3);
+        border: none;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .btn-action:hover {
+        background: var(--secondary);
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px -15px rgba(0, 38, 84, 0.4);
+    }
+
+    .btn-back {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .btn-back a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+    }
+
+    .btn-back a:hover {
+        color: var(--primary);
+    }
+
+    .secure-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 1.5rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .pass-container {
+            flex-direction: column;
+            margin: 1rem;
+        }
+        .pass-visual {
+            padding: 3rem 2rem;
+        }
+        .pass-content {
+            padding: 3rem 2rem;
+        }
+        .v-line {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="pass-container">
+        <!-- Left Panel: The Pass -->
+        <div class="pass-visual">
+            <div class="pass-level">{{ package.level }}</div>
+            <div class="v-line"></div>
+            
+            <div class="pass-top">
+                <span class="pass-type">Mock Exam Admission</span>
+                <h1 class="pass-title">{{ package.name }}</h1>
+            </div>
+
+            <div class="pass-bottom">
+                <div class="pass-price">
+                    <span>{{ package.currency }}</span>
+                    {{ package.price|floatformat:0 }}
+                </div>
+                <div class="mt-4 opacity-75 small">
+                    <i class="fas fa-calendar-alt me-2"></i> Lifetime Access Granted
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: The Details -->
+        <div class="pass-content">
+            <div class="content-header">
+                <span class="content-label">What's Included</span>
+                <ul class="features-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ package.exam_count }} Full Mock Exams</span>
+                    </li>
+                    {% for feature in package.features.all %}
+                    <li>
+                        <i class="{{ feature.icon|default:'fas fa-check-circle' }}"></i>
+                        <span>{{ feature.name }}</span>
+                    </li>
+                    {% endfor %}
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Detailed Performance Analysis</span>
+                    </li>
+                </ul>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-action">
+                    CONFIRM & START
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="secure-badge">
+                <i class="fas fa-shield-check text-success"></i>
+                Secure Checkout via Stripe
+            </div>
+
+            <div class="btn-back">
+                <a href="{% url 'exams:pricing' %}">
+                    <i class="fas fa-chevron-left me-1"></i> Back to pricing
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

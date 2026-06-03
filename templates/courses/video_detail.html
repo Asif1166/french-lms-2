@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ video.title }} - {{ video.chapter.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --book-accent: #0055A4;
+        --shelf-wood: #f0fdfa;
+        --page-cream: #ffffff;
+        --text-dark: #1f2937;
+        --gold: #0055A4;
+    }
+
+    /* Full width layout for cinema mode */
+    .container-fluid-custom {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Video Theater Mode */
+    .video-theater-mode {
+        background: linear-gradient(to bottom, #001f3f, #0055A4);
+        padding: 4rem 0;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .video-theater-mode::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, rgba(0, 85, 164, 0.2) 0%, transparent 70%);
+        z-index: 1;
+    }
+
+    .theater-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .video-container-card {
+        background: #000;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+    }
+
+    /* Override Plyr primary color to match French Blue */
+    :root {
+        --plyr-color-main: #0055A4;
+    }
+
+    .plyr--full-ui {
+        border-radius: 0; /* Keep it inside our rounded card */
+    }
+
+    .lesson-info-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding: 1.5rem 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-title {
+        font-family: var(--font-family-heading);
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 0;
+    }
+
+    .btn-mark-complete {
+        background: #ffffff;
+        color: #0055A4;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-mark-complete:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-mark-complete.completed {
+        background: #10b981;
+        color: white;
+    }
+
+    /* Playlist Sidebar */
+    .playlist-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        height: 100%;
+        max-height: 650px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .playlist-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .playlist-header h6 {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .playlist-header h4 {
+        color: #ffffff;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+
+    .playlist-items {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .playlist-item {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem 2rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none !important;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .playlist-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .playlist-item.active {
+        background: rgba(0, 85, 164, 0.3);
+        border-left: 4px solid #ffffff;
+        color: #ffffff;
+    }
+
+    .item-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 0.8rem;
+    }
+
+    .active .item-icon {
+        background: #ffffff;
+        color: #0055A4;
+    }
+
+    .completed .item-icon {
+        background: #10b981;
+        color: white;
+    }
+
+    /* Content Section */
+    .lesson-content-area {
+        padding: 5rem 0;
+        background: #fbfbfb;
+    }
+
+    .modern-tabs {
+        display: flex;
+        gap: 3rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 3rem;
+    }
+
+    .modern-tab-btn {
+        padding: 1rem 0;
+        background: none;
+        border: none;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 1.1rem;
+        position: relative;
+        transition: all 0.3s;
+    }
+
+    .modern-tab-btn:hover {
+        color: #0055A4;
+    }
+
+    .modern-tab-btn.active {
+        color: #1e293b;
+    }
+
+    .modern-tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #0055A4;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .tab-pane-content {
+        background: #ffffff;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eef2f6;
+    }
+
+    .tab-pane-content h3 {
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+    }
+
+    .learning-box {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 2rem;
+        border-left: 6px solid #0055A4;
+        margin-top: 2rem;
+    }
+
+    /* Resources */
+    .resource-link-card {
+        background: #ffffff;
+        border: 1px solid #eef2f6;
+        padding: 1.5rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none !important;
+    }
+
+    .resource-link-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border-color: #0055A4;
+    }
+
+    .resource-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #0055A4;
+    }
+
+    @media (max-width: 992px) {
+        .playlist-card { max-height: none; margin-top: 2rem; }
+        .lesson-info-bar { flex-direction: column; text-align: center; gap: 1.5rem; }
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+{% endblock %}
+
+{% block content %}
+<!-- Cinema Mode Section -->
+<div class="video-theater-mode">
+    <div class="container theater-content">
+        <div class="row">
+            <!-- Navigation -->
+            <div class="col-12 mb-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard:my_courses' %}" class="text-white-50 text-decoration-none">My Courses</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' video.chapter.level.courses.first.id %}" class="text-white-50 text-decoration-none">{{ video.chapter.level.title }}</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ video.title }}</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Main Video Column -->
+            <div class="col-lg-8">
+                <div class="video-container-card">
+                    {% if video.video_file %}
+                    <video id="player" playsinline controls data-poster="{{ video.thumbnail.url|default:'' }}">
+                        <source src="{{ video.video_file.url }}" type="video/mp4" />
+                    </video>
+                    {% elif video.video_url %}
+                        {% if 'youtube.com' in video.video_url or 'youtu.be' in video.video_url %}
+                        <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="{{ video.video_url }}"></div>
+                        {% else %}
+                        <video id="player" playsinline controls>
+                            <source src="{{ video.video_url }}" type="video/mp4" />
+                        </video>
+                        {% endif %}
+                    {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-dark text-white h-100" style="min-height: 480px;">
+                        <div class="text-center p-5">
+                            <i class="fas fa-video-slash fa-4x mb-3 opacity-50"></i>
+                            <h5>No Video Content</h5>
+                            <p class="text-white-50">This lesson doesn't have a video yet.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="lesson-info-bar">
+                    <h2 class="video-title">{{ video.title }}</h2>
+                    <button class="btn-mark-complete {% if video.id in completed_video_ids %}completed{% endif %}" onclick="markAsCompleted()">
+                        {% if video.id in completed_video_ids %}
+                        <i class="fas fa-check-circle"></i> Completed
+                        {% else %}
+                        <i class="far fa-check-circle"></i> Mark Complete
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar Column -->
+            <div class="col-lg-4">
+                <div class="playlist-card">
+                    <div class="playlist-header">
+                        <h6>Course Content</h6>
+                        <h4>{{ video.chapter.level.title }}</h4>
+                    </div>
+                    <div class="playlist-items custom-scrollbar">
+                        {% for chapter in level_chapters %}
+                        <!-- Chapter Header in Sidebar -->
+                        <div class="px-4 py-2 bg-white-5 fw-bold small text-white-50" style="background: rgba(255,255,255,0.05);">
+                            {{ forloop.counter }}. {{ chapter.title }}
+                        </div>
+                        
+                        {% for v in chapter.videos.all %}
+                        <a href="{% url 'courses:video_detail' v.id %}" 
+                           class="playlist-item {% if v.id == video.id %}active{% endif %} {% if v.id in completed_video_ids %}completed{% endif %}">
+                            <div class="item-icon">
+                                {% if v.id in completed_video_ids %}
+                                <i class="fas fa-check"></i>
+                                {% elif v.id == video.id %}
+                                <i class="fas fa-play"></i>
+                                {% else %}
+                                <i class="far fa-play-circle" style="font-size: 0.7rem;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">{{ v.title }}</div>
+                                <div class="x-small opacity-50 mt-1" style="font-size: 0.7rem;">
+                                    <i class="far fa-clock me-1"></i>{{ v.get_duration_display }}
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lesson Content Tabs -->
+<section class="lesson-content-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="modern-tabs">
+                    <button class="modern-tab-btn active" data-tab="overview">Overview</button>
+                    <button class="modern-tab-btn" data-tab="exercises">Practice Exercises</button>
+                    <button class="modern-tab-btn" data-tab="resources">Resources</button>
+                </div>
+
+                <!-- Tab Panes -->
+                <div class="tab-content">
+                    <!-- Overview -->
+                    <div class="tab-pane-content" id="overview-pane">
+                        <h3>About this lesson</h3>
+                        <p class="text-muted lead" style="line-height: 1.8;">{{ video.description }}</p>
+
+                        {% if video.learning_goals %}
+                        <div class="learning-box">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i> Learning Goals</h5>
+                            <p class="mb-0">{{ video.learning_goals }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if video.grammar_explanation %}
+                        <div class="mt-5">
+                            <h5 class="fw-bold text-uppercase small letter-spacing-1 text-muted mb-3">Grammar Deep-Dive</h5>
+                            <div class="bg-white p-4 rounded-4 border">{{ video.grammar_explanation|linebreaks }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Exercises -->
+                    <div class="tab-pane-content" id="exercises-pane" style="display: none;">
+                        {% if contexts_with_questions or standalone_questions %}
+                            <form id="questionForm" method="post" action="{% url 'exams:submit_answers' video.id %}">
+                                {% csrf_token %}
+                                {% for item in contexts_with_questions %}
+                                <div class="mb-5">
+                                    {% include "exams/exercise_context_header.html" with exercise_ctx=item.context %}
+                                    {% for question in item.questions %}
+                                    {% include "exams/question_paper_style.html" with question=question question_num=forloop.counter %}
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+
+                                {% if standalone_questions %}
+                                    {% for question in standalone_questions %}
+                                    {% include "exams/question_paper_style.html" with question=question question_num=forloop.counter %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                <div class="text-center mt-5">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow">Submit Quiz</button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <img src="{% static 'images/no_data.svg' %}" alt="No data" style="width: 150px;" class="mb-4 opacity-25">
+                                <h5 class="text-muted">No exercises for this lesson yet.</h5>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Resources -->
+                    <div class="tab-pane-content" id="resources-pane" style="display: none;">
+                        <div class="row g-4">
+                            {% if video.resources.all %}
+                                {% for resource in video.resources.all %}
+                                <div class="col-md-6">
+                                    <a href="{{ resource.file.url }}" target="_blank" class="resource-link-card">
+                                        <div class="resource-icon">
+                                            {% if resource.resource_type == 'PDF' %}
+                                                <i class="far fa-file-pdf"></i>
+                                            {% elif resource.resource_type == 'IMAGE' %}
+                                                <i class="far fa-image"></i>
+                                            {% else %}
+                                                <i class="far fa-file-alt"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ resource.title }}</div>
+                                            <div class="small text-muted">{{ resource.get_resource_type_display }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-5 w-100">
+                                    <h5 class="text-muted">No resources available for this lesson.</h5>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script>
+    // Initialize Plyr with options to prevent double players
+    const player = new Plyr('#player', {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+        youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
+    });
+
+    // Tab Switching Logic
+    document.querySelectorAll('.modern-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            
+            // Update buttons
+            document.querySelectorAll('.modern-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update panes
+            document.querySelectorAll('.tab-pane-content').forEach(p => p.style.display = 'none');
+            document.getElementById(tabId + '-pane').style.display = 'block';
+        });
+    });
+
+    // Auto-scroll sidebar to active lesson
+    const activeItem = document.querySelector('.playlist-item.active');
+    if (activeItem) {
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function markAsCompleted() {
+        fetch("{% url 'enrollments:mark_video_complete' video.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const btn = document.querySelector('.btn-mark-complete');
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
+                btn.classList.add('completed');
+                
+                // Update sidebar
+                const sidebarItem = document.querySelector('.playlist-item.active');
+                if (sidebarItem) {
+                    sidebarItem.classList.add('completed');
+                    sidebarItem.querySelector('.item-icon').innerHTML = '<i class="fas fa-check"></i>';
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,7 @@
+Django>=5.2.5
+psycopg2-binary>=2.9.10
+django-cors-headers>=4.7.0
+Pillow>=11.3.0
+stripe>=12.1.0
+django-environ>=0.12.0
+

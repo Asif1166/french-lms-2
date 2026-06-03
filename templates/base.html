@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+
+<!-- Mirrored from luma.humatheme.com/Demos/Fixed_Layout/{% url 'dashboard:home' %} by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 18 Dec 2025 09:47:39 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}French Learning Platform{% endblock %}</title>
+
+    <!-- Prevent the demo from appearing in search engines -->
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --font-family-sans-serif: 'Plus Jakarta Sans', sans-serif;
+            --font-family-heading: 'Outfit', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-sans-serif);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6 {
+            font-family: var(--font-family-heading) !important;
+        }
+
+        .btn {
+            font-family: var(--font-family-sans-serif) !important;
+        }
+
+        /* Footer Styles - Modern & Clean */
+        .footer-section {
+            background: var(--primary-color); /* Kahoot Purple */
+            color: #ffffff;
+            padding: 80px 0 40px;
+            margin-top: auto;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-logo img {
+            max-height: 50px;
+            margin-bottom: 1.5rem;
+            filter: brightness(0) invert(1); /* Make logo white for dark bg */
+            transition: transform 0.3s ease;
+        }
+
+        .footer-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .footer-desc {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            max-width: 320px;
+        }
+
+        .footer-title {
+            font-family: var(--font-family-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.6) !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-link:hover {
+            color: #ffffff !important;
+            padding-left: 5px;
+        }
+
+        .social-links-wrap {
+            gap: 12px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-color: #ffffff;
+        }
+
+        .newsletter-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .newsletter-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 12px 15px;
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+            color: #ffffff;
+        }
+
+        .btn-subscribe {
+            background: #ffffff;
+            color: var(--primary-color);
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+
+        .btn-subscribe:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer-bottom-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        /* Navbar Colors */
+        .navbar-light .nav-link {
+            color: #4b5563 !important;
+            font-weight: 500;
+        }
+
+        .navbar-light .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+
+        .navbar-brand {
+            color: #1f2937 !important;
+            font-weight: 700 !important;
+        }
+
+        .navbar-toggler {
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            color: #1f2937 !important;
+        }
+
+        .navbar-toggler span {
+            color: #1f2937 !important;
+        }
+    </style>
+
+
+
+    <!-- Preloader -->
+    <link rel="stylesheet" href="{% static 'public/vendor/spinkit.css' %}">
+    <link rel="stylesheet" href="{% static 'public/vendor/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'public/css/material-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'public/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'public/css/preloader.css' %}">
+    <link rel="stylesheet" href="{% static 'public/css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+<body class="layout-sticky-subnav layout-default ">
+
+    <!-- <div class="preloader">
+        <div class="sk-chase">
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+        </div> -->
+
+    <!-- <div class="sk-bounce">
+    <div class="sk-bounce-dot"></div>
+    <div class="sk-bounce-dot"></div>
+  </div> -->
+
+    <!-- More spinner examples at https://github.com/tobiasahlin/SpinKit/blob/master/examples.html -->
+    </div>
+
+    <!-- Header Layout -->
+    <div class="mdk-header-layout js-mdk-header-layout">
+
+        <!-- Header -->
+
+        <div id="header" class="mdk-header js-mdk-header mb-0" data-effects="" data-fixed data-condenses>
+            <div class="mdk-header__bg">
+                <div class="mdk-header__bg-front" style="background: transparent;"></div>
+            </div>
+            <div class="mdk-header__content justify-content-center">
+
+                <div class="navbar navbar-expand navbar-light bg-white will-fade-background" id="default-navbar"
+                    data-primary style="background: #ffffff !important; border-bottom: 1px solid #eef2f6;">
+
+                    <!-- Navbar toggler -->
+                    <button class="navbar-toggler w-auto mr-16pt d-block rounded-0" type="button" data-toggle="sidebar">
+                        <span class="material-icons">short_text</span>
+                    </button>
+
+                    <!-- Navbar Brand -->
+                    <a href="{% url 'dashboard:home' %}" class="navbar-brand mr-16pt">
+                        <!-- <img class="navbar-brand-icon" src="../../public/images/logo/white-100@2x.png" width="30" alt="Luma"> -->
+
+                        <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
+
+                            <span class="avatar-title rounded bg-light"><img
+                                    src="{% static 'images/logo.png' %}" alt="logo"
+                                    class="img-fluid" /></span>
+
+                        </span>
+
+                        <span class="d-none d-lg-block"></span>
+                    </a>
+
+                    <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
+                        <li class="nav-item active">
+                            <a href="{% url 'dashboard:home' %}" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="{% url 'courses:level_list' %}" class="nav-link dropdown-toggle"
+                                data-toggle="dropdown" data-caret="false">Courses</a>
+                            <div class="dropdown-menu">
+                                <a href="{% url 'courses:level_list' %}" class="dropdown-item">Browse Courses</a>
+                                <a href="{% url 'dashboard:instructors' %}" class="dropdown-item">Our Instructors</a>
+                                <a href="{% url 'dashboard:success_stories' %}" class="dropdown-item">Success Stories</a>
+                            </div>
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a href="{% url 'dashboard:my_courses' %}" class="nav-link">My Courses</a>
+                        </li>
+
+
+                        {% if user.is_instructor or user.is_admin %}
+                        <li class="nav-item">
+                            <a href="{% url 'exams:submission_review' %}" class="nav-link">Review</a>
+                        </li>
+                        {% endif %}
+
+                        {% endif %}
+
+                        <li class="nav-item">
+                            <a href="{% url 'exams:pricing' %}" class="nav-link">Pricing</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'exams:mock_exam_list' %}" class="nav-link">Mock Exam</a>
+                        </li>
+                        {% comment %} <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                                data-caret="false">Teachers</a>
+                            <div class="dropdown-menu">
+                                <a href="instructor-dashboard.html" class="dropdown-item">Instructor Dashboard</a>
+                                <a href="instructor-courses.html" class="dropdown-item">Manage Courses</a>
+                                <a href="instructor-quizzes.html" class="dropdown-item">Manage Quizzes</a>
+                                <a href="instructor-earnings.html" class="dropdown-item">Earnings</a>
+                                <a href="instructor-statement.html" class="dropdown-item">Statement</a>
+                                <a href="instructor-edit-course.html" class="dropdown-item">Edit Course</a>
+                                <a href="instructor-edit-quiz.html" class="dropdown-item">Edit Quiz</a>
+                            </div>
+                        </li> {% endcomment %}
+
+                    </ul>
+
+                    {% if user.is_authenticated %}
+
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard:profile' %}" class="btn btn-outline-primary"
+                            style="border-radius: 50px; padding: 6px 20px; border-color: var(--primary-color); color: var(--primary-color);">Account</a>
+                    </li>
+                    {% else %}
+                    <ul class="nav navbar-nav ml-auto mr-0">
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:login' %}" class="nav-link" data-toggle="tooltip"
+                                data-title="Login" data-placement="bottom" data-boundary="window"><i
+                                    class="material-icons">lock_open</i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:register' %}" class="btn btn-primary"
+                                style="background-color: var(--primary-color); border: none; border-radius: 50px; padding: 6px 20px; box-shadow: 0 4px 0 0 var(--primary-dark);">GET
+                                STARTED</a>
+                        </li>
+                    </ul>
+
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- // END Header -->
+
+        {% if messages %}
+        <div class="container mt-3 messages-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show custom-alert shadow-lg" role="alert" style="background: white; border-left: 5px solid {% if message.tags == 'success' %}var(--success-color){% else %}var(--danger-color){% endif %}; border-radius: 12px; color: #1f2937;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-circle{% else %}info-circle{% endif %} me-3" style="color: {% if message.tags == 'success' %}var(--success-color){% else %}var(--danger-color){% endif %}; font-size: 1.2rem;"></i>
+                    <div class="flex-grow-1">
+                        {{ message }}
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Header Layout Content -->
+        <div class="mdk-header-layout__content page-content ">
+            {% block content %}{% endblock %}
+
+        </div>
+        <!-- // END Header Layout Content -->
+
+        <!-- Footer -->
+        <footer class="footer-section">
+            <div class="container">
+                <div class="row g-4 justify-content-between">
+                    <!-- Brand Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-logo">
+                            <img src="{% static 'images/logo.png' %}" alt="FrenchLMS Logo">
+                        </div>
+                        <p class="footer-desc">
+                            Master the French language with our premium, CEFR-aligned curriculum.
+                            Designed by experts to help you achieve fluency faster.
+                        </p>
+                        <div class="d-flex social-links-wrap">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <h5 class="footer-title">Explore</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'courses:level_list' %}" class="footer-link">Courses</a></li>
+                            <li><a href="{% url 'exams:pricing' %}" class="footer-link">Pricing</a></li>
+                            <li><a href="{% url 'dashboard:instructors' %}" class="footer-link">Instructors</a></li>
+                            <li><a href="{% url 'dashboard:success_stories' %}" class="footer-link">Success Stories</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Support -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <h5 class="footer-title">Support</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'dashboard:faq_list' %}" class="footer-link">Help Center</a></li>
+                            <li><a href="{% url 'dashboard:faq_list' %}" class="footer-link">FAQs</a></li>
+                            <li><a href="{% url 'dashboard:contact' %}" class="footer-link">Contact Us</a></li>
+                            <li><a href="{% url 'dashboard:privacy' %}" class="footer-link">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="newsletter-box">
+                            <h5 class="footer-title" style="margin-bottom: 0.5rem;">Join Us</h5>
+                            <p class="small text-white-50 mb-4">Get the latest updates and tips.</p>
+                            <form action="#">
+                                <input type="email" class="newsletter-input" placeholder="Your email address">
+                                <button type="submit" class="btn-subscribe">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                            <p class="footer-bottom-text mb-0">
+                                &copy; 2024 FrenchLMS. All rights reserved.
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center text-md-end">
+                            <div class="footer-bottom-links">
+                                <a href="{% url 'dashboard:terms' %}" class="footer-link text-white-50 small me-3">Terms of Service</a>
+                                <a href="{% url 'dashboard:privacy' %}" class="footer-link text-white-50 small">Privacy Policy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- // END Footer -->
+
+    </div>
+    <!-- // END Header Layout -->
+
+    <!-- Drawer -->
+
+    <div class="mdk-drawer js-mdk-drawer" id="default-drawer">
+        <div class="mdk-drawer__content">
+            <div class="sidebar sidebar-dark-pickled-bluewood sidebar-left" data-perfect-scrollbar>
+
+                <!-- Sidebar Content -->
+
+                <div class="d-flex align-items-center navbar-height">
+                    <form action="https://luma.humatheme.com/Demos/Fixed_Layout/{% url 'dashboard:home' %}"
+                        class="search-form search-form--black mx-16pt pr-0 pl-16pt">
+                        <input type="text" class="form-control pl-0" placeholder="Search">
+                        <button class="btn" type="submit"><i class="material-icons">search</i></button>
+                    </form>
+                </div>
+
+                <a href="{% url 'dashboard:home' %}" class="sidebar-brand ">
+                    <!-- <img class="sidebar-brand-icon" src="../../public/images/illustration/student/128/white.svg" alt="Luma"> -->
+
+                    <span class="avatar avatar-xl sidebar-brand-icon h-auto">
+                        <span class="avatar-title rounded bg-white"><img
+                                src="{% static 'images/logo.png' %}" class="img-fluid"
+                                alt="logo" /></span>
+
+                    </span>
+
+                    <!-- <span>Luma</span> -->
+                </a>
+
+                <div class="sidebar-heading">Menu</div>
+                <ul class="sidebar-menu">
+
+                    <li class="sidebar-menu-item active">
+                        <a class="sidebar-menu-button" href="{% url 'dashboard:home' %}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">home</span>
+                            <span class="sidebar-menu-text">Home</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" href="{% url 'courses:level_list' %}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">local_library</span>
+                            <span class="sidebar-menu-text">Browse Courses</span>
+                        </a>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" href="{% url 'dashboard:my_courses' %}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
+                            <span class="sidebar-menu-text">My Courses</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" href="{% url 'exams:mock_exam_list' %}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">assignment</span>
+                            <span class="sidebar-menu-text">Mock Exam</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" href="{% url 'exams:pricing' %}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">payment</span>
+                            <span class="sidebar-menu-text">Pricing</span>
+                        </a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" href="{% url 'dashboard:profile' %}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_circle</span>
+                            <span class="sidebar-menu-text">My Profile</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+
+                <!-- // END Sidebar Content -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- // END Drawer -->
+
+    <!-- jQuery -->
+    <script src="{% static 'public/vendor/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap -->
+    <script src="{% static 'public/vendor/popper.min.js' %}"></script>
+    <script src="{% static 'public/vendor/bootstrap.min.js' %}"></script>
+
+    <!-- Perfect Scrollbar -->
+    <script src="{% static 'public/vendor/perfect-scrollbar.min.js' %}"></script>
+
+    <!-- DOM Factory -->
+    <script src="{% static 'public/vendor/dom-factory.js' %}"></script>
+
+    <!-- MDK -->
+    <script src="{% static 'public/vendor/material-design-kit.js' %}"></script>
+
+    <!-- App JS -->
+    <script src="{% static 'public/js/app.js' %}"></script>
+
+    <!-- Preloader -->
+    <script src="{% static 'public/js/preloader.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        (function () {
+            'use strict';
+            var headerNode = document.querySelector('.mdk-header')
+            var layoutNode = document.querySelector('.mdk-header-layout')
+            var componentNode = layoutNode ? layoutNode : headerNode
+            componentNode.addEventListener('domfactory-component-upgraded', function () {
+                headerNode.mdkHeader.eventTarget.addEventListener('scroll', function () {
+                    var progress = headerNode.mdkHeader.getScrollState().progress
+                    var navbarNode = headerNode.querySelector('#default-navbar')
+                    navbarNode.classList.toggle('bg-transparent', progress <= 0.2)
+                })
+            })
+
+            // Auto-dismiss messages after 5 seconds
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.custom-alert');
+                alerts.forEach(function(alert) {
+                    // Start fade out
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    
+                    // Actually remove after fade
+                    setTimeout(function() {
+                        if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                            var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                            if (bsAlert) bsAlert.close();
+                        } else {
+                            alert.remove();
+                        }
+                    }, 500);
+                });
+            }, 5000);
+        })()
+    </script>
+
+</body>
+
+
+<!-- Mirrored from luma.humatheme.com/Demos/Fixed_Layout/{% url 'dashboard:home' %} by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 18 Dec 2025 09:49:45 GMT -->
+
+</html>

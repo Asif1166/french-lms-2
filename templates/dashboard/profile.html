@@ -1,0 +1,765 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - French LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #0055A4;
+        --book-secondary: #002654;
+        --book-accent: #0055A4;
+        --shelf-wood: #f0fdfa;
+        --page-cream: #ffffff;
+        --text-dark: #1f2937;
+        --gold: #0055A4;
+        --shadow-book: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        background-attachment: fixed;
+    }
+
+    .profile-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 200px);
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--book-primary) 0%, var(--book-secondary) 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+
+    .profile-header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .profile-picture-container {
+        position: relative;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 215, 0, 0.5);
+        object-fit: cover;
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--book-primary);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .profile-picture:hover {
+        transform: scale(1.05);
+        border-color: var(--gold);
+    }
+
+    .profile-info {
+        flex-grow: 1;
+    }
+
+    .profile-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: #FFFFFF;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-role {
+        display: inline-block;
+        padding: 0.6rem 1.8rem;
+        background: rgba(255, 255, 255, 0.15);
+        color: #FFFFFF;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }
+
+    .profile-meta {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.95;
+    }
+
+    .meta-item i {
+        font-size: 1.2rem;
+    }
+
+    .card-premium {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        border: 2px solid #f9fafb;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .card-premium:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .card-header-custom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f9fafb;
+    }
+
+    .card-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-title i {
+        color: var(--book-primary);
+    }
+
+    .btn-edit {
+        padding: 0.5rem 1.5rem;
+        background: var(--gold);
+        color: var(--text-dark);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-edit:hover {
+        background: #FFC700;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(255, 215, 0, 0.5);
+        color: var(--text-dark);
+    }
+
+    .info-row {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        padding: 1rem 0;
+        border-bottom: 1px solid #ffffff;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 700;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-label i {
+        color: var(--book-primary);
+        width: 20px;
+    }
+
+    .info-value {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        border: 2px solid #f9fafb;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--book-primary), var(--gold));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .stat-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon.primary {
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        color: white;
+    }
+
+    .stat-icon.success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .stat-icon.info {
+        background: linear-gradient(135deg, #4299e1, #3182ce);
+        color: white;
+    }
+
+    .stat-number {
+        font-family: 'Georgia', serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--book-primary);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #666;
+    }
+
+    .badge-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        background: #48bb78;
+        color: white;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .badge-not-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        background: #f56565;
+        color: white;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* Sections moved from Home */
+    .section-title {
+        font-family: 'Georgia', serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--book-primary), var(--gold));
+        border-radius: 2px;
+    }
+
+    .stat-card-new {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 2px solid #f9fafb;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+    }
+
+    .stat-card-new:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .stat-icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-right: 1.25rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon-box.primary {
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        color: white;
+    }
+
+    .stat-icon-box.success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .stat-icon-box.info {
+        background: linear-gradient(135deg, #4299e1, #3182ce);
+        color: white;
+    }
+
+    .stat-icon-box.warning {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    .stat-content {
+        flex-grow: 1;
+    }
+
+    .stat-number {
+        font-family: 'Georgia', serif;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--book-primary);
+        line-height: 1.2;
+        margin-bottom: 0.1rem;
+    }
+
+    .stat-label-new {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #666;
+    }
+
+    .activity-item {
+        padding: 1.25rem;
+        border-left: 4px solid var(--book-primary);
+        background: white;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .activity-item:hover {
+        background: #fafafa;
+        transform: translateX(8px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .profile-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+        }
+
+        .profile-meta {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            font-size: 3rem;
+        }
+
+        .profile-name {
+            font-size: 1.75rem;
+        }
+
+        .info-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="container">
+                <div class="profile-header-content">
+                    <div class="profile-picture-container">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="profile-picture">
+                        {% else %}
+                        <div class="profile-picture">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-info">
+                        <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
+                        <div class="profile-role">
+                            <i class="fas fa-user-tag me-2"></i>{{ user.get_role_display }}
+                        </div>
+
+                        <div class="profile-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>{{ user.email }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Member since {{ user.created_at|date:"F Y" }}</span>
+                            </div>
+                            {% if user.is_verified %}
+                            <span class="badge-verified">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                            {% else %}
+                            <span class="badge-not-verified">
+                                <i class="fas fa-exclamation-circle"></i> Not Verified
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Your Progress</h2>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card-new">
+                    <div class="stat-icon-box primary">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ enrollments_count }}</div>
+                        <div class="stat-label-new">Enrolled Courses</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card-new">
+                    <div class="stat-icon-box success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ videos_completed }}</div>
+                        <div class="stat-label-new">Videos Completed</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card-new">
+                    <div class="stat-icon-box info">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ pending_submissions }}</div>
+                        <div class="stat-label-new">Pending Reviews</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card-new">
+                    <div class="stat-icon-box warning">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label-new">Certificates</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Profile Information -->
+            <div class="col-lg-8">
+                <div class="card-premium">
+                    <div class="card-header-custom">
+                        <h2 class="card-title">
+                            <i class="fas fa-user-circle"></i>
+                            Profile Information
+                        </h2>
+                        <a href="{% url 'dashboard:edit_profile' %}" class="btn-edit">
+                            <i class="fas fa-edit"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-user"></i>
+                                Username
+                            </div>
+                            <div class="info-value">{{ user.username }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-signature"></i>
+                                Full Name
+                            </div>
+                            <div class="info-value">
+                                {% if user.first_name or user.last_name %}
+                                {{ user.get_full_name }}
+                                {% else %}
+                                <em class="text-muted">Not provided</em>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                Email Address
+                            </div>
+                            <div class="info-value">{{ user.email }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </div>
+                            <div class="info-value">
+                                {% if user.phone %}
+                                {{ user.phone }}
+                                {% else %}
+                                <em class="text-muted">Not provided</em>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-user-tag"></i>
+                                Account Role
+                            </div>
+                            <div class="info-value">{{ user.get_role_display }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-plus"></i>
+                                Joined Date
+                            </div>
+                            <div class="info-value">{{ user.created_at|date:"F d, Y" }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-clock"></i>
+                                Last Updated
+                            </div>
+                            <div class="info-value">{{ user.updated_at|date:"F d, Y g:i A" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="col-lg-4">
+                <div class="card-premium">
+                    <div class="card-header-custom">
+                        <h2 class="card-title">
+                            <i class="fas fa-cog"></i>
+                            Quick Actions
+                        </h2>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'dashboard:edit_profile' %}" class="btn-edit text-center">
+                            <i class="fas fa-user-edit"></i>
+                            Edit Profile
+                        </a>
+
+                        <a href="{% url 'accounts:forgot_password' %}" class="btn-edit text-center">
+                            <i class="fas fa-key"></i>
+                            Change Password
+                        </a>
+
+                        <a href="{% url 'dashboard:my_courses' %}" class="btn-edit text-center">
+                            <i class="fas fa-book"></i>
+                            My Courses
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-premium mt-4">
+                    <div class="card-header-custom">
+                        <h2 class="card-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Account Status
+                        </h2>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-check-circle"></i>
+                            Email Verified
+                        </div>
+                        <div class="info-value">
+                            {% if user.is_verified %}
+                            <span class="badge-verified">
+                                <i class="fas fa-check"></i> Yes
+                            </span>
+                            {% else %}
+                            <span class="badge-not-verified">
+                                <i class="fas fa-times"></i> No
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-check"></i>
+                            Account Active
+                        </div>
+                        <div class="info-value">
+                            {% if user.is_active %}
+                            <span class="badge-verified">
+                                <i class="fas fa-check"></i> Active
+                            </span>
+                            {% else %}
+                            <span class="badge-not-verified">
+                                <i class="fas fa-ban"></i> Inactive
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Moved from Home -->
+        {% if recent_progress %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card-premium">
+                    <div class="card-header-custom">
+                        <h2 class="card-title">
+                            <i class="fas fa-history"></i>
+                            Recent Activity
+                        </h2>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for progress in recent_progress %}
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <i class="fas fa-play-circle me-2" style="color: var(--book-primary);"></i>
+                                        {{ progress.video.title }}
+                                    </h6>
+                                    <p class="mb-0 text-muted small">
+                                        {{ progress.video.chapter.level.code }} - {{ progress.video.chapter.title }}
+                                    </p>
+                                </div>
+                                <small class="text-muted">{{ progress.last_watched_at|timesince }} ago</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

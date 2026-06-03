@@ -1,0 +1,3108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - French Learning Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --book-primary: #46178f; /* Kahoot Purple */
+        --book-secondary: #33106b;
+        --book-accent: #1368ce; /* Kahoot Blue */
+        --shelf-wood: #f8f8f8;
+        --page-cream: #ffffff;
+        --text-dark: #333333;
+        --gold: #ffa602; /* Kahoot Yellow */
+        --france-blue: #46178f;
+        --france-red: #e21b3c;
+        --shadow-book: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        background: #ffffff;
+    }
+
+    .img-5 {
+        width: 170px;
+        height: 280px;
+        bottom: -20px;
+        right: 0;
+        transform: rotate(5deg);
+        z-index: 2;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-custom {
+        padding: 1.1rem 2.5rem;
+        background: var(--gold);
+        color: white;
+        font-weight: 800;
+        border-radius: 12px;
+        border: none;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 0 0 #cc8400; /* Darker yellow for 3D effect */
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 1rem;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 0 0 #cc8400, 0 10px 25px rgba(255, 166, 2, 0.4);
+        background: #ffb733;
+        color: white;
+    }
+
+    .btn-primary-custom:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+
+    .btn-outline-custom {
+        padding: 1rem 2.5rem;
+        background: transparent;
+        color: var(--page-cream);
+        font-weight: 700;
+        border-radius: 50px;
+        border: 2px solid var(--page-cream);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 1rem;
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--page-cream);
+        color: var(--text-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 248, 220, 0.4);
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 3rem 0;
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .section-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+    .modern-hero {
+        padding: 12rem 0 15rem;
+        background: var(--primary-color);
+        color: white;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Glossy Overlay */
+    .modern-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        opacity: 0.03;
+        pointer-events: none;
+    }
+
+    .hero-glow-lux {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(100px);
+        z-index: 1;
+        top: 20%;
+        right: 10%;
+    }
+
+    .hero-title {
+        font-size: 3.2rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+        background: linear-gradient(to bottom, #ffffff 50%, #ccdcf0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -1.5px;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 3rem;
+        line-height: 1.6;
+        max-width: 600px;
+        font-weight: 400;
+        letter-spacing: 0.1px;
+    }
+
+    /* Scattered Stat Cards */
+    .hero-content-inner {
+        position: relative;
+        z-index: 10;
+    }
+
+    .floating-stat {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.25rem 2rem;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        z-index: 15;
+        animation: floatStat 6s ease-in-out infinite alternate;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    @keyframes floatStat {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(10px, -20px); }
+    }
+
+    .stat-1 { top: -10%; right: -5%; animation-delay: 0s; }
+    .stat-2 { bottom: 5%; left: -10%; animation-delay: 2s; }
+    .stat-3 { top: 40%; left: -15%; animation-delay: 1s; }
+
+    .stat-val { font-size: 1.25rem; font-weight: 900; color: var(--france-red); margin-bottom: 2px; }
+    .stat-txt { font-size: 0.7rem; color: #fff; text-transform: uppercase; font-weight: 700; opacity: 0.6; }
+
+    .btn-hero-primary {
+        background: var(--white);
+        color: var(--primary-color) !important;
+        padding: 18px 45px;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 0 0 #d1d1d1;
+        border: none;
+    }
+
+    .btn-hero-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 0 0 #d1d1d1, var(--shadow-lg);
+        background: var(--white);
+        color: var(--primary-color) !important;
+    }
+
+    .btn-hero-primary:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+
+    .btn-hero-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        color: #fff !important;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 16px 40px;
+        border-radius: 18px;
+        font-weight: 900;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+    }
+
+    .btn-hero-secondary:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: #fff;
+        transform: translateY(-5px);
+    }
+
+    .hero-cta-group {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 2.5rem;
+        position: relative;
+        z-index: 20;
+    }
+
+    /* 3D Illustration Container */
+    .hero-illustration-box {
+        position: relative;
+        z-index: 5;
+    }
+
+    .illustration-3d-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        filter: drop-shadow(0 30px 60px rgba(0,0,0,0.6));
+    }
+
+    .hero-3d-image {
+        width: 100%;
+        border-radius: 40px;
+        animation: float3D 8s ease-in-out infinite;
+        mix-blend-mode: screen;
+    }
+
+    @keyframes float3D {
+        0%, 100% { transform: translateY(0) rotate(1deg); }
+        50% { transform: translateY(-30px) rotate(-1deg); }
+    }
+</style>
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+
+    .instructor-photo-wrapper {
+        width: 130px;
+        height: 130px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        padding: 6px;
+        background: var(--primary-color);
+        position: relative;
+    }
+
+    .instructor-photo {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+    }
+
+    .instructor-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+
+    .instructor-expertise {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }
+
+    .instructor-bio {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .instructor-socials {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .instructor-socials a {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .instructor-socials a:hover {
+        background: #0055A4;
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    /* Success Stories Card */
+    .story-card {
+        background: white;
+        padding: 3.5rem 2.5rem;
+        border-radius: 28px;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s;
+    }
+
+    .story-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 25px 50px -12px rgba(70, 23, 143, 0.1);
+    }
+
+    .quote-icon {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        font-size: 3rem;
+        color: rgba(0, 85, 164, 0.05);
+    }
+
+    .story-text {
+        font-size: 1.1rem;
+        color: #334155;
+        line-height: 1.8;
+        font-style: italic;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+        flex-grow: 1; /* Push student info to the bottom */
+    }
+
+    .student-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .student-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .student-meta h5 {
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+        color: #1e293b;
+    }
+
+    .student-level {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #0055A4;
+        background: rgba(0, 85, 164, 0.05);
+        padding: 2px 10px;
+        border-radius: 50px;
+    }
+
+    .swiper {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .swiper-wrapper {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .swiper-slide {
+        height: auto !important;
+        display: flex;
+        justify-content: center;
+    }
+
+    .student-img-wrapper {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: #1e293b;
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 5px;
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+
+    .instructor-card {
+        background: white;
+        border-radius: 25px;
+        padding: 35px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #f1f5f9;
+        height: 100%;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .instructor-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-color: var(--primary-color);
+    }
+
+    .instructor-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 25px;
+        border: 5px solid #f8fafc;
+        transition: all 0.3s ease;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .instructor-card:hover .instructor-avatar {
+        border-color: var(--primary-color);
+        transform: scale(1.05);
+    }
+
+    .instructor-expertise {
+        background: #f3f0ff;
+        color: var(--primary-color);
+        padding: 5px 18px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .instructor-name {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #1e293b;
+        margin-bottom: 5px;
+    }
+
+    .instructor-bio {
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+        flex-grow: 1; /* Push socials to bottom */
+    }
+
+    .social-btns .btn-social {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background: white;
+        color: #0055A4;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .social-btns .btn-social:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
+    }
+
+    .stat-card-new {
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        border: 2px solid #f9fafb;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+    }
+
+    .stat-card-new:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    /* Trusted By Section */
+    .trusted-by-section {
+        padding: 60px 0;
+        background: white;
+        text-align: center;
+    }
+
+    .trusted-title {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin-bottom: 50px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.8;
+    }
+
+    .logo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 50px 80px;
+        opacity: 0.5;
+    }
+
+    .trusted-logo {
+        height: auto;
+        transition: all 0.4s ease;
+        padding: 10px;
+    }
+
+    .trusted-logo span {
+        font-family: 'Outfit', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .trusted-logo:hover {
+        opacity: 1;
+        transform: translateY(-5px);
+        filter: drop-shadow(0 10px 20px rgba(0, 85, 164, 0.2));
+    }
+
+    /* Inspired By Section */
+    .inspired-section {
+        padding: 100px 0;
+        background: var(--primary-color);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .inspired-header {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 60px;
+    }
+
+    .inspired-header h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .inspired-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .inspired-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        color: #1e293b;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        transition: all 0.4s ease;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .inspired-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .inspired-img-wrapper {
+        position: relative;
+        height: 55%; /* Reduce image height to make room for text in square */
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .inspired-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .inspired-card:hover .inspired-img {
+        transform: scale(1.1);
+    }
+
+    .inspired-content {
+        padding: 15px 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .inspired-name {
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        line-height: 1.2;
+    }
+
+    .inspired-role {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-bottom: 10px;
+        display: block;
+        line-height: 1.3;
+    }
+
+    .inspired-link {
+        font-weight: 700;
+        color: #4f46e5;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .inspired-link:hover {
+        color: #7c3aed;
+    }
+
+    /* Animated Glowing Border Effect - High Quality */
+    .inspired-card-glow {
+        position: relative;
+        z-index: 1;
+        background: transparent;
+        padding: 5px; /* Thicker border space */
+        border-radius: 24px;
+        transition: all 0.4s ease;
+        overflow: hidden; /* Keep the glow contained but intense */
+    }
+
+    .inspired-card-glow::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, 
+            var(--primary-color), var(--success-color), var(--accent-color), var(--primary-color), var(--success-color), var(--accent-color));
+        background-size: 400% 400%;
+        z-index: -1;
+        border-radius: 24px;
+        animation: gradient-move 5s ease infinite;
+        opacity: 0.95;
+    }
+
+    .inspired-card-glow:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 0 30px rgba(255, 0, 127, 0.4), 
+                    0 0 50px rgba(239, 68, 68, 0.3);
+    }
+
+    @keyframes gradient-move {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .stat-icon-box {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon-box.primary {
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        color: white;
+    }
+
+    .stat-icon-box.success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .stat-icon-box.info {
+        background: var(--info-color);
+        color: white;
+    }
+
+    .stat-icon-box.warning {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    .stat-content {
+        flex-grow: 1;
+    }
+
+    .stat-number {
+        font-family: 'Georgia', serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--book-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #666;
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 4rem 0;
+        position: relative;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        height: 100%;
+        transition: all 0.4s ease;
+        border: 2px solid #f9fafb;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #0055A4, #0055A4);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .feature-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-blue {
+        background: #0055A4;
+        color: white;
+    }
+
+    .icon-red {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        color: white;
+    }
+
+    .icon-purple {
+        background: linear-gradient(135deg, #9f7aea, #805ad5);
+        color: white;
+    }
+
+    .icon-green {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .icon-orange {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    .icon-teal {
+        background: linear-gradient(135deg, #0055A4, #002654);
+        color: white;
+    }
+
+    .feature-card:hover .feature-icon-wrapper {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .feature-title {
+        font-family: 'Georgia', serif;
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+    }
+
+    .feature-text {
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* Course Cards */
+    .course-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        border: 2px solid #f9fafb;
+        position: relative;
+    }
+
+    .course-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #0055A4;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .course-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .course-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .course-card-header {
+        background: linear-gradient(135deg, var(--book-primary) 0%, var(--book-secondary) 100%);
+        color: white;
+        padding: 2rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .course-card-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    }
+
+    .course-card-header h5 {
+        font-family: 'Georgia', serif;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .level-badge {
+        display: inline-block;
+        padding: 0.5rem 1.25rem;
+        background: var(--gold);
+        color: var(--text-dark);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-top: 0.75rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Activity Items */
+    .activity-item {
+        padding: 1.25rem;
+        border-left: 4px solid var(--book-primary);
+        background: white;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .activity-item:hover {
+        background: #fafafa;
+        transform: translateX(8px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Learning Path Section */
+    .learning-path-section {
+        padding: 4rem 0;
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .level-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+        border: 2px solid #f9fafb;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .level-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: #0055A4;
+    }
+
+    .level-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--gold);
+    }
+
+    .level-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--book-primary), var(--gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .level-code {
+        font-family: 'Georgia', serif;
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.75rem;
+    }
+
+    .level-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+
+    .level-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 5rem 0;
+        background: #0055A4;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--page-cream);
+    }
+
+    .cta-title {
+        font-family: 'Georgia', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .cta-description {
+        font-size: 1.2rem;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+        font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .feature-card,
+        .level-card {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .library-hero {
+            padding: 3rem 0;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-primary-custom,
+        .btn-outline-custom {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+
+        .stat-card-new {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .stat-icon-box {
+            margin-right: 0;
+            margin-bottom: 1rem;
+        }
+
+        /* My Courses Mobile Responsive */
+        .course-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .course-card-header {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .course-card-header h5 {
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Learning Path - Show 2 cards per row */
+        .path-steps-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
+        .path-step {
+            flex-direction: column;
+            margin-bottom: 0;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step-marker {
+            margin-bottom: 1rem;
+        }
+
+        .marker-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            margin: 0 auto;
+        }
+
+        .marker-line {
+            display: none;
+        }
+
+        .step-content {
+            padding: 1.5rem 1rem;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+        }
+
+        .step-features {
+            margin-bottom: 1rem;
+        }
+
+        .step-features li {
+            font-size: 0.85rem;
+            padding: 0.4rem 0;
+        }
+
+        .btn-step-action {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    /* Tablet - 1 column for mobile learning path */
+    @media (max-width: 576px) {
+        .path-steps-container {
+            grid-template-columns: 1fr;
+        }
+
+        .course-card-header h5 {
+            font-size: 1rem;
+        }
+    }
+
+    /* Animated Learning Path Styles */
+    .path-steps-container {
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .path-step {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 4rem;
+        opacity: 0.4;
+        transform: translateX(-30px);
+        transition: all 0.6s ease;
+    }
+
+    .path-step.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .step-marker {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .marker-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+        position: relative;
+        z-index: 2;
+        transition: all 0.4s ease;
+    }
+
+    .path-step.active .marker-icon {
+        transform: scale(1.15);
+        box-shadow: 0 12px 35px rgba(139, 69, 19, 0.5);
+    }
+
+    .marker-line {
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 3px;
+        height: 120px;
+        background: linear-gradient(180deg, var(--book-primary), transparent);
+    }
+
+    .path-step:last-child .marker-line {
+        display: none;
+    }
+
+    .step-content {
+        flex-grow: 1;
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        border: 2px solid #f9fafb;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+    }
+
+    .path-step.active .step-content {
+        border-color: var(--gold);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .step-badge {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: linear-gradient(135deg, var(--book-primary), var(--book-secondary));
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }
+
+    .step-title {
+        font-family: 'Georgia', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+
+    .step-description {
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+    }
+
+    .step-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .step-features li {
+        padding: 0.5rem 0;
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    .step-features i {
+        color: var(--book-primary);
+        margin-right: 0.75rem;
+    }
+
+    .btn-step-action {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.875rem 2rem;
+        background: var(--gold);
+        color: var(--text-dark);
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-step-action:hover {
+        background: var(--book-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 85, 164, 0.3);
+        color: white;
+    }
+
+    /* Mobile Step Image */
+    .mobile-step-image {
+        width: 100%;
+        height: 180px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        border: 2px solid #f0f0f0;
+    }
+
+    .mobile-step-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Filter Tabs (replaced subtitle) */
+    .filter-tabs-nav {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 4rem;
+        flex-wrap: wrap;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .filter-tabs-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-tab-btn {
+        padding: 12px 28px;
+        border-radius: 50px;
+        border: 2px solid #e5e7eb;
+        background: #fff;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #4b5563;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .filter-tab-btn.active {
+        background: var(--book-primary);
+        color: #fff !important;
+        border-color: var(--book-primary);
+        box-shadow: 0 8px 20px rgba(0, 85, 164, 0.25);
+    }
+
+    .filter-tab-btn:hover:not(.active) {
+        border-color: var(--book-primary);
+        color: var(--book-primary);
+        background: rgba(0, 85, 164, 0.05);
+    }
+
+    @media (max-width: 768px) {
+        .filter-tabs-nav {
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 0.5rem 1rem 1.5rem;
+            margin-bottom: 2rem;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-tab-btn {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+    }
+    .sticky-book-container {
+        position: sticky;
+        top: 100px;
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        perspective: 1200px;
+    }
+
+    .book-stack {
+        position: relative;
+        width: 350px;
+        height: 450px;
+        transform-style: preserve-3d;
+    }
+
+    .animated-book {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+    }
+
+    /* Stacked positioning */
+    .animated-book[data-book="1"] {
+        transform: translateZ(0px) translateY(0px);
+        z-index: 1;
+    }
+
+    .animated-book[data-book="2"] {
+        transform: translateZ(-30px) translateY(15px);
+        z-index: 2;
+    }
+
+    .animated-book[data-book="3"] {
+        transform: translateZ(-60px) translateY(30px);
+        z-index: 3;
+    }
+
+    .animated-book[data-book="4"] {
+        transform: translateZ(-90px) translateY(45px);
+        z-index: 4;
+    }
+
+    /* Active book pops out */
+    .animated-book.active {
+        transform: translateZ(80px) scale(1.1) rotateY(-5deg) !important;
+        z-index: 10 !important;
+    }
+
+    .book-cover {
+        width: 100%;
+        height: 100%;
+        background: #0055A4;
+        border-radius: 12px;
+        padding: 0;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        border: 4px solid #654321;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .course-book-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .book-spine-decoration {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 25px;
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.3), transparent);
+        border-radius: 12px 0 0 12px;
+        z-index: 5;
+    }
+
+    .book-cover::before {
+        content: '';
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        right: 2rem;
+        bottom: 2rem;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 8px;
+        pointer-events: none;
+    }
+
+    .book-content-inner {
+        position: relative;
+        z-index: 2;
+    }
+
+    .book-cover-icon {
+        font-size: 4rem;
+        color: var(--gold);
+        margin-bottom: 2rem;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    }
+
+    .book-cover-title {
+        font-family: 'Georgia', serif;
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--page-cream);
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .book-cover-subtitle {
+        font-family: 'Georgia', serif;
+        font-size: 1.3rem;
+        color: var(--gold);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .courses-wrapper {
+        padding: 5rem 0 10rem;
+    }
+
+    .header-area {
+        text-align: center;
+        margin-bottom: 5rem;
+    }
+
+    .header-area h2 {
+        font-family: 'Inter', sans-serif;
+        font-size: 2.22rem;
+        font-weight: 700;
+        color: #000;
+        margin: 0;
+    }
+
+    /* Reference-style Grid */
+    #courseGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7rem 2.5rem; /* Large vertical gap for overlapping labels */
+    }
+
+    .course-card-minimal {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    /* Force Perfect Square Container */
+    .square-img-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* Perfect 1:1 Aspect Ratio */
+        overflow: visible; /* To show the 50/50 label */
+        background: #fbfbfb;
+    }
+
+    .square-img-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        transition: transform 0.4s ease;
+    }
+
+    /* The 50/50 Name Badge (Solid White) */
+    .name-badge-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 50%); /* Exactly 50% in, 50% out */
+        background: #ffffff !important; /* Forces solid white background */
+        color: #000000;
+        padding: 12px 18px;
+        width: 75%; 
+        min-width: 140px;
+        text-align: center;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.85rem;
+        border: 2px solid #ffffff; /* White border to separate from image */
+        box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        z-index: 20;
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    }
+
+    /* Hover effect triggered by the parent card */
+    .course-card-minimal:hover .name-badge-overlay {
+        background: var(--book-primary) !important;
+        color: #ffffff;
+        border-color: var(--book-primary);
+        box-shadow: 0 10px 25px rgba(0, 85, 164, 0.3);
+    }
+
+    .course-card-minimal:hover img {
+        transform: scale(1.03);
+    }
+
+    /* Filter Design */
+    .filters-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; /* CRITICAL: Wraps on mobile */
+        gap: 12px;
+        margin-bottom: 4rem;
+        padding: 0 1rem;
+    }
+
+    .filter-btn-pill {
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #555;
+        background: #fff;
+        border: 1px solid #eee;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .filter-btn-pill.active {
+        background: var(--book-primary);
+        color: #fff;
+        border-color: var(--book-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        #courseGrid { 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 6rem 2rem; 
+            padding: 0 1rem;
+        }
+        .header-area h2 { font-size: 1.8rem; }
+    }
+    @media (max-width: 600px) {
+        .courses-wrapper { padding: 3rem 0; }
+        .header-area { margin-bottom: 3rem; }
+        .header-area h2 { font-size: 1.5rem; }
+        .filters-row { margin-bottom: 4rem; gap: 8px; }
+        .filter-btn-pill { padding: 6px 15px; font-size: 0.8rem; }
+        
+        #courseGrid { 
+            grid-template-columns: 1fr; 
+            max-width: 320px; 
+            margin: 0 auto;
+            gap: 5.5rem 0;
+            padding: 0 15px;
+        }
+
+        .name-badge-overlay {
+            width: 85%;
+            font-size: 0.8rem;
+            padding: 10px 12px;
+        }
+    }
+    .info-cards-section {
+        padding: 6rem 0;
+        background: #ffffff;
+    }
+
+    .info-card {
+        background: #ffffff;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        padding: 3.5rem 2.5rem 3rem;
+        position: relative;
+        height: 100%;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.06);
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        border-color: var(--book-primary);
+    }
+
+    .info-card-badge {
+        position: absolute;
+        top: -15px;
+        left: 0;
+        background: var(--book-primary);
+        color: #fff;
+        padding: 6px 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-radius: 5px 5px 0 0;
+        letter-spacing: 0.5px;
+    }
+
+    .info-card-title {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 2rem;
+        line-height: 1.1;
+    }
+
+    .info-card-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 4rem 0;
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .info-card-list li {
+        position: relative;
+        padding-left: 2.2rem;
+        margin-bottom: 1.25rem;
+        color: #333;
+        font-size: 1.05rem;
+        line-height: 1.4;
+        font-weight: 500;
+    }
+
+    .info-card-list li i {
+        position: absolute;
+        left: 0;
+        top: 3px;
+        color: var(--book-primary);
+        font-size: 1.1rem;
+    }
+
+    .info-card-btn {
+        background: #f8f9fa; /* Light background */
+        color: #0055a4 !important;
+        border: 2px solid #0055a4;
+        padding: 12px 10px;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none !important;
+        display: inline-block;
+        text-align: center;
+        min-width: 160px;
+        margin: 0 auto;
+        box-shadow: 0 4px 15px rgba(0, 85, 164, 0.05);
+    }
+
+    .info-card-btn:hover {
+        background: #0055a4 !important;
+        color: #ffffff !important;
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 85, 164, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .info-card-title { font-size: 1.8rem; }
+    }
+    .link-cards-section {
+        padding: 5rem 0;
+        background: #f8fbff;
+    }
+
+    .link-card {
+        background: #ffffff;
+        border: 1px solid #e0e8f0;
+        border-radius: 2px;
+        padding: 2.5rem 2rem;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: 1.25rem;
+        transition: all 0.3s ease;
+        text-decoration: none !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .link-card:hover {
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .link-card-arrow {
+        font-size: 1.4rem;
+        color: #333;
+        font-weight: 300;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .link-card-content h4 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #000;
+        margin-bottom: 0.75rem;
+        line-height: 1.2;
+    }
+
+    .link-card-content p {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 0;
+        line-height: 1.5;
+    }
+
+    /* FAQ Section Styles */
+    /* FAQ Section Styles */
+    .faq-section {
+        padding: 8rem 0;
+        background-color: #f8fafc;
+        position: relative;
+    }
+
+    .faq-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .section-title-faq {
+        font-family: 'Inter', sans-serif;
+        font-size: 3.2rem;
+        font-weight: 900;
+        color: #1e293b;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: -1px;
+    }
+
+    .section-subtitle-faq {
+        text-align: center;
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 4rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .accordion-item {
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 16px !important;
+        margin-bottom: 1.25rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+
+    .accordion-item:hover {
+        border-color: #0055A4 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 85, 164, 0.1) !important;
+        transform: translateY(-2px);
+    }
+
+    .accordion-button {
+        padding: 1.75rem 2rem !important;
+        font-weight: 700 !important;
+        font-size: 1.15rem !important;
+        color: #1e293b !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        transition: all 0.3s ease;
+    }
+
+    .accordion-button:not(.collapsed) {
+        color: #0055A4 !important;
+        background: rgba(0, 85, 164, 0.02) !important;
+    }
+
+    .accordion-button::after {
+        background-size: 1.25rem;
+        transition: transform 0.3s ease;
+    }
+
+    .accordion-body {
+        padding: 0 2rem 2rem 2rem !important;
+        color: #475569 !important;
+        line-height: 1.8 !important;
+        font-size: 1.05rem !important;
+        background: rgba(0, 85, 164, 0.02);
+    }
+
+    .faq-footer-btns {
+        margin-top: 5rem;
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-faq-primary {
+        background: #0055A4;
+        color: white !important;
+        padding: 1.2rem 3rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        border: none;
+        box-shadow: 0 10px 20px rgba(0, 85, 164, 0.2);
+    }
+
+    .btn-faq-primary:hover {
+        background: #003d7a;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0, 85, 164, 0.3);
+    }
+
+    .btn-faq-outline {
+        background: white;
+        color: #0055A4 !important;
+        padding: 1.2rem 3rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        border: 2px solid #0055A4;
+    }
+
+    .btn-faq-outline:hover {
+        background: rgba(0, 85, 164, 0.05);
+        transform: translateY(-3px);
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+        padding: 100px 0;
+        background-color: #f8f9fa;
+        position: relative;
+        z-index: 10;
+    }
+
+    .pricing-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .pricing-header h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 20px;
+    }
+
+    .pricing-header p {
+        font-size: 1.2rem;
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    .price-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #eee;
+        position: relative;
+    }
+
+    .price-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .price-card-header {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: white;
+        letter-spacing: 1px;
+    }
+
+    .level-A1 .price-card-header { background: #4f46e5; }
+    .level-A2 .price-card-header { background: #7c3aed; }
+    .level-B1 .price-card-header { background: #db2777; }
+    .level-B2 .price-card-header { background: #0891b2; }
+
+    .price-card.level-A1 { background: linear-gradient(to bottom, #ffffff, #f5f3ff); }
+    .price-card.level-A2 { background: linear-gradient(to bottom, #ffffff, #faf5ff); }
+    .price-card.level-B1 { background: linear-gradient(to bottom, #ffffff, #fff1f2); }
+    .price-card.level-B2 { background: linear-gradient(to bottom, #ffffff, #ecfeff); }
+
+    .price-card-body {
+        padding: 40px 30px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .level-logo-box {
+        margin-bottom: 24px;
+    }
+
+    .level-logo-text {
+        font-size: 48px;
+        font-weight: 900;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .level-A1 .level-logo-text { color: #4f46e5; }
+    .level-A2 .level-logo-text { color: #7c3aed; }
+    .level-B1 .level-logo-text { color: #db2777; }
+    .level-B2 .level-logo-text { color: #0891b2; }
+
+    .level-tagline {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+    }
+
+    .level-features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 30px 0;
+        text-align: left;
+    }
+
+    .level-features-list li {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .level-features-list li i {
+        color: #10b981;
+        font-size: 12px;
+    }
+
+    .price-box {
+        margin-top: auto;
+        padding: 20px 0;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .price-from {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .price-amount {
+        font-size: 32px;
+        font-weight: 800;
+        color: #1a1a1a;
+    }
+
+    .price-currency {
+        font-size: 18px;
+        font-weight: 600;
+        margin-right: 4px;
+    }
+
+    .price-card-footer {
+        padding: 0 30px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .btn-pricing-get {
+        background: #0055A4 !important;
+        color: white !important;
+        padding: 14px;
+        border-radius: 14px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: all 0.3s;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    .btn-pricing-get:hover {
+        background: #0055A4;
+        transform: scale(1.02);
+        color: white !important;
+    }
+
+    .btn-pricing-more {
+        color: #1a1a1a !important;
+        font-weight: 800;
+        text-decoration: none;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .btn-pricing-more:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 1200px) {
+        .pricing-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+        .pricing-header h2 {
+            font-size: 2.2rem;
+        }
+    }
+</style>
+
+
+
+{% endblock %}
+
+{% block content %}
+<!-- Luxury 3D Hero Section -->
+<section class="modern-hero">
+    <div class="hero-glow-lux"></div>
+    
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content-inner">
+                    <h1 class="hero-title">ফ্রেঞ্চ ভাষা শিখুন,<br>আপনার ভবিষ্যৎ গড়ুন</h1>
+                    <p class="hero-subtitle">
+                        সেরা মানের ৩ডি ইন্টার‍্যাক্টিভ ম্যাটেরিয়াল এবং আন্তর্জাতিক মানের শিক্ষকদের সহায়তায়<br>
+                        আপনার ফ্রেঞ্চ ভাষাগত স্বপ্ন এবার সফল হবেই। 
+                    </p>
+                    
+                    <div class="hero-cta-group">
+                        <a href="{% url 'courses:level_list' %}" class="btn-hero-primary" style="background-color: white;">এখনই শুরু করুন</a>
+                        <a href="{% url 'exams:mock_exam_list' %}" class="btn-hero-secondary">মক টেস্ট নিন</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-5">
+                <div class="hero-illustration-box">
+                    <div class="illustration-3d-wrapper">
+                        <!-- Floating Stats around 3D illustration -->
+                        <div class="floating-stat stat-1">
+                            <span class="stat-val">৫০০০+</span>
+                            <span class="stat-txt">শিক্ষার্থী</span>
+                        </div>
+                        <div class="floating-stat stat-2">
+                            <span class="stat-val">৫০+</span>
+                            <span class="stat-txt">কোর্স</span>
+                        </div>
+                        <div class="floating-stat stat-3">
+                            <span class="stat-val">২৪/৭</span>
+                            <span class="stat-txt">সাপোর্ট</span>
+                        </div>
+                        
+                        <img src="{% static 'public/images/hero_3d.png' %}" alt="French Learning 3D" class="hero-3d-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Level Pricing Section (Kahoot Style) -->
+<section class="pricing-section">
+    <div class="container">
+        <div class="pricing-header">
+            <h2>আপনার লার্নিং পথ বেছে নিন</h2>
+            <p>আমাদের প্রি-ডিজাইন করা লেভেল প্যাকেজগুলো আপনার ভাষা শেখার যাত্রাকে করবে আরও সহজ এবং সাশ্রয়ী।</p>
+        </div>
+
+        <div class="pricing-grid">
+            {% for level in levels %}
+            <div class="inspired-card-glow h-100">
+                <div class="price-card level-{{ level.code }} h-100" style="border: none; border-radius: 20px;">
+                    <div class="price-card-header">
+                        {% if level.code == 'A1' %}FOR BEGINNERS
+                        {% elif level.code == 'A2' %}FOR ELEMENTARY
+                        {% elif level.code == 'B1' %}FOR INTERMEDIATE
+                        {% elif level.code == 'B2' %}FOR PROFESSIONALS{% endif %}
+                    </div>
+                    <div class="price-card-body">
+                        <div class="level-logo-box">
+                            <div class="level-logo-text">{{ level.code }}</div>
+                        </div>
+                        <h3 class="level-tagline">{{ level.title }}</h3>
+                        <p class="level-desc">{{ level.description|truncatewords:15 }}</p>
+                        
+                        <ul class="level-features-list">
+                            <li><i class="fas fa-check-circle"></i> {{ level.courses.count }} Detailed Courses</li>
+                            <li><i class="fas fa-check-circle"></i> {{ level.chapters.count }} Learning Chapters</li>
+                            <li><i class="fas fa-check-circle"></i> Interactive Mock Exams</li>
+                            <li><i class="fas fa-check-circle"></i> Lifetime Access</li>
+                        </ul>
+
+                        <div class="price-box">
+                            <span class="price-from">Starting from</span>
+                            <div class="price-amount">
+                                <span class="price-currency">{{ level.currency }}</span>
+                                {% if level.discounted_price %}{{ level.discounted_price }}{% else %}{{ level.price }}{% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Decorative Background Icon -->
+                        <div style="position: absolute; bottom: -20px; right: -10px; font-size: 100px; opacity: 0.03; pointer-events: none;">
+                            {% if level.code == 'A1' %}<i class="fas fa-graduation-cap"></i>
+                            {% elif level.code == 'A2' %}<i class="fas fa-book"></i>
+                            {% elif level.code == 'B1' %}<i class="fas fa-language"></i>
+                            {% elif level.code == 'B2' %}<i class="fas fa-briefcase"></i>{% endif %}
+                        </div>
+                    </div>
+                    <div class="price-card-footer">
+                        <a href="{% url 'payments:create_level_payment' level.id %}" class="btn-pricing-get">Enroll Now</a>
+                        <a href="{% url 'courses:level_detail' level.id %}" class="btn-pricing-more">Read more</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Trusted By Section -->
+<section class="trusted-by-section">
+    <div class="container">
+        <h3 class="trusted-title">Trusted by leading companies and universities worldwide</h3>
+        <div class="logo-grid">
+            <div class="trusted-logo">
+                <span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; color: #1e293b;">UNIVERSITY</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 700; font-family: 'Georgia', serif; font-size: 1.8rem; color: #1e293b;">Kempinski</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 800; font-size: 1.5rem; color: #e11d48;">Scotiabank</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 900; font-size: 1.6rem; color: #1e293b;">CSI</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 800; font-size: 1.5rem; color: #0ea5e9;">Capgemini</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 900; font-size: 1.5rem; color: #0284c7;">Salesforce</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Spotlight Section -->
+{% comment %} <section class="info-cards-section">
+    <div class="container text-center">
+        <h2 class="section-title mb-5" style="font-family: 'Georgia', serif; font-weight: 900; letter-spacing: -0.5px;">আপনার জন্য আমাদের কাছে সঠিক অনলাইন কোর্স রয়েছে!</h2>
+        
+        <div class="row g-4 justify-content-center">
+            <!-- Card 1: Learn All Course -->
+            <div class="col-lg-4 col-md-6">
+                <div class="info-card">
+                    <div class="info-card-badge">গ্রুপের সাথে শিখুন</div>
+                    <h3 class="info-card-title">অনলাইন গ্রুপ কোর্স</h3>
+                    <ul class="info-card-list">
+                        <li><i class="fas fa-check"></i> শিক্ষকের সাথে প্রাণবন্ত লাইভ গ্রুপ ক্লাস</li>
+                        <li><i class="fas fa-check"></i> শেখার মাধ্যম: বই অথবা অনলাইন লার্নিং প্ল্যাটফর্ম</li>
+                        <li><i class="fas fa-check"></i> শিক্ষকের কাছ থেকে ব্যক্তিগত মনোযোগ এবং ফিডব্যাক</li>
+                    </ul>
+                    <a href="{% url 'courses:level_list' %}" class="info-card-btn">আরও জানুন</a>
+                </div>
+            </div>
+
+            <!-- Card 2: Mock Test -->
+            <div class="col-lg-4 col-md-6">
+                <div class="info-card">
+                    <div class="info-card-badge">ব্যক্তিগতভাবে শিখুন</div>
+                    <h3 class="info-card-title">অনলাইন ইন্ডিভিজুয়াল কোর্স</h3>
+                    <ul class="info-card-list">
+                        <li><i class="fas fa-check"></i> সহজ সময়সূচী</li>
+                        <li><i class="fas fa-check"></i> আপনার প্রয়োজন অনুযায়ী কোর্স কারিকুলাম</li>
+                        <li><i class="fas fa-check"></i> একজন শিক্ষকের সরাসরি সহায়তা</li>
+                        <li><i class="fas fa-check"></i> যেকোনো সময় শুরু করুন</li>
+                    </ul>
+                    <a href="{% url 'exams:mock_exam_list' %}" class="info-card-btn">আরও জানুন</a>
+                </div>
+            </div>
+
+            <!-- Card 3: PDF Section -->
+            <div class="col-lg-4 col-md-6">
+                <div class="info-card">
+                    <div class="info-card-badge">আনন্দ এবং কমিউনিটি</div>
+                    <h3 class="info-card-title">ল্যাঙ্গুয়েজ ক্লাব এবং কমিউনিটি</h3>
+                    <ul class="info-card-list">
+                        <li><i class="fas fa-check"></i> ফ্রি পিডিএফ লার্নিং রিসোর্স</li>
+                        <li><i class="fas fa-check"></i> কনভারসেশন ক্লাব</li>
+                        <li><i class="fas fa-check"></i> ফোনেটিক ক্লাব</li>
+                        <li><i class="fas fa-check"></i> ট্রাভেল ক্লাব</li>
+                        <li><i class="fas fa-check"></i> একাডেমিক টেক্সট সাপোর্ট</li>
+                    </ul>
+                    <a href="#" class="info-card-btn">আরও জানুন</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> {% endcomment %}
+
+
+
+
+
+<!-- Courses Grid Section -->
+{% comment %} <div class="container courses-wrapper">
+    <div class="header-area">
+        <h2>প্রিমিয়াম কোর্স</h2>
+    </div>
+
+    <div class="filters-row">
+        <div class="filter-btn-pill active" data-filter="all">সব ক্যাটাগরি</div>
+        {% for level in levels %}
+        <div class="filter-btn-pill" data-filter="{{ level.code }}">{{ level.title }}</div>
+        {% endfor %}
+    </div>
+
+    {% if courses %}
+    <div id="courseGrid">
+        {% for course in courses %}
+        <div class="course-card-minimal"
+            data-level="{% if course.level %}{{ course.level.code }}{% else %}all{% endif %}"
+            data-name="{{ course.name|lower }}">
+            
+            <div class="square-img-container">
+                <a href="{% url 'courses:course_detail' course.id %}">
+                    {% if course.image %}
+                    <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                    {% else %}
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee;">
+                        <i class="fas fa-image fa-3x text-light"></i>
+                    </div>
+                    {% endif %}
+                </a>
+
+                <!-- 50/50 Overlay Label Button -->
+                <a href="{% if user.is_authenticated %}{% url 'payments:create_payment' course.id %}{% else %}{% url 'accounts:login' %}?next={{ request.path }}{% endif %}" 
+                   class="name-badge-overlay">
+                    {{ course.name }}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <p class="text-muted">কোনো কোর্স পাওয়া যায়নি।</p>
+    </div>
+    {% endif %}
+</div> {% endcomment %}
+
+
+<!-- Statistics Section -->
+
+<!-- Features Section -->
+<!-- <section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Our Platform?</h2>
+        <p class="text-center text-muted mb-5" style="font-size: 1.1rem;">Discover a superior learning experience with
+            features designed for your success.</p>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper icon-blue">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h4 class="feature-title">CEFR Aligned</h4>
+                    <p class="feature-text">
+                        All courses are strictly structured according to CEFR standards (A1-B2), ensuring
+                        internationally recognized learning outcomes and certification readiness.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper icon-red">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h4 class="feature-title">DELF/DALF Preparation</h4>
+                    <p class="feature-text">
+                        Exam-oriented content, specialized mock tests, and strategies designed specifically
+                        to help you succeed in official DELF/DALF certification exams with high scores.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper icon-purple">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="feature-title">Progress Tracking</h4>
+                    <p class="feature-text">
+                        Visual comprehensive progress tracking with detailed analytics. Monitor your
+                        daily streaks, completed lessons, and skill improvements in real-time.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper icon-orange">
+                        <i class="fas fa-headphones"></i>
+                    </div>
+                    <h4 class="feature-title">Interactive Exercises</h4>
+                    <p class="feature-text">
+                        Immerse yourself with interactive listening, reading, writing, and speaking exercises.
+                        Receive instant AI-powered feedback to correct your mistakes immediately.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper icon-teal">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4 class="feature-title">Video Lessons</h4>
+                    <p class="feature-text">
+                        High-definition video lessons featuring native speakers, clear grammar explanations,
+                        rich vocabulary, and essential cultural context for authentic learning.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper icon-green">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h4 class="feature-title">Expert Instructors</h4>
+                    <p class="feature-text">
+                        Get personalized, human feedback from qualified French instructors on your
+                        writing assignments and speaking recordings to perfect your nuance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> -->
+
+<!-- {% if user.is_authenticated and enrollments %}
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <h2 class="section-title mb-0" style="width: auto;">My Courses</h2>
+            <a href="{% url 'dashboard:my_courses' %}" class="btn btn-primary-custom"
+                style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">View All</a>
+        </div>
+        <div class="row g-4">
+            {% for enrollment in enrollments|slice:":3" %}
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="course-card">
+                    <div class="course-card-header">
+                        <h5 class="mb-0">{{ enrollment.course.name }}</h5>
+                        {% if enrollment.course.level %}
+                        <span class="level-badge">{{ enrollment.course.level.code }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-3">{{ enrollment.course.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                Enrolled {{ enrollment.enrolled_at|date:"M d, Y" }}
+                            </small>
+                            <a href="{% if enrollment.course %}{% url 'courses:level_detail' enrollment.course.level.id %}{% else %}{% url 'courses:level_detail' enrollment.level.id %}{% endif %}"
+                                class="btn btn-sm btn-primary-custom" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                Continue <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endif %} -->
+
+<!-- Animated Learning Path Section -->
+<section class="learning-path-section">
+    <div class="container">
+        <h2 class="section-title">প্রিমিয়াম কোর্স</h2>
+        <div class="filter-tabs-nav">
+            <button class="filter-tab-btn active" data-filter="all">All Courses</button>
+            {% for level in levels %}
+            <button class="filter-tab-btn" data-filter="{{ level.code }}">{{ level.title }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <!-- Left Side - Scrollable Steps -->
+            <div class="col-lg-6">
+                <div class="path-steps-container">
+                    {% for level in levels %}
+                        {% for course in level.courses.all %}
+                        {% if course.is_active %}
+                        <div class="path-step" data-course-id="course-{{ course.id }}" data-level-code="{{ level.code }}">
+                            <div class="step-marker">
+                                <div class="marker-icon">
+                                    {% if level.code == 'A1' %}<i class="fas fa-seedling"></i>
+                                    {% elif level.code == 'A2' %}<i class="fas fa-book-reader"></i>
+                                    {% elif level.code == 'B1' %}<i class="fas fa-hiking"></i>
+                                    {% else %}<i class="fas fa-mountain"></i>{% endif %}
+                                </div>
+                                <div class="marker-line"></div>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-badge">{{ level.title }}</div>
+                                {% if course.image %}
+                                <div class="mobile-step-image d-lg-none">
+                                    <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                                </div>
+                                {% endif %}
+                                <h3 class="step-title">{{ course.name }}</h3>
+                                <p class="step-description">
+                                    {{ course.description|truncatewords:40 }}
+                                </p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check-circle"></i> International Standards</li>
+                                    <li><i class="fas fa-check-circle"></i> Interactive Lessons</li>
+                                    <li><i class="fas fa-check-circle"></i> Personal Feedback</li>
+                                </ul>
+                                <a href="{% url 'courses:course_detail' course.id %}" class="btn-step-action">
+                                    Start Learning <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Side - Sticky Animated Book Stack -->
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="sticky-book-container">
+                    <div class="book-stack">
+                        {% for level in levels %}
+                            {% for course in level.courses.all %}
+                            {% if course.is_active %}
+                            <div class="animated-book" data-book="course-{{ course.id }}" data-level-code="{{ level.code }}">
+                                <div class="book-cover">
+                                    <div class="book-spine-decoration"></div>
+                                    {% if course.image %}
+                                    <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-book-img">
+                                    {% else %}
+                                    <div class="book-content-inner">
+                                        <i class="fas fa-book book-cover-icon" style="font-size: 3rem;"></i>
+                                        <h4 class="book-cover-title" style="font-size: 1.5rem;">{{ course.name }}</h4>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Info Grid Section -->
+<section class="link-cards-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Card 1: Which level is right? -->
+            <div class="col-md-6">
+                <a href="{% url 'courses:level_list' %}" class="link-card">
+                    <span class="link-card-arrow">→</span>
+                    <div class="link-card-content">
+                        <h4>কোন লেভেলটি আপনার জন্য সঠিক?</h4>
+                        <p>আমাদের ব্যক্তিগত মূল্যায়ন আপনাকে আপনার জন্য সঠিক কোর্স লেভেল দ্রুত খুঁজে পেতে সাহায্য করবে।</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 2: Terms and Conditions -->
+            <div class="col-md-6">
+                <a href="#" class="link-card">
+                    <span class="link-card-arrow">→</span>
+                    <div class="link-card-content">
+                        <h4>শর্তাবলী</h4>
+                        <p>রিফান্ড পলিসি এবং আরও তথ্যের জন্য আমাদের শর্তাবলী দেখুন।</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 3: Our Team -->
+            <div class="col-md-6">
+                <a href="#" class="link-card">
+                    <span class="link-card-arrow">→</span>
+                    <div class="link-card-content">
+                        <h4>আমাদের টিম</h4>
+                        <p>আমেরিকার ফ্রেঞ্চ অনলাইন ল্যাঙ্গুয়েজ ডিপার্টমেন্টের টিমের সাথে পরিচিত হোন।</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 4: Level A1-C2 -->
+            <div class="col-md-6">
+                <a href="{% url 'courses:level_list' %}" class="link-card">
+                    <span class="link-card-arrow">→</span>
+                    <div class="link-card-content">
+                        <h4>লেভেল A1-C2</h4>
+                        <p>কমন ইউরোপীয় ফ্রেমওয়ার্ক অফ রেফারেন্স ফর ল্যাঙ্গুয়েজেস (CEFR) এর A1 থেকে C2 পর্যন্ত লেভেলগুলোর বিস্তারিত ধারণা নিন।</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Instructor Slider Section -->
+<section class="instructors-section py-5 mb-5">
+    <div class="container">
+        <h2 class="section-title mb-5">আমাদের দক্ষ শিক্ষকগণ</h2>
+        <div class="swiper instructorSwiper px-2">
+            <div class="swiper-wrapper">
+                {% for instructor in instructors %}
+                <div class="swiper-slide h-auto">
+                    <div class="instructor-card">
+                        {% if instructor.photo %}
+                        <img src="{{ instructor.photo.url }}" alt="{{ instructor.user.get_full_name }}" class="instructor-avatar">
+                        {% else %}
+                        <div class="instructor-avatar d-flex align-items-center justify-content-center bg-light">
+                            <i class="fas fa-user fa-4x text-muted"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <h3 class="instructor-name">{{ instructor.user.get_full_name|default:instructor.user.username }}</h3>
+                        <span class="instructor-expertise">{{ instructor.expertise }}</span>
+                        
+                        <p class="instructor-bio">{{ instructor.bio|truncatewords:20 }}</p>
+                        
+                        <div class="mb-4">
+                            <a href="{% url 'dashboard:instructor_detail' instructor.pk %}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                                View Profile
+                            </a>
+                        </div>
+                        
+                        <div class="social-btns">
+                            {% if instructor.facebook_url %}
+                            <a href="{{ instructor.facebook_url }}" class="btn-social"><i class="fab fa-facebook-f"></i></a>
+                            {% endif %}
+                            {% if instructor.linkedin_url %}
+                            <a href="{{ instructor.linkedin_url }}" class="btn-social"><i class="fab fa-linkedin-in"></i></a>
+                            {% endif %}
+                            {% if instructor.twitter_url %}
+                            <a href="{{ instructor.twitter_url }}" class="btn-social"><i class="fab fa-twitter"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="instructor-pagination swiper-pagination mt-5 position-relative"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories Slider Section -->
+<section class="stories-section py-5 mb-5" style="background: #f8fafc;">
+    <div class="container">
+        <h2 class="section-title mb-5">শিক্ষার্থীদের সাফল্যের গল্প</h2>
+        <div class="swiper storySwiper" style="padding: 20px 5px 40px;">
+            <div class="swiper-wrapper">
+                {% for story in success_stories %}
+                <div class="swiper-slide h-auto">
+                    <div class="story-card">
+                        <i class="fas fa-quote-right quote-icon"></i>
+                        <p class="story-text">"{{ story.testimony }}"</p>
+                        <div class="student-info">
+                            <div class="student-img-wrapper">
+                                {% if story.photo %}
+                                <img src="{{ story.photo.url }}" alt="{{ story.student_name }}" class="student-img">
+                                {% else %}
+                                <div class="student-img d-flex align-items-center justify-content-center bg-light">
+                                    <i class="fas fa-user text-muted"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="student-meta">
+                                <h5>{{ story.student_name }}</h5>
+                                <span class="student-level">Level: {{ story.level }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="story-pagination swiper-pagination position-relative" style="margin-top: 2rem;"></div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Inspired By Section -->
+<section class="inspired-section">
+    <div class="container">
+        <div class="inspired-header">
+            <h2>Inspired by our community</h2>
+            <p>We celebrate diversity and inclusivity, fostering an environment of curiosity, where every voice is heard and creativity thrives.</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for story in community_stories %}
+            <div class="col-lg-3 col-md-6">
+                <div class="inspired-card-glow h-100">
+                    <div class="inspired-card">
+                        <div class="inspired-img-wrapper">
+                            {% if story.photo %}
+                            <img src="{{ story.photo.url }}" alt="{{ story.name }}" class="inspired-img">
+                            {% else %}
+                            <div class="inspired-img d-flex align-items-center justify-content-center bg-light text-muted">
+                                <i class="fas fa-user-circle fa-5x"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="inspired-content">
+                            <h4 class="inspired-name">{{ story.name }}</h4>
+                            <span class="inspired-role">{{ story.role }}<br>{{ story.location }}</span>
+                            <a href="{% url 'dashboard:community_story_detail' story.pk %}" class="inspired-link">
+                                See {{ story.name|truncatechars:10 }}'s story <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-white-50">Community stories coming soon...</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <div class="faq-container">
+            <h2 class="section-title-faq">Frequently Asked Questions</h2>
+            <p class="section-subtitle-faq">Have questions about our courses or the French language? We're here to help you every step of the way.</p>
+
+            <div class="accordion" id="faqAccordion">
+                {% for faq in faqs %}
+                <div class="accordion-item shadow-sm">
+                    <h2 class="accordion-header" id="heading{{ faq.id }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-toggle="collapse" data-bs-toggle="collapse"
+                                data-target="#collapse{{ faq.id }}" data-bs-target="#collapse{{ faq.id }}" 
+                                aria-expanded="false" aria-controls="collapse{{ faq.id }}">
+                            {{ faq.question }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ faq.id }}" class="accordion-collapse collapse" 
+                         aria-labelledby="heading{{ faq.id }}" data-parent="#faqAccordion" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            {{ faq.answer|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-question-circle fa-3x mb-3 opacity-25"></i>
+                    <p>No FAQs found at the moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="faq-footer-btns">
+                <a href="{% url 'dashboard:contact' %}" class="btn-faq-primary" style="color: black !important;">Contact us</a>
+                <a href="{% url 'dashboard:faq_list' %}" class="btn-faq-outline">Read all FAQs</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Learning Path Animation Script -->
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Instructor Slider
+            new Swiper(".instructorSwiper", {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                centeredSlides: false,
+                autoplay: {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".instructor-pagination",
+                    clickable: true,
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                },
+            });
+
+            // Success Stories Slider
+            new Swiper(".storySwiper", {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                centeredSlides: false,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".story-pagination",
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: { slidesPerView: 2 },
+                    1200: { slidesPerView: 3 },
+                },
+            });
+
+        const pathSteps = document.querySelectorAll('.path-step');
+        const animatedBooks = document.querySelectorAll('.animated-book');
+        const filterTabBtns = document.querySelectorAll('.filter-tab-btn');
+
+        // Filtering Logic
+        filterTabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                
+                // Update active tab
+                filterTabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter steps and books
+                let firstVisibleCourseId = null;
+                
+                pathSteps.forEach(step => {
+                    const stepLevel = step.getAttribute('data-level-code');
+                    if (filter === 'all' || stepLevel === filter) {
+                        step.style.display = 'flex';
+                        if (!firstVisibleCourseId) firstVisibleCourseId = step.getAttribute('data-course-id');
+                    } else {
+                        step.style.display = 'none';
+                    }
+                });
+
+                animatedBooks.forEach(book => {
+                    const bookLevel = book.getAttribute('data-level-code');
+                    if (filter === 'all' || bookLevel === filter) {
+                        // We keep books in the DOM but the updateBookStack will handle visibility
+                    } else {
+                        book.style.opacity = '0';
+                        book.style.zIndex = '0';
+                    }
+                });
+
+                // Reset book stack to the first visible course
+                if (firstVisibleCourseId) {
+                    updateBookStack(firstVisibleCourseId);
+                }
+            });
+        });
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-30% 0px -30% 0px',
+            threshold: 0
+        };
+
+        function updateBookStack(activeId) {
+            const currentFilter = document.querySelector('.filter-tab-btn.active').getAttribute('data-filter');
+            
+            // Get visible books only
+            const visibleBooks = Array.from(animatedBooks).filter(book => {
+                const bookLevel = book.getAttribute('data-level-code');
+                return currentFilter === 'all' || bookLevel === currentFilter;
+            });
+
+            animatedBooks.forEach(book => {
+                book.classList.remove('active');
+                book.style.zIndex = '0';
+                book.style.opacity = '0';
+                book.style.transform = 'translateZ(-100px) translateY(50px)';
+            });
+                
+            const activeBook = document.querySelector(`.animated-book[data-book="${activeId}"]`);
+            if (activeBook) {
+                activeBook.classList.add('active');
+                activeBook.style.zIndex = '10';
+                activeBook.style.opacity = '1';
+                activeBook.style.transform = 'translateZ(0px) translateY(0px)';
+                
+                // Style the next two VISIBLE books in the stack
+                const activeIndex = visibleBooks.indexOf(activeBook);
+                if (activeIndex !== -1) {
+                    if (visibleBooks[activeIndex + 1]) {
+                        const nextBook = visibleBooks[activeIndex + 1];
+                        nextBook.style.opacity = '0.6';
+                        nextBook.style.zIndex = '9';
+                        nextBook.style.transform = 'translateZ(-30px) translateY(15px)';
+                        
+                        if (visibleBooks[activeIndex + 2]) {
+                            const thirdBook = visibleBooks[activeIndex + 2];
+                            thirdBook.style.opacity = '0.3';
+                            thirdBook.style.zIndex = '8';
+                            thirdBook.style.transform = 'translateZ(-60px) translateY(30px)';
+                        }
+                    }
+                }
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const courseId = entry.target.getAttribute('data-course-id');
+                    
+                    // Update active step visual
+                    pathSteps.forEach(step => step.classList.remove('active'));
+                    entry.target.classList.add('active');
+
+                    updateBookStack(courseId);
+                }
+            });
+        }, observerOptions);
+
+        pathSteps.forEach(step => {
+            observer.observe(step);
+        });
+
+        // Dropdown selection logic
+        const levelDropdown = document.getElementById('levelDropdownContainer');
+        if (levelDropdown) {
+            const selectedText = levelDropdown.querySelector('.selected-text');
+            const levelInput = document.getElementById('levelInput');
+            const dropdownItems = levelDropdown.querySelectorAll('.dropdown-item');
+
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+
+                    selectedText.textContent = text;
+                    levelInput.value = value;
+
+                    // Update active state in menu
+                    dropdownItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // Course Filtering Logic
+        const filterPills = document.querySelectorAll('.filter-btn-pill');
+        const courseCards = document.querySelectorAll('.course-card-minimal');
+
+        filterPills.forEach(pill => {
+            pill.addEventListener('click', function () {
+                // Update active state
+                filterPills.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.getAttribute('data-filter');
+
+                // Filter courses
+                courseCards.forEach(card => {
+                    const cardLevel = card.getAttribute('data-level');
+
+                    if (filter === 'all' || cardLevel === filter) {
+                        card.style.display = 'flex';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                        }, 50);
+                    } else {
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<!-- Call to Action Section -->
+{% if not user.is_authenticated %}
+<section class="cta-section">
+    <div class="cta-content">
+        <div class="container">
+            <h2 class="cta-title">Ready to Start Learning French?</h2>
+            <p class="cta-description">
+                Join thousands of students mastering French with our comprehensive learning platform.
+                Start your journey today!
+            </p>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary-custom"
+                style="font-size: 1.1rem; padding: 1.25rem 3rem;">
+                <i class="fas fa-rocket me-2"></i>Get Started Free
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

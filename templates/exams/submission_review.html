@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Submissions{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="fas fa-clipboard-check me-2"></i>Review Submissions</h2>
+        <p class="text-muted">Pending submissions requiring review</p>
+    </div>
+</div>
+
+{% if submissions %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Question</th>
+                <th>Type</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for submission in submissions %}
+            <tr>
+                <td>{{ submission.user.email }}</td>
+                <td>{{ submission.question.text|truncatewords:10 }}</td>
+                <td><span class="badge bg-info">{{ submission.question.get_question_type_display }}</span></td>
+                <td>{{ submission.submitted_at|timesince }} ago</td>
+                <td>
+                    <a href="{% url 'exams:review_submission' submission.id %}" class="btn btn-sm btn-primary">
+                        Review
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>No pending submissions to review.
+</div>
+{% endif %}
+{% endblock %}
+
