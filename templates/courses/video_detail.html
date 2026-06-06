@@ -291,6 +291,55 @@
         .playlist-card { max-height: none; margin-top: 2rem; }
         .lesson-info-bar { flex-direction: column; text-align: center; gap: 1.5rem; }
     }
+
+    /* Word Meaning Tab & Cards styling */
+    .word-card {
+        background: #ffffff;
+        border: 1px solid #eef2f6;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .word-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 85, 164, 0.08);
+        border-color: rgba(0, 85, 164, 0.3);
+    }
+
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        padding: 0;
+    }
+
+    .play-audio-btn {
+        background-color: rgba(0, 85, 164, 0.05);
+        color: #0055A4;
+        border: 1px solid transparent;
+    }
+
+    .play-audio-btn:hover {
+        background-color: #0055A4;
+        color: #ffffff;
+    }
+
+    @keyframes soundwave {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+    }
+
+    .animate-pulse {
+        animation: soundwave 1s infinite ease-in-out;
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 {% endblock %}
@@ -399,6 +448,7 @@
                 <div class="modern-tabs">
                     <button class="modern-tab-btn active" data-tab="overview">Overview</button>
                     <button class="modern-tab-btn" data-tab="exercises">Practice Exercises</button>
+                    <button class="modern-tab-btn" data-tab="wordmeanings">Word Meanings</button>
                     <button class="modern-tab-btn" data-tab="resources">Resources</button>
                 </div>
 
@@ -486,6 +536,56 @@
                             {% endif %}
                         </div>
                     </div>
+
+                    <!-- Word Meanings -->
+                    <div class="tab-pane-content" id="wordmeanings-pane" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h3>Vocabulary & Word Meanings</h3>
+                                <p class="text-muted mb-0">Learn the key words, pronunciation, and meanings from this lesson.</p>
+                            </div>
+                        </div>
+
+                        {% if word_meanings %}
+                            <div class="row g-4">
+                                {% for item in word_meanings %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="word-card h-100 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <div>
+                                                    <h4 class="fw-bold text-primary mb-1" style="font-size: 1.25rem;">{{ item.word }}</h4>
+                                                    {% if item.ipa_pronunciation %}
+                                                    <span class="badge bg-light text-secondary border font-monospace px-2 py-1" style="font-size: 0.75rem;">{{ item.ipa_pronunciation }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <button class="btn btn-icon play-audio-btn shadow-sm" 
+                                                        title="Listen Pronunciation" 
+                                                        {% if item.audio_file %}data-audio="{{ item.audio_file.url }}"{% endif %}
+                                                        data-text="{{ item.word }}">
+                                                    <i class="fas fa-volume-up"></i>
+                                                </button>
+                                            </div>
+                                            <hr class="my-2 opacity-10">
+                                            <div class="word-meaning-text text-muted mb-2" style="font-size: 0.95rem; line-height: 1.6; white-space: pre-line;">
+                                                {{ item.meaning }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Hidden audio element for playing uploaded tracks -->
+                            <audio id="word-audio-player" style="display: none;"></audio>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-language fa-4x mb-3 text-primary" style="opacity: 0.15;"></i>
+                                <h5 class="text-muted">No word meanings added for this lesson yet.</h5>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -514,6 +614,99 @@
             document.getElementById(tabId + '-pane').style.display = 'block';
         });
     });
+
+    // Web Speech API Pronunciation fallback & Audio Playback
+    document.querySelectorAll('.play-audio-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const audioUrl = this.getAttribute('data-audio');
+            const textToSpeak = this.getAttribute('data-text');
+            const icon = this.querySelector('i');
+            
+            // Reset other playing button styles/icons
+            document.querySelectorAll('.play-audio-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'animate-pulse');
+                btn.querySelector('i').className = 'fas fa-volume-up';
+            });
+            
+            // Set active state for clicked button
+            this.classList.add('bg-primary', 'text-white');
+            icon.className = 'fas fa-spinner fa-spin';
+            
+            if (audioUrl) {
+                // Play uploaded audio file
+                const player = document.getElementById('word-audio-player');
+                player.src = audioUrl;
+                
+                player.onplaying = () => {
+                    this.classList.add('animate-pulse');
+                    icon.className = 'fas fa-volume-up';
+                };
+                
+                player.onended = () => {
+                    this.classList.remove('bg-primary', 'text-white', 'animate-pulse');
+                    icon.className = 'fas fa-volume-up';
+                };
+                
+                player.onerror = () => {
+                    this.classList.remove('bg-primary', 'text-white', 'animate-pulse');
+                    icon.className = 'fas fa-exclamation-triangle';
+                    setTimeout(() => { icon.className = 'fas fa-volume-up'; }, 2000);
+                };
+                
+                player.play().catch(e => {
+                    console.error("Audio playback error, falling back to TTS:", e);
+                    playTTS(textToSpeak, this, icon);
+                });
+            } else {
+                playTTS(textToSpeak, this, icon);
+            }
+        });
+    });
+
+    function playTTS(text, button, icon) {
+        if ('speechSynthesis' in window) {
+            // Cancel active synthesis first
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fr-FR'; // French voice
+            
+            // Try to find a French voice
+            const voices = window.speechSynthesis.getVoices();
+            const frenchVoice = voices.find(voice => voice.lang.startsWith('fr') || voice.lang === 'fr-FR');
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+            
+            utterance.onstart = () => {
+                button.classList.add('animate-pulse');
+                icon.className = 'fas fa-volume-up';
+            };
+            
+            utterance.onend = () => {
+                button.classList.remove('bg-primary', 'text-white', 'animate-pulse');
+                icon.className = 'fas fa-volume-up';
+            };
+            
+            utterance.onerror = () => {
+                button.classList.remove('bg-primary', 'text-white', 'animate-pulse');
+                icon.className = 'fas fa-volume-up';
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        } else {
+            button.classList.remove('bg-primary', 'text-white', 'animate-pulse');
+            icon.className = 'fas fa-volume-mute';
+            setTimeout(() => { icon.className = 'fas fa-volume-up'; }, 2000);
+        }
+    }
+
+    // Since voices load asynchronously, cache them using onvoiceschanged
+    if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    }
 
     // Auto-scroll sidebar to active lesson
     const activeItem = document.querySelector('.playlist-item.active');

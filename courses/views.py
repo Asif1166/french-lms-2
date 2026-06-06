@@ -145,16 +145,21 @@ def video_detail_view(request, video_id):
         is_completed=True
     ).values_list('video_id', flat=True)
     
+    # Get word meanings for this video
+    word_meanings = video.word_meanings.all().order_by('order_index', 'word')
+
     context = {
         'video': video,
         'questions': questions,
         'contexts_with_questions': contexts_with_questions,
         'standalone_questions': standalone_questions,
+        'word_meanings': word_meanings,
         'video_progress': video_progress,
         'level_chapters': level_chapters,
         'completed_video_ids': set(completed_video_ids)
     }
     return render(request, 'courses/video_detail.html', context)
+
 
 
 def course_list_view(request):

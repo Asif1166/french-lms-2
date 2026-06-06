@@ -186,3 +186,27 @@ class LessonResource(models.Model):
 
     def __str__(self):
         return f"{self.video.title} - {self.title}"
+
+
+class WordMeaning(models.Model):
+    """
+    Vocabulary/Word Meanings for a video lesson.
+    """
+    video = models.ForeignKey(VideoLesson, on_delete=models.CASCADE, related_name='word_meanings')
+    word = models.CharField(max_length=200, help_text="Word or phrase in French")
+    ipa_pronunciation = models.CharField(max_length=200, blank=True, help_text="IPA phonetic transcription (optional)")
+    meaning = models.TextField(help_text="Meaning of the word in text (e.g. English or Bengali)")
+    audio_file = models.FileField(upload_to='word_pronunciations/', blank=True, null=True, help_text="Audio file for pronunciation")
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'word_meanings'
+        ordering = ['order_index', 'word']
+        verbose_name = 'Word Meaning'
+        verbose_name_plural = 'Word Meanings'
+
+    def __str__(self):
+        return f"{self.word} - {self.meaning}"
+
