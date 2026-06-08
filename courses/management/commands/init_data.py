@@ -4,7 +4,7 @@ Management command to populate initial data:
 - Categories (Listening, Reading, Writing, Speaking)
 """
 from django.core.management.base import BaseCommand
-from courses.models import Level, Category
+from courses.models import Level, Category, LevelCode
 
 
 class Command(BaseCommand):
@@ -42,9 +42,15 @@ class Command(BaseCommand):
         ]
         
         for level_data in levels_data:
+            level_code_obj, _ = LevelCode.objects.get_or_create(code=level_data['code'])
+            defaults = level_data.copy()
+            if 'code' in defaults:
+                del defaults['code']
+            defaults['level_code'] = level_code_obj
+
             level, created = Level.objects.get_or_create(
-                code=level_data['code'],
-                defaults=level_data
+                level_code=level_code_obj,
+                defaults=defaults
             )
             if created:
                 self.stdout.write(self.style.SUCCESS(f'Created level: {level.code}'))

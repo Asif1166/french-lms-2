@@ -87,7 +87,7 @@ def revamp_database():
             description=desc,
             level=level_objs[lvl_code],
             price=price,
-            currency='USD',
+            currency='EUR',
             is_active=True
         )
         
@@ -123,7 +123,7 @@ def revamp_database():
             name=name,
             description=desc,
             price=price,
-            currency='USD',
+            currency='EUR',
             exam_count=count,
             is_active=True
         )

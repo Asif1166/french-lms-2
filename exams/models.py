@@ -203,7 +203,7 @@ class MockExamPackage(models.Model):
     name = models.CharField(max_length=200, help_text="Package name (e.g., 'A1 Complete Mock Exam Package')")
     description = models.TextField(help_text="Detailed description of what's included")
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Package price")
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=3, default='EUR')
     exam_count = models.IntegerField(help_text="Number of exams in this package")
     features = models.ManyToManyField(PackageFeature, blank=True, related_name='packages', help_text="List of features")
     is_active = models.BooleanField(default=True)
@@ -243,7 +243,7 @@ class MockExamPurchase(models.Model):
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending', db_index=True)
     transaction_id = models.CharField(max_length=200, blank=True, null=True, unique=True)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=3, default='EUR')
     payment_method = models.CharField(max_length=50, blank=True, help_text="Payment method used")
     notes = models.TextField(blank=True, help_text="Additional notes about the purchase")
     

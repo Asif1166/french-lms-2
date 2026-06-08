@@ -29,7 +29,7 @@ class PaymentTransaction(models.Model):
     gateway = models.CharField(max_length=20, choices=GATEWAY_CHOICES)
     transaction_id = models.CharField(max_length=200, unique=True, help_text="Gateway transaction ID")
     amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=3, default='EUR')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     gateway_response = models.JSONField(null=True, blank=True, help_text="Full response from payment gateway")
     failure_reason = models.TextField(blank=True, help_text="Reason for failure if status is FAILED")

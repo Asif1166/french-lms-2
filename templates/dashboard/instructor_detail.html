@@ -14,10 +14,19 @@
 
     .profile-hero {
         background: linear-gradient(135deg, var(--profile-dark) 0%, #1e293b 100%);
-        padding: 100px 0 160px;
+        padding: 100px 0 220px;
         color: white;
         position: relative;
         overflow: hidden;
+    }
+
+    .profile-hero h1 {
+        color: #ffffff !important;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-hero p {
+        color: rgba(255, 255, 255, 0.9) !important;
     }
 
     .profile-hero::after {
@@ -65,6 +74,7 @@
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
+        object-position: top;
         border: 8px solid white;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         background: white;
@@ -236,7 +246,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <h2 class="section-title-premium">About Me</h2>
                         <div class="bio-content mb-5">
                             {{ instructor.bio|linebreaks }}
@@ -247,31 +257,6 @@
                             {% for skill in instructor.expertise.split %}
                             <span class="expertise-tag">{{ skill|cut:"," }}</span>
                             {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <div class="bg-light p-4 rounded-3 text-center">
-                            <h3 class="h5 font-weight-bold mb-4">Connect with Me</h3>
-                            <div class="d-flex justify-content-center">
-                                {% if instructor.facebook_url %}
-                                <a href="{{ instructor.facebook_url }}" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                                {% endif %}
-                                {% if instructor.linkedin_url %}
-                                <a href="{{ instructor.linkedin_url }}" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                                {% endif %}
-                                {% if instructor.twitter_url %}
-                                <a href="{{ instructor.twitter_url }}" class="social-link"><i class="fab fa-twitter"></i></a>
-                                {% endif %}
-                                <a href="mailto:{{ instructor.user.email }}" class="social-link"><i class="fas fa-envelope"></i></a>
-                            </div>
-                            
-                            <hr class="my-4">
-                            
-                            <p class="small text-muted mb-4">Ready to start your French journey?</p>
-                            <a href="{% url 'dashboard:contact' %}" class="btn btn-primary w-100 rounded-pill py-3 font-weight-bold">
-                                Book a Consultation
-                            </a>
                         </div>
                     </div>
                 </div>

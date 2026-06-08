@@ -167,7 +167,7 @@ PaymentTransaction (payments.PaymentTransaction)
 - `description`: Course description
 - `level_id` (FK, Optional): Reference to Level (null for full access)
 - `price`: Course price (Decimal)
-- `currency`: Currency code (default: USD)
+- `currency`: Currency code (default: EUR)
 - `is_full_access`: Boolean - provides access to all levels
 - `duration_months`: Access duration in months (null = lifetime)
 - `is_active`: Active status

@@ -483,6 +483,7 @@
         height: 150px;
         border-radius: 50%;
         object-fit: cover;
+        object-position: top;
         margin-bottom: 25px;
         border: 5px solid #f8fafc;
         transition: all 0.3s ease;
@@ -610,7 +611,7 @@
     /* Inspired By Section */
     .inspired-section {
         padding: 100px 0;
-        background: var(--primary-color);
+        background: #0055A4;
         color: white;
         position: relative;
         overflow: hidden;
@@ -626,6 +627,7 @@
         font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 20px;
+        color: white;
     }
 
     .inspired-header p {
@@ -694,7 +696,7 @@
 
     .inspired-link {
         font-weight: 700;
-        color: #4f46e5;
+        color: #0055A4;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -702,7 +704,7 @@
     }
 
     .inspired-link:hover {
-        color: #7c3aed;
+        color: #003366;
     }
 
     /* Animated Glowing Border Effect - High Quality */
@@ -2655,6 +2657,47 @@
     </div>
 </section>
 
+<!-- Inspired By Section -->
+<section class="inspired-section">
+    <div class="container">
+        <div class="inspired-header">
+            <h2>Inspired by our community</h2>
+            <p>We celebrate diversity and inclusivity, fostering an environment of curiosity, where every voice is heard and creativity thrives.</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for story in community_stories %}
+            <div class="col-lg-3 col-md-6">
+                <div class="inspired-card-glow h-100">
+                    <div class="inspired-card">
+                        <div class="inspired-img-wrapper">
+                            {% if story.photo %}
+                            <img src="{{ story.photo.url }}" alt="{{ story.name }}" class="inspired-img">
+                            {% else %}
+                            <div class="inspired-img d-flex align-items-center justify-content-center bg-light text-muted">
+                                <i class="fas fa-user-circle fa-5x"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="inspired-content">
+                            <h4 class="inspired-name">{{ story.name }}</h4>
+                            <span class="inspired-role">{{ story.role }}<br>{{ story.location }}</span>
+                            <a href="{% url 'dashboard:community_story_detail' story.pk %}" class="inspired-link">
+                                See {{ story.name|truncatechars:10 }}'s story <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-white-50">Community stories coming soon...</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 
 <!-- Info Grid Section -->
 <section class="link-cards-section">
@@ -2734,18 +2777,7 @@
                                 View Profile
                             </a>
                         </div>
-                        
-                        <div class="social-btns">
-                            {% if instructor.facebook_url %}
-                            <a href="{{ instructor.facebook_url }}" class="btn-social"><i class="fab fa-facebook-f"></i></a>
-                            {% endif %}
-                            {% if instructor.linkedin_url %}
-                            <a href="{{ instructor.linkedin_url }}" class="btn-social"><i class="fab fa-linkedin-in"></i></a>
-                            {% endif %}
-                            {% if instructor.twitter_url %}
-                            <a href="{{ instructor.twitter_url }}" class="btn-social"><i class="fab fa-twitter"></i></a>
-                            {% endif %}
-                        </div>
+
                     </div>
                 </div>
                 {% endfor %}
@@ -2792,46 +2824,7 @@
 
 
 
-<!-- Inspired By Section -->
-<section class="inspired-section">
-    <div class="container">
-        <div class="inspired-header">
-            <h2>Inspired by our community</h2>
-            <p>We celebrate diversity and inclusivity, fostering an environment of curiosity, where every voice is heard and creativity thrives.</p>
-        </div>
-        
-        <div class="row g-4">
-            {% for story in community_stories %}
-            <div class="col-lg-3 col-md-6">
-                <div class="inspired-card-glow h-100">
-                    <div class="inspired-card">
-                        <div class="inspired-img-wrapper">
-                            {% if story.photo %}
-                            <img src="{{ story.photo.url }}" alt="{{ story.name }}" class="inspired-img">
-                            {% else %}
-                            <div class="inspired-img d-flex align-items-center justify-content-center bg-light text-muted">
-                                <i class="fas fa-user-circle fa-5x"></i>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <div class="inspired-content">
-                            <h4 class="inspired-name">{{ story.name }}</h4>
-                            <span class="inspired-role">{{ story.role }}<br>{{ story.location }}</span>
-                            <a href="{% url 'dashboard:community_story_detail' story.pk %}" class="inspired-link">
-                                See {{ story.name|truncatechars:10 }}'s story <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">
-                <p class="text-white-50">Community stories coming soon...</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+
 
 <!-- FAQ Section -->
 <section class="faq-section">

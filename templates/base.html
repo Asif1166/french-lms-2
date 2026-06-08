@@ -55,7 +55,7 @@
 
         /* Footer Styles - Modern & Clean */
         .footer-section {
-            background: var(--primary-color); /* Kahoot Purple */
+            background: #0055A4;
             color: #ffffff;
             padding: 80px 0 40px;
             margin-top: auto;
@@ -127,18 +127,31 @@
             align-items: center;
             justify-content: center;
             border-radius: 10px;
-            color: #ffffff;
+            color: #ffffff !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .social-link i,
+        .social-link svg {
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+
         .social-link:hover {
-            background: #ffffff;
-            color: var(--primary-color);
+            background: #ffffff !important;
+            color: #0055A4 !important;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border-color: #ffffff;
+            border-color: #ffffff !important;
+        }
+
+        .social-link:hover i,
+        .social-link:hover svg {
+            color: #0055A4 !important;
+            fill: #0055A4 !important;
         }
 
         .newsletter-box {
@@ -173,7 +186,7 @@
 
         .btn-subscribe {
             background: #ffffff;
-            color: var(--primary-color);
+            color: #0055A4;
             border: none;
             width: 100%;
             padding: 12px;

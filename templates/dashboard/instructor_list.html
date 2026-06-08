@@ -28,6 +28,7 @@
         height: 150px;
         border-radius: 50%;
         object-fit: cover;
+        object-position: top;
         margin-bottom: 25px;
         border: 5px solid #f8fafc;
         transition: all 0.3s ease;
@@ -128,18 +129,6 @@
                     <a href="{% url 'dashboard:instructor_detail' instructor.pk %}" class="btn btn-primary rounded-pill py-2 px-4 font-weight-bold">
                         View Profile
                     </a>
-                    
-                    <div class="social-btns">
-                        {% if instructor.facebook_url %}
-                        <a href="{{ instructor.facebook_url }}" class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i></a>
-                        {% endif %}
-                        {% if instructor.linkedin_url %}
-                        <a href="{{ instructor.linkedin_url }}" class="btn btn-outline-primary"><i class="fab fa-linkedin-in"></i></a>
-                        {% endif %}
-                        {% if instructor.twitter_url %}
-                        <a href="{{ instructor.twitter_url }}" class="btn btn-outline-primary"><i class="fab fa-twitter"></i></a>
-                        {% endif %}
-                    </div>
                 </div>
             </div>
         </div>

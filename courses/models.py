@@ -2,23 +2,29 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
+class LevelCode(models.Model):
+    code = models.CharField(max_length=20, unique=True, help_text="e.g. A1, A2, B1, B2")
+    name = models.CharField(max_length=100, blank=True, help_text="Optional description/name of the level code")
+
+    class Meta:
+        db_table = 'level_codes'
+        verbose_name = 'Level Code'
+        verbose_name_plural = 'Level Codes'
+
+    def __str__(self):
+        return self.code
+
+
 class Level(models.Model):
     """
     CEFR Levels: A1, A2, B1, B2
     """
-    CODE_CHOICES = [
-        ('A1', 'A1 - Beginner'),
-        ('A2', 'A2 - Elementary'),
-        ('B1', 'B1 - Intermediate'),
-        ('B2', 'B2 - Upper Intermediate'),
-    ]
-    
-    code = models.CharField(max_length=10, choices=CODE_CHOICES, unique=True)
+    level_code = models.ForeignKey(LevelCode, on_delete=models.PROTECT, null=True, blank=False, related_name='levels')
     title = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, validators=[MinValueValidator(0)])
     discounted_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)])
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=3, default='EUR')
     order_index = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,10 +32,22 @@ class Level(models.Model):
     
     class Meta:
         db_table = 'levels'
-        ordering = ['order_index', 'code']
+        ordering = ['order_index', 'level_code__code']
         verbose_name = 'Level'
         verbose_name_plural = 'Levels'
     
+    @property
+    def code(self):
+        return self.level_code.code if self.level_code else ""
+
+    @code.setter
+    def code(self, value):
+        if value:
+            level_code_obj, _ = LevelCode.objects.get_or_create(code=value)
+            self.level_code = level_code_obj
+        else:
+            self.level_code = None
+
     def __str__(self):
         return f"{self.code} - {self.title}"
 
@@ -144,7 +162,7 @@ class Course(models.Model):
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
     image = models.ImageField(upload_to='course_images/', blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=3, default='EUR')
     is_full_access = models.BooleanField(default=False, help_text="If True, provides access to all levels")
     duration_months = models.IntegerField(null=True, blank=True, help_text="Access duration in months (null = lifetime)")
     is_active = models.BooleanField(default=True)

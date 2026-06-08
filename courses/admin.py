@@ -1,14 +1,21 @@
 from django.contrib import admin
-from .models import Level, Category, Chapter, VideoLesson, Course, WordMeaning
+from .models import Level, LevelCode, Category, Chapter, VideoLesson, Course, WordMeaning
 
+
+
+@admin.register(LevelCode)
+class LevelCodeAdmin(admin.ModelAdmin):
+    list_display = ['code', 'name']
+    search_fields = ['code', 'name']
+    ordering = ['code']
 
 
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
     list_display = ['code', 'title', 'price', 'discounted_price', 'currency', 'order_index', 'is_active', 'created_at']
-    list_filter = ['is_active', 'code']
-    search_fields = ['code', 'title', 'description']
-    ordering = ['order_index', 'code']
+    list_filter = ['is_active', 'level_code']
+    search_fields = ['level_code__code', 'title', 'description']
+    ordering = ['order_index', 'level_code__code']
 
 
 @admin.register(Category)
