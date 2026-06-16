@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from django.urls import reverse
 from django.db.models import Q
 
 from courses.models import (
@@ -13,6 +16,38 @@ from .forms import (
     LevelCodeForm, LevelForm, CategoryForm, ChapterForm,
     VideoLessonForm, LessonResourceForm, WordMeaningForm, CourseForm,
 )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Auth
+# ─────────────────────────────────────────────────────────────────────────────
+
+def admin_login(request):
+    if request.user.is_authenticated and (
+        request.user.is_staff or request.user.is_superuser or getattr(request.user, 'role', None) == 'ADMIN'
+    ):
+        return redirect('custom_admin:dashboard')
+
+    error = None
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            error = 'Invalid email or password.'
+        elif not (user.is_staff or user.is_superuser or getattr(user, 'role', None) == 'ADMIN'):
+            error = 'You do not have admin access.'
+        else:
+            login(request, user)
+            next_url = request.GET.get('next', '')
+            return redirect(next_url or 'custom_admin:dashboard')
+
+    return render(request, 'custom_admin/login.html', {'error': error})
+
+
+def admin_logout(request):
+    logout(request)
+    return redirect('custom_admin:login')
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -283,9 +318,9 @@ def video_lesson_list(request):
 def video_lesson_create(request):
     form = VideoLessonForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Video lesson created successfully.')
-        return redirect('custom_admin:video_lesson_list')
+        lesson = form.save()
+        messages.success(request, 'Video lesson created. Now add resources and vocabulary below.')
+        return redirect('custom_admin:video_lesson_edit', pk=lesson.pk)
     return render(request, 'custom_admin/video_lessons/form.html', {
         'form': form, 'action': 'Create', 'obj': None,
     })
@@ -301,6 +336,8 @@ def video_lesson_edit(request, pk):
         return redirect('custom_admin:video_lesson_list')
     return render(request, 'custom_admin/video_lessons/form.html', {
         'form': form, 'action': 'Edit', 'obj': obj,
+        'resources': obj.resources.all().order_by('order_index'),
+        'word_meanings': obj.word_meanings.all().order_by('order_index', 'word'),
     })
 
 
@@ -341,41 +378,72 @@ def lesson_resource_list(request):
 
 @admin_required
 def lesson_resource_create(request):
-    form = LessonResourceForm(request.POST or None, request.FILES or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Lesson resource created successfully.')
-        return redirect('custom_admin:lesson_resource_list')
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    video_id = request.GET.get('video') or request.POST.get('_video_id') or ''
+    initial = {}
+    if video_id:
+        try:
+            initial['video'] = int(video_id)
+        except (ValueError, TypeError):
+            video_id = ''
+
+    form = LessonResourceForm(request.POST or None, request.FILES or None, initial=initial)
+    if request.method == 'POST':
+        if form.is_valid():
+            resource = form.save()
+            if is_ajax:
+                return JsonResponse({
+                    'success': True,
+                    'id': resource.pk,
+                    'title': resource.title,
+                    'resource_type': resource.resource_type,
+                    'file_url': resource.file.url,
+                    'order_index': resource.order_index,
+                    'edit_url': reverse('custom_admin:lesson_resource_edit', args=[resource.pk]),
+                    'delete_url': reverse('custom_admin:lesson_resource_delete', args=[resource.pk]),
+                })
+            messages.success(request, 'Lesson resource created successfully.')
+            if video_id:
+                return redirect('custom_admin:video_lesson_edit', pk=int(video_id))
+            return redirect('custom_admin:lesson_resource_list')
+        elif is_ajax:
+            return JsonResponse({'success': False, 'errors': {k: list(v) for k, v in form.errors.items()}})
+
     return render(request, 'custom_admin/lesson_resources/form.html', {
-        'form': form, 'action': 'Create', 'obj': None,
+        'form': form, 'action': 'Create', 'obj': None, 'video_id': video_id,
     })
 
 
 @admin_required
 def lesson_resource_edit(request, pk):
     obj = get_object_or_404(LessonResource, pk=pk)
+    video_pk = obj.video.pk
     form = LessonResourceForm(request.POST or None, request.FILES or None, instance=obj)
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, f'Resource "{obj.title}" updated.')
-        return redirect('custom_admin:lesson_resource_list')
+        return redirect('custom_admin:video_lesson_edit', pk=video_pk)
     return render(request, 'custom_admin/lesson_resources/form.html', {
-        'form': form, 'action': 'Edit', 'obj': obj,
+        'form': form, 'action': 'Edit', 'obj': obj, 'video_id': str(video_pk),
     })
 
 
 @admin_required
 def lesson_resource_delete(request, pk):
     obj = get_object_or_404(LessonResource, pk=pk)
+    video_pk = obj.video.pk
     if request.method == 'POST':
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         label = obj.title
         obj.delete()
+        if is_ajax:
+            return JsonResponse({'success': True})
         messages.success(request, f'Resource "{label}" deleted.')
-        return redirect('custom_admin:lesson_resource_list')
+        return redirect('custom_admin:video_lesson_edit', pk=video_pk)
     return render(request, 'custom_admin/confirm_delete.html', {
         'object_type': 'Lesson Resource',
         'object_label': str(obj),
-        'cancel_url': '/panel/lesson-resources/',
+        'cancel_url': f'/panel/video-lessons/{video_pk}/edit/',
     })
 
 
@@ -401,41 +469,73 @@ def word_meaning_list(request):
 
 @admin_required
 def word_meaning_create(request):
-    form = WordMeaningForm(request.POST or None, request.FILES or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Word meaning created successfully.')
-        return redirect('custom_admin:word_meaning_list')
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    video_id = request.GET.get('video') or request.POST.get('_video_id') or ''
+    initial = {}
+    if video_id:
+        try:
+            initial['video'] = int(video_id)
+        except (ValueError, TypeError):
+            video_id = ''
+
+    form = WordMeaningForm(request.POST or None, request.FILES or None, initial=initial)
+    if request.method == 'POST':
+        if form.is_valid():
+            wm = form.save()
+            if is_ajax:
+                return JsonResponse({
+                    'success': True,
+                    'id': wm.pk,
+                    'word': wm.word,
+                    'ipa_pronunciation': wm.ipa_pronunciation or '',
+                    'meaning': wm.meaning,
+                    'audio_url': wm.audio_file.url if wm.audio_file else '',
+                    'order_index': wm.order_index,
+                    'edit_url': reverse('custom_admin:word_meaning_edit', args=[wm.pk]),
+                    'delete_url': reverse('custom_admin:word_meaning_delete', args=[wm.pk]),
+                })
+            messages.success(request, 'Word meaning created successfully.')
+            if video_id:
+                return redirect('custom_admin:video_lesson_edit', pk=int(video_id))
+            return redirect('custom_admin:word_meaning_list')
+        elif is_ajax:
+            return JsonResponse({'success': False, 'errors': {k: list(v) for k, v in form.errors.items()}})
+
     return render(request, 'custom_admin/word_meanings/form.html', {
-        'form': form, 'action': 'Create', 'obj': None,
+        'form': form, 'action': 'Create', 'obj': None, 'video_id': video_id,
     })
 
 
 @admin_required
 def word_meaning_edit(request, pk):
     obj = get_object_or_404(WordMeaning, pk=pk)
+    video_pk = obj.video.pk
     form = WordMeaningForm(request.POST or None, request.FILES or None, instance=obj)
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, f'Word "{obj.word}" updated.')
-        return redirect('custom_admin:word_meaning_list')
+        return redirect('custom_admin:video_lesson_edit', pk=video_pk)
     return render(request, 'custom_admin/word_meanings/form.html', {
-        'form': form, 'action': 'Edit', 'obj': obj,
+        'form': form, 'action': 'Edit', 'obj': obj, 'video_id': str(video_pk),
     })
 
 
 @admin_required
 def word_meaning_delete(request, pk):
     obj = get_object_or_404(WordMeaning, pk=pk)
+    video_pk = obj.video.pk
     if request.method == 'POST':
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         label = obj.word
         obj.delete()
+        if is_ajax:
+            return JsonResponse({'success': True})
         messages.success(request, f'Word "{label}" deleted.')
-        return redirect('custom_admin:word_meaning_list')
+        return redirect('custom_admin:video_lesson_edit', pk=video_pk)
     return render(request, 'custom_admin/confirm_delete.html', {
         'object_type': 'Word Meaning',
         'object_label': str(obj),
-        'cancel_url': '/panel/word-meanings/',
+        'cancel_url': f'/panel/video-lessons/{video_pk}/edit/',
     })
 
 
@@ -462,7 +562,7 @@ def course_create(request):
         messages.success(request, 'Course created successfully!')
         return redirect('custom_admin:course_list')
     return render(request, 'custom_admin/courses/form.html', {
-        'form': form, 'action': 'Create', 'course': None,
+        'form': form, 'action': 'Create', 'obj': None,
     })
 
 
@@ -475,7 +575,7 @@ def course_edit(request, pk):
         messages.success(request, f'Course "{course.name}" updated successfully!')
         return redirect('custom_admin:course_list')
     return render(request, 'custom_admin/courses/form.html', {
-        'form': form, 'action': 'Edit', 'course': course,
+        'form': form, 'action': 'Edit', 'obj': course,
     })
 
 

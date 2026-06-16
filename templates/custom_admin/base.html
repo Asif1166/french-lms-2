@@ -404,16 +404,19 @@
                 <i class="bi bi-collection-fill"></i> Chapters
             </a>
             <a href="{% url 'custom_admin:video_lesson_list' %}"
-               class="{% if 'video_lesson' in request.resolver_match.url_name %}active{% endif %}">
+               class="{% if 'video_lesson' in request.resolver_match.url_name or 'lesson_resource' in request.resolver_match.url_name or 'word_meaning' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-play-circle-fill"></i> Video Lessons
             </a>
+            <!-- Resources & Word Meanings are managed inside Video Lesson edit page -->
             <a href="{% url 'custom_admin:lesson_resource_list' %}"
+               style="padding-left:28px;font-size:0.8rem;{% if 'lesson_resource' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
                class="{% if 'lesson_resource' in request.resolver_match.url_name %}active{% endif %}">
-                <i class="bi bi-file-earmark-fill"></i> Lesson Resources
+                <i class="bi bi-file-earmark-fill" style="font-size:0.85rem"></i> Resources
             </a>
             <a href="{% url 'custom_admin:word_meaning_list' %}"
+               style="padding-left:28px;font-size:0.8rem;{% if 'word_meaning' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
                class="{% if 'word_meaning' in request.resolver_match.url_name %}active{% endif %}">
-                <i class="bi bi-translate"></i> Word Meanings
+                <i class="bi bi-translate" style="font-size:0.85rem"></i> Word Meanings
             </a>
             <a href="{% url 'custom_admin:course_list' %}"
                class="{% if 'course' in request.resolver_match.url_name %}active{% endif %}">
@@ -453,7 +456,7 @@
             <a href="/" target="_blank">
                 <i class="bi bi-globe"></i> View Site
             </a>
-            <a href="{% url 'accounts:logout' %}">
+            <a href="{% url 'custom_admin:logout' %}">
                 <i class="bi bi-box-arrow-right"></i> Logout
             </a>
         </div>

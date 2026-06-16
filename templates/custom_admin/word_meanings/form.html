@@ -2,8 +2,14 @@
 {% block title %}{{ action }} Word Meaning{% endblock %}
 {% block page_title %}{{ action }} Word Meaning{% endblock %}
 {% block breadcrumb %}
+{% if video_id %}
+<span>/</span><a href="{% url 'custom_admin:video_lesson_list' %}">Video Lessons</a>
+<span>/</span><a href="{% url 'custom_admin:video_lesson_edit' video_id %}">Edit Lesson</a>
+<span>/</span><span>{{ action }} Word</span>
+{% else %}
 <span>/</span><a href="{% url 'custom_admin:word_meaning_list' %}">Word Meanings</a>
 <span>/</span><span>{{ action }}</span>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -12,20 +18,36 @@
         <h2>{{ action }} Word Meaning</h2>
         <p>Add French vocabulary with pronunciation and meaning</p>
     </div>
+    {% if video_id %}
+    <a href="{% url 'custom_admin:video_lesson_edit' video_id %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back to Video Lesson
+    </a>
+    {% else %}
     <a href="{% url 'custom_admin:word_meaning_list' %}" class="ca-btn-outline">
         <i class="bi bi-arrow-left"></i> Back
     </a>
+    {% endif %}
 </div>
 
 <div style="max-width:640px">
     <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
+        <input type="hidden" name="_video_id" value="{{ video_id }}">
+
         <div class="ca-card mb-4">
             <div class="ca-card-head"><h3>Word Details</h3></div>
             <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
 
+                <!-- Video Lesson field -->
                 <div>
                     <label class="ca-form-label">Video Lesson <span class="req">*</span></label>
+                    {% if video_id %}
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;color:#334155;font-size:0.875rem;font-weight:500">
+                        <i class="bi bi-play-circle-fill" style="color:#6366f1"></i>
+                        {% for vl in form.video.field.queryset %}{% if vl.pk|stringformat:"s" == video_id %}{{ vl.chapter.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}{% endif %}{% endfor %}
+                    </div>
+                    <input type="hidden" name="video" value="{{ video_id }}">
+                    {% else %}
                     <select name="video" class="ca-input {% if form.video.errors %}err{% endif %}">
                         <option value="">— Select video lesson —</option>
                         {% for vl in form.video.field.queryset %}
@@ -35,6 +57,7 @@
                         {% endfor %}
                     </select>
                     {% for e in form.video.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    {% endif %}
                 </div>
 
                 <div>
@@ -48,8 +71,7 @@
                 <div>
                     <label class="ca-form-label">IPA Pronunciation</label>
                     <input type="text" name="ipa_pronunciation" value="{{ form.ipa_pronunciation.value|default:'' }}"
-                           class="ca-input"
-                           placeholder="e.g. /bɔ̃.ʒuʁ/"
+                           class="ca-input" placeholder="e.g. /bɔ̃.ʒuʁ/"
                            style="font-family:serif;font-size:1rem">
                     <div class="ca-form-hint">International Phonetic Alphabet transcription (optional).</div>
                 </div>
@@ -66,21 +88,20 @@
                     {% if obj and obj.audio_file %}
                     <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:0.83rem;color:#15803d;display:flex;align-items:center;gap:8px">
                         <i class="bi bi-volume-up-fill"></i>
-                        Current: {{ obj.audio_file.name|truncatechars:40 }}
+                        {{ obj.audio_file.name|truncatechars:40 }}
                         <audio controls style="height:28px;margin-left:auto">
                             <source src="{{ obj.audio_file.url }}">
                         </audio>
                     </div>
                     {% endif %}
                     <input type="file" name="audio_file" class="ca-input" accept="audio/*">
-                    <div class="ca-form-hint">Upload an MP3 or WAV pronunciation audio.</div>
+                    <div class="ca-form-hint">Upload MP3 or WAV pronunciation audio (optional).</div>
                 </div>
 
                 <div>
                     <label class="ca-form-label">Display Order</label>
                     <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
                            class="ca-input" min="0" placeholder="0">
-                    <div class="ca-form-hint">Order in which this word appears.</div>
                 </div>
 
             </div>

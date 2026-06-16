@@ -81,7 +81,7 @@ class WordMeaningForm(forms.ModelForm):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['name', 'description', 'level', 'image', 'price',
+        fields = ['name', 'description', 'learning_outcomes', 'level', 'chapters', 'image', 'price',
                   'currency', 'is_full_access', 'duration_months', 'is_active']
 
     def __init__(self, *args, **kwargs):
@@ -89,3 +89,7 @@ class CourseForm(forms.ModelForm):
         self.fields['level'].required = False
         self.fields['image'].required = False
         self.fields['duration_months'].required = False
+        self.fields['chapters'].required = False
+        self.fields['chapters'].queryset = Chapter.objects.select_related(
+            'level__level_code'
+        ).order_by('level__level_code__code', 'order_index')

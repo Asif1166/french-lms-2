@@ -5,653 +5,360 @@
 
 {% block extra_css %}
 <style>
-    :root {
-        --book-primary: #0055A4;
-        --book-secondary: #002654;
-        --page-cream: #ffffff;
-        --text-dark: #1f2937;
-    }
+    body { background: #f5f5f5 !important; }
 
-    body {
-        background-color: #ffffff !important;
-    }
-
-    /* Simplified Hero Section */
-    .course-hero {
-        background: var(--book-primary);
-        color: white;
-        padding: 5rem 0;
-        position: relative;
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.6rem 1.2rem;
-        background: rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        border-radius: 4px;
+    /* ── Breadcrumb ── */
+    .cd-breadcrumb {
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 12px 0;
         font-size: 0.85rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.3);
     }
+    .cd-breadcrumb a { color: #0055A4; text-decoration: none; }
+    .cd-breadcrumb a:hover { text-decoration: underline; }
+    .cd-breadcrumb span { color: #6b7280; margin: 0 6px; }
 
-    .hero-title {
-        font-size: 3rem;
+    /* ── Page wrapper ── */
+    .cd-wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+    /* ── Left content ── */
+    .cd-left { flex: 1; min-width: 0; }
+
+    /* ── Title card ── */
+    .cd-title-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 28px 28px 20px;
+        margin-bottom: 16px;
+        border: 1px solid #e5e7eb;
+    }
+    .cd-title-card h1 {
+        font-size: 1.75rem;
         font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 1.5rem;
-        color: #ffffff;
+        color: #111827;
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+    .cd-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.85rem; color: #6b7280; margin-top: 12px; }
+    .cd-meta strong { color: #374151; }
+    .cd-level-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: #eff6ff; color: #1d4ed8;
+        padding: 4px 12px; border-radius: 20px;
+        font-size: 0.8rem; font-weight: 700;
     }
 
-    .hero-desc {
+    /* ── Section card ── */
+    .cd-card {
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+    .cd-card-head {
+        padding: 18px 24px 14px;
+        border-bottom: 1px solid #f3f4f6;
         font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.9);
-        max-width: 600px;
-        margin-bottom: 2.5rem;
-        line-height: 1.6;
-    }
-
-    .hero-image-wrapper {
-        position: relative;
-        z-index: 2;
-    }
-
-    .hero-image-wrapper img {
-        border-radius: 12px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        border: 10px solid #ffffff;
-    }
-
-    /* CTA Buttons */
-    .main-cta {
-        background: #ffffff !important; /* Forces solid white */
-        color: #0055A4 !important; /* Solid French Blue */
-        padding: 1rem 2.5rem;
-        border-radius: 4px;
-        font-weight: 700;
-        font-size: 1rem;
-        border: none;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .main-cta:hover {
-        background: #f8f9fa;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        color: var(--book-primary);
-    }
-
-    .price-box {
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Timeline Section */
-    .timeline-section {
-        margin-top: -40px;
-        position: relative;
-        z-index: 3;
-        margin-bottom: 5rem;
-    }
-
-    .timeline-card {
-        background: white;
-        padding: 2.5rem 1.5rem;
-        border-radius: 8px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        height: 100%;
-        border: 1px solid #eee;
-    }
-
-    .timeline-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--book-primary);
-    }
-
-    .timeline-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 1.5rem;
-        background: #f8fafc;
-        color: var(--book-primary);
-        border: 1px solid #eee;
-    }
-
-    .timeline-card h5 {
-        font-weight: 700;
-        color: #000;
-        margin-bottom: 0.75rem;
-    }
-
-    /* Skills Section */
-    .skills-section {
-        padding: 5rem 0;
-        background: #fbfbfb;
-    }
-
-    .section-title {
-        font-size: 2.22rem;
         font-weight: 800;
-        color: #000;
-        margin-bottom: 1.5rem;
+        color: #111827;
+    }
+    .cd-card-body { padding: 20px 24px; }
+
+    /* ── Stats bar ── */
+    .cd-stats { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 24px; border-bottom: 1px solid #f3f4f6; }
+    .cd-stat { display: flex; align-items: center; gap: 7px; font-size: 0.85rem; font-weight: 600; color: #374151; }
+    .cd-stat i { color: #0055A4; }
+
+    /* ── Curriculum accordion ── */
+    .cd-chapter {
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .cd-chapter:last-child { border-bottom: none; }
+    .cd-chapter-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 24px;
+        cursor: pointer;
+        user-select: none;
+        transition: background .15s;
+    }
+    .cd-chapter-head:hover { background: #f9fafb; }
+    .cd-chapter-title {
+        display: flex; align-items: center; gap: 12px;
+        font-weight: 700; font-size: 0.95rem; color: #111827;
+    }
+    .cd-chapter-num {
+        width: 30px; height: 30px; border-radius: 50%;
+        background: #0055A4; color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.78rem; font-weight: 800; flex-shrink: 0;
+    }
+    .cd-chapter-meta { font-size: 0.78rem; color: #9ca3af; display: flex; align-items: center; gap: 12px; }
+    .cd-chapter-body { display: none; border-top: 1px solid #f3f4f6; }
+    .cd-chapter-body.open { display: block; }
+
+    /* ── Lesson row ── */
+    .cd-lesson {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 11px 24px 11px 60px;
+        border-bottom: 1px solid #f9fafb;
+        transition: background .15s;
+    }
+    .cd-lesson:last-child { border-bottom: none; }
+    .cd-lesson:hover { background: #f9fafb; }
+    .cd-lesson-left { display: flex; align-items: center; gap: 10px; }
+    .cd-lesson-left i { color: #0055A4; font-size: 0.9rem; }
+    .cd-lesson-title { font-size: 0.88rem; font-weight: 600; color: #374151; }
+    .cd-lesson-dur { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+    .cd-lesson-badge {
+        font-size: 0.7rem; font-weight: 700;
+        background: #eff6ff; color: #1d4ed8;
+        padding: 3px 10px; border-radius: 20px;
+        white-space: nowrap;
     }
 
-    .skills-badge {
-        background: white;
-        padding: 0.8rem 1.5rem;
-        border-radius: 4px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-        border: 1px solid #eee;
-        transition: all 0.2s;
-        margin: 0.4rem;
-        font-size: 0.9rem;
+    /* ── Chapter sub-info ── */
+    .cd-chapter-info { padding: 14px 24px 14px 60px; background: #fafafa; font-size: 0.82rem; color: #6b7280; }
+    .cd-chapter-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .cd-chapter-info-item h6 { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: #9ca3af; margin-bottom: 4px; }
+
+    /* ── Highlight bullets ── */
+    .cd-highlight { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cd-highlight-item { display: flex; align-items: flex-start; gap: 8px; font-size: 0.88rem; color: #374151; }
+    .cd-highlight-item i { color: #0055A4; margin-top: 2px; font-size: 0.8rem; flex-shrink: 0; }
+
+    /* ── Description ── */
+    .cd-desc { font-size: 0.95rem; line-height: 1.8; color: #374151; }
+    .cd-desc-collapsed { max-height: 120px; overflow: hidden; position: relative; }
+    .cd-desc-collapsed::after {
+        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
+        background: linear-gradient(transparent, #fff);
     }
 
-    .skills-badge:hover {
-        border-color: var(--book-primary);
-        color: var(--book-primary);
-    }
-
-    /* Feature Cards */
-    .feature-card {
-        background: white;
-        padding: 1.5rem;
+    /* ── Right sidebar ── */
+    .cd-sidebar { width: 320px; flex-shrink: 0; align-self: flex-start; position: sticky; top: 16px; }
+    .cd-sidebar-card {
+        background: #fff;
         border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        transition: all 0.3s ease;
-        border: 1px solid #eee;
-        height: 100%;
-    }
-
-    .feature-icon-box {
-        width: 54px;
-        height: 54px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        flex-shrink: 0;
-        background: #f8fafc;
-        color: var(--book-primary);
-    }
-
-    .feature-card h3 {
-        color: #000;
-        margin-bottom: 0;
-        font-size: 1.25rem;
-        font-weight: 700;
-    }
-
-    /* Description Section */
-    .description-section {
-        padding: 5rem 0;
-    }
-
-    .description-box h3 {
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: #000;
-        margin-bottom: 2rem;
-    }
-
-    /* Sticky Enroll Bar - Simplified */
-    .enroll-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 1rem 0;
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
-        z-index: 100;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-        border-top: 1px solid #eee;
-    }
-
-    .enroll-bar.visible {
-        transform: translateY(0);
-    }
-
-    /* Legacy Theme cleanup */
-    .theme-blue, .theme-green, .theme-yellow, .theme-pink {
-        background: #f8fafc !important;
-        color: var(--book-primary) !important;
-    }
-
-    /* Curriculum Accordion */
-    .custom-accordion .accordion-item {
-        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
         overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,.07);
     }
-
-    .custom-accordion .accordion-button:not(.collapsed) {
-        background-color: #f1f5f9 !important;
-        box-shadow: none;
-        color: var(--book-primary) !important;
+    .cd-sidebar-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: #f3f4f6; }
+    .cd-sidebar-img-placeholder {
+        width: 100%; aspect-ratio: 16/9;
+        background: linear-gradient(135deg, #0055A4, #003d7a);
+        display: flex; align-items: center; justify-content: center;
     }
-
-    .custom-accordion .accordion-button:focus {
-        box-shadow: none;
+    .cd-sidebar-body { padding: 20px; }
+    .cd-price { font-size: 1.8rem; font-weight: 900; color: #111827; margin-bottom: 4px; }
+    .cd-price-sub { font-size: 0.78rem; color: #9ca3af; margin-bottom: 16px; }
+    .cd-enroll-btn {
+        display: block; width: 100%; padding: 13px;
+        background-color: #0055A4 !important; color: #fff !important;
+        text-align: center; font-weight: 800; font-size: 0.95rem;
+        border-radius: 6px; text-decoration: none !important; border: none; cursor: pointer;
+        transition: background-color .2s;
+        margin-bottom: 16px;
     }
-
-    .custom-accordion .accordion-button::after {
-        background-size: 1rem;
-        transition: transform 0.3s ease;
+    .cd-enroll-btn:hover, .cd-enroll-btn:focus, .cd-enroll-btn:active, .cd-enroll-btn:visited {
+        background-color: #003d7a !important; color: #fff !important; text-decoration: none !important;
     }
-
-    .lesson-item {
-        transition: background 0.2s ease;
+    .cd-enrolled-btn {
+        display: block; width: 100%; padding: 13px;
+        background: #16a34a; color: #fff !important;
+        text-align: center; font-weight: 800; font-size: 0.95rem;
+        border-radius: 6px; text-decoration: none;
+        margin-bottom: 16px;
     }
+    .cd-includes-title { font-size: 0.85rem; font-weight: 800; color: #111827; margin-bottom: 12px; }
+    .cd-includes-list { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 9px; }
+    .cd-includes-list li { display: flex; align-items: center; gap: 10px; font-size: 0.83rem; color: #374151; }
+    .cd-includes-list li i { color: #0055A4; width: 16px; text-align: center; }
 
-    .lesson-item:hover {
-        background: #f8fafc;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-left: -10px;
-        margin-right: -10px;
-        border-radius: 8px;
+    /* ── Coupon ── */
+    .cd-coupon { display: flex; gap: 8px; margin-bottom: 16px; }
+    .cd-coupon input {
+        flex: 1; border: 1px solid #d1d5db; border-radius: 6px;
+        padding: 9px 12px; font-size: 0.83rem; outline: none;
     }
-
-    .bg-soft-primary {
-        background: #e0f2fe;
+    .cd-coupon input:focus { border-color: #0055A4; }
+    .cd-coupon button {
+        background: #0055A4; color: #fff; border: none; border-radius: 6px;
+        padding: 9px 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+        white-space: nowrap;
     }
+    .cd-coupon button:hover { background: #003d7a; }
 
-    @media (max-width: 768px) {
-        .course-hero { padding: 4rem 0; text-align: center; }
-        .hero-title { font-size: 2.2rem; }
-        .hero-desc { font-size: 1rem; margin: 0 auto 2.5rem; }
-        .price-box { margin-top: 1.5rem; }
-        .main-cta { width: 100%; }
-        .hero-image-wrapper { display: none; }
+    /* ── Learning path ── */
+    .cd-lp-title { font-size: 0.85rem; font-weight: 800; color: #111827; margin-bottom: 4px; }
+    .cd-lp-desc { font-size: 0.75rem; color: #9ca3af; margin-bottom: 10px; }
+    .cd-lp-btn {
+        display: block; width: 100%; padding: 9px;
+        border: 1.5px solid #d1d5db; border-radius: 6px;
+        text-align: center; font-size: 0.82rem; font-weight: 700; color: #374151 !important;
+        text-decoration: none; transition: border-color .2s, color .2s;
     }
+    .cd-lp-btn:hover { border-color: #0055A4; color: #0055A4 !important; }
 
-    /* Mock Exam Premium Cards */
-    .exam-premium-card {
-        background: #f8fafc;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
+    /* ── Mock exam cards ── */
+    .cd-exam-card {
+        border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;
+        display: flex; flex-direction: column; height: 100%; transition: all .2s;
     }
-
-    .exam-premium-card:hover {
-        transform: translateY(-5px);
-        border-color: #0055A4;
-        box-shadow: 0 20px 25px -5px rgba(0, 85, 164, 0.1);
+    .cd-exam-card:hover { border-color: #0055A4; box-shadow: 0 4px 16px rgba(0,85,164,.1); transform: translateY(-2px); }
+    .cd-exam-card-body { padding: 20px; flex: 1; }
+    .cd-exam-type { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #0055A4; background: #eff6ff; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; }
+    .cd-exam-title { font-size: 1.1rem; font-weight: 800; color: #111827; margin-bottom: 8px; }
+    .cd-exam-desc { font-size: 0.83rem; color: #6b7280; margin-bottom: 14px; line-height: 1.6; }
+    .cd-exam-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .cd-exam-meta span { font-size: 0.78rem; font-weight: 600; color: #6b7280; display: flex; align-items: center; gap: 5px; }
+    .cd-exam-meta span i { color: #0055A4; }
+    .cd-exam-card-foot { padding: 14px 20px; background: #f9fafb; border-top: 1px solid #e5e7eb; }
+    .cd-exam-start {
+        display: flex; align-items: center; justify-content: space-between;
+        background: #0055A4; color: #fff !important; text-decoration: none;
+        padding: 11px 16px; border-radius: 6px; font-weight: 800; font-size: 0.82rem;
+        letter-spacing: .5px; transition: background .2s;
     }
-
-    .exam-premium-card:hover .exam-direct-btn {
-        background: #003d7a !important;
-        box-shadow: 0 4px 12px rgba(0, 85, 164, 0.3);
+    .cd-exam-start:hover { background: #003d7a; }
+    .cd-exam-lock {
+        display: block; text-align: center; padding: 11px;
+        border: 2px dashed #d1d5db; border-radius: 6px;
+        font-size: 0.82rem; font-weight: 700; color: #9ca3af !important;
+        text-decoration: none; transition: all .2s;
     }
+    .cd-exam-lock:hover { border-color: #0055A4; color: #0055A4 !important; }
 
-    .exam-card-content {
-        padding: 2rem;
-        flex-grow: 1;
-    }
+    /* ── Read more toggle ── */
+    .cd-readmore { font-size: 0.83rem; color: #0055A4; font-weight: 700; background: none; border: none; cursor: pointer; padding: 0; margin-top: 6px; }
 
-    .exam-type-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        background: rgba(0, 85, 164, 0.1);
-        color: #0055A4;
-        font-size: 0.75rem;
-        font-weight: 700;
-        border-radius: 4px;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .exam-title {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 1rem;
-    }
-
-    .exam-desc {
-        color: #64748b;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-    }
-
-    .exam-meta-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #475569;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .meta-item i {
-        color: #0055A4;
-    }
-
-    .exam-card-footer {
-        padding: 1.5rem 2rem;
-        background: white;
-        border-top: 1px solid #e2e8f0;
-    }
-
-    .exam-direct-btn {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #0055A4 !important; /* Force French Blue background */
-        color: white !important;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 700;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        letter-spacing: 1px;
-        border: none;
-    }
-
-    .exam-direct-btn i {
-        color: white !important;
-        transition: transform 0.3s ease;
-    }
-
-    .exam-direct-btn:hover {
-        background: #003d7a !important;
-        transform: scale(1.02);
-    }
-
-    .exam-direct-btn:hover i {
-        transform: translateX(5px);
-    }
-
-    .exam-unlock-btn {
-        display: block;
-        text-align: center;
-        padding: 1rem;
-        border: 2px dashed #cbd5e1;
-        color: #64748b !important;
-        border-radius: 8px;
-        font-weight: 700;
-        text-decoration: none;
-        transition: all 0.2s;
-    }
-
-    .exam-unlock-btn:hover {
-        border-color: #0055A4;
-        color: #0055A4 !important;
-        background: rgba(0, 85, 164, 0.02);
+    @media (max-width: 900px) {
+        .cd-layout { flex-direction: column !important; }
+        .cd-sidebar { width: 100% !important; }
+        .cd-sidebar { position: static !important; }
+        .cd-highlight { grid-template-columns: 1fr; }
+        .cd-chapter-info-grid { grid-template-columns: 1fr; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Library Hero Section -->
-<section class="course-hero">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-check-circle me-2"></i> CEFR Aligned Course
-                </div>
-                <h1 class="hero-title">
-                    {{ course.name }}
-                </h1>
-                <p class="hero-desc">
-                    {{ course.description|truncatewords:40 }}
-                </p>
-                <div class="d-flex flex-wrap align-items-center gap-3">
-                    {% if is_enrolled %}
-                    <a href="{% url 'dashboard:my_courses' %}" class="main-cta">
-                        <i class="fas fa-play me-2"></i> Continue Learning
-                    </a>
-                    {% else %}
-                    <a href="{% url 'payments:create_payment' course.id %}" class="main-cta">
-                        <i class="fas fa-rocket me-2"></i> Enroll Now
-                    </a>
-                    {% endif %}
-                    <div class="price-box">
-                        <div class="h3 mb-0 fw-bold" style="color: #ffffff;">{{ course.price }} {{ course.currency }}</div>
-                        <small style="color: rgba(255,255,255,0.7);">Lifetime Access</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 position-relative text-center d-none d-lg-block">
-                <div class="hero-image-wrapper">
-                    {% if course.image %}
-                    <img src="{{ course.image.url }}" alt="{{ course.name }}" class="img-fluid" style="max-height: 400px; width: auto;">
-                    {% else %}
-                    <div class="bg-white rounded-4 shadow-lg p-2 d-inline-block">
-                        <div style="width: 380px; height: 280px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px;">
-                            <i class="fas fa-book-open fa-4x" style="color: var(--book-primary); opacity: 0.2;"></i>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Learning Journey Timeline -->
-<div class="container timeline-section">
-    <div class="row g-4 justify-content-center">
-        <div class="col-md-4 col-lg-3">
-            <div class="timeline-card">
-                <div class="timeline-icon">
-                    <i class="fas fa-play"></i>
-                </div>
-                <h5>Step 1: Onboard</h5>
-                <p class="text-muted small mb-0">Start with basics and assess your current level.</p>
-            </div>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="timeline-card">
-                <div class="timeline-icon">
-                    <i class="fas fa-book-reader"></i>
-                </div>
-                <h5>Step 2: Learn</h5>
-                <p class="text-muted small mb-0">Follow structured video lessons and guides.</p>
-            </div>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="timeline-card">
-                <div class="timeline-icon">
-                    <i class="fas fa-award"></i>
-                </div>
-                <h5>Step 3: Certify</h5>
-                <p class="text-muted small mb-0">Complete mock exams and earn your certificate.</p>
-            </div>
-        </div>
+<!-- Breadcrumb -->
+<div class="cd-breadcrumb">
+    <div class="cd-wrap">
+        <a href="{% url 'courses:course_list' %}">Courses</a>
+        <span>›</span>
+        {% if course.level %}<a href="#">{{ course.level }}</a><span>›</span>{% endif %}
+        <span style="color:#374151">{{ course.name }}</span>
     </div>
 </div>
 
-<!-- What You Will Learn -->
-<section class="skills-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <h2 class="section-title">What You Will Learn</h2>
-                <p class="text-muted lead mb-4">
-                    Our comprehensive curriculum is designed to take you from basics to fluency.
-                    Here are the key skills you will master:
-                </p>
+<!-- Main layout -->
+<div class="cd-wrap" style="padding-top:20px; padding-bottom:40px">
+    <div class="cd-layout" style="display:flex; gap:20px; align-items:flex-start">
 
-                <div class="d-flex flex-wrap">
-                    <div class="skills-badge">
-                        <i class="fas fa-comments"></i>
-                        <span>Conversational French</span>
-                    </div>
-                    <div class="skills-badge">
-                        <i class="fas fa-pen-fancy"></i>
-                        <span>Grammar Mastery</span>
-                    </div>
-                    <div class="skills-badge">
-                        <i class="fas fa-headphones-alt"></i>
-                        <span>Listening Skills</span>
-                    </div>
-                    <div class="skills-badge">
-                        <i class="fas fa-book"></i>
-                        <span>Reading Comprehension</span>
-                    </div>
-                    <div class="skills-badge">
-                        <i class="fas fa-globe-europe"></i>
-                        <span>French Culture</span>
-                    </div>
-                    <div class="skills-badge">
-                        <i class="fas fa-certificate"></i>
-                        <span>Exam Preparation</span>
+        <!-- ═══════════ LEFT COLUMN ═══════════ -->
+        <div class="cd-left">
+
+            <!-- Title card -->
+            <div class="cd-title-card">
+                {% if course.level %}
+                <div style="margin-bottom:10px">
+                    <span class="cd-level-badge">
+                        <i class="fas fa-layer-group"></i>
+                        {{ course.level }}
+                    </span>
+                    {% if course.is_full_access %}
+                    <span class="cd-level-badge" style="background:#f0fdf4;color:#16a34a;margin-left:6px">
+                        <i class="fas fa-infinity"></i> Full Level Access
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <h1>{{ course.name }}</h1>
+                <p style="color:#6b7280;font-size:0.95rem;margin:0;line-height:1.6">{{ course.description|truncatewords:30 }}</p>
+                <div class="cd-meta">
+                    <span><i class="fas fa-video" style="color:#0055A4"></i> <strong>{{ stats.videos }}</strong> Video Lessons</span>
+                    <span><i class="fas fa-tasks" style="color:#0055A4"></i> <strong>{{ stats.exercises }}</strong> Exercises</span>
+                    <span><i class="fas fa-file-alt" style="color:#0055A4"></i> <strong>{{ stats.mock_exams }}</strong> Mock Exams</span>
+                    {% if course.duration_months %}
+                    <span><i class="fas fa-calendar-alt" style="color:#0055A4"></i> <strong>{{ course.duration_months }} months</strong> access</span>
+                    {% else %}
+                    <span><i class="fas fa-infinity" style="color:#0055A4"></i> <strong>Lifetime</strong> access</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- What You Will Learn -->
+            {% if course.learning_outcomes %}
+            <div class="cd-card">
+                <div class="cd-card-head">What You Will Learn</div>
+                <div class="cd-card-body">
+                    <div class="cd-highlight">
+                        {% for line in course.learning_outcomes.splitlines %}
+                        {% if line.strip %}
+                        <div class="cd-highlight-item">
+                            <i class="fas fa-check-circle"></i> {{ line.strip }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="row g-4">
-                    <div class="col-6">
-                        <div class="feature-card">
-                            <div class="feature-icon-box">
-                                <i class="fas fa-video"></i>
-                            </div>
-                            <div>
-                                <h3>{{ stats.videos }}+</h3>
-                                <span class="text-muted small">Video Lessons</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="feature-card">
-                            <div class="feature-icon-box">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div>
-                                <h3>{{ stats.exercises }}+</h3>
-                                <span class="text-muted small">Exercises</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="feature-card">
-                            <div class="feature-icon-box">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div>
-                                <h3>{{ stats.mock_exams }}+</h3>
-                                <span class="text-muted small">Mock Exams</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="feature-card">
-                            <div class="feature-icon-box">
-                                <i class="fas fa-infinity"></i>
-                            </div>
-                            <div>
-                                <h3>Lifetime</h3>
-                                <span class="text-muted small">Access</span>
-                            </div>
-                        </div>
-                    </div>
+            {% endif %}
+
+            <!-- Course Content -->
+            <div class="cd-card">
+                <div class="cd-card-head">Course Content</div>
+                <div class="cd-stats">
+                    <div class="cd-stat"><i class="fas fa-play-circle"></i> {{ stats.videos }} Lessons</div>
+                    <div class="cd-stat"><i class="fas fa-book-open"></i> {{ chapters|length }} Chapters</div>
+                    <div class="cd-stat"><i class="fas fa-file-alt"></i> {{ stats.mock_exams }} Mock Exams</div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Course Curriculum -->
-<section class="curriculum-section pb-5" style="background: #ffffff;">
-    <div class="container">
-        <div class="description-box mb-4">
-            <h3 class="section-title">Course Curriculum</h3>
-            <p class="text-muted lead mb-5">Explore our structured learning path. Each chapter is designed to build your skills progressively.</p>
-        </div>
-
-        <div class="accordion custom-accordion" id="curriculumAccordion">
-            {% for chapter in course.level.chapters.all %}
-            <div class="accordion-item mb-3 border-0 rounded-4 shadow-sm">
-                <h2 class="accordion-header" id="heading{{ chapter.id }}">
-                    <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} px-4 py-3 rounded-4" type="button" data-toggle="collapse" data-target="#collapse{{ chapter.id }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ chapter.id }}" style="background: #f8fafc; color: #1a1a1a; font-weight: 700; font-size: 1.1rem;">
-                        <div class="d-flex align-items-center justify-content-between w-100 me-3">
-                            <div class="d-flex align-items-center gap-3">
-                                <span class="chapter-number d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 32px; height: 32px; font-size: 0.9rem;">{{ forloop.counter }}</span>
-                                <span>{{ chapter.title }}</span>
-                            </div>
-                            <span class="text-muted small fw-normal">{{ chapter.videos.count }} Lessons</span>
+                {% for chapter in chapters %}
+                <div class="cd-chapter">
+                    <div class="cd-chapter-head" onclick="toggleChapter({{ forloop.counter }})">
+                        <div class="cd-chapter-title">
+                            <div class="cd-chapter-num">{{ forloop.counter }}</div>
+                            {{ chapter.title }}
                         </div>
-                    </button>
-                </h2>
-                <div id="collapse{{ chapter.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ chapter.id }}" data-parent="#curriculumAccordion">
-                    <div class="accordion-body px-4 py-3">
-                        <p class="text-muted small mb-4">{{ chapter.description }}</p>
-                        
-                        <div class="lesson-list">
-                            {% for video in chapter.videos.all %}
-                            <div class="lesson-item d-flex align-items-center justify-content-between py-3 {% if not forloop.last %}border-bottom{% endif %}">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="lesson-icon text-primary">
-                                        <i class="fas fa-play-circle"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-0 fw-bold" style="color: #334155;">{{ video.title }}</h6>
-                                        <span class="text-muted x-small" style="font-size: 0.75rem;">{{ video.get_duration_display }}</span>
-                                    </div>
-                                </div>
-                                <div class="lesson-badge">
-                                    <span class="badge bg-soft-primary text-primary rounded-pill px-3 py-2" style="font-size: 0.7rem; background: #e0f2fe;">Video Lesson</span>
+                        <div class="cd-chapter-meta">
+                            <span>{{ chapter.videos.count }} Lesson{{ chapter.videos.count|pluralize }}</span>
+                            <i class="fas fa-chevron-down" id="chev-{{ forloop.counter }}" style="transition:transform .2s;font-size:0.75rem"></i>
+                        </div>
+                    </div>
+                    <div class="cd-chapter-body {% if forloop.first %}open{% endif %}" id="ch-{{ forloop.counter }}">
+                        {% for video in chapter.videos.all %}
+                        <div class="cd-lesson">
+                            <div class="cd-lesson-left">
+                                <i class="fas fa-play-circle"></i>
+                                <div>
+                                    <div class="cd-lesson-title">{{ video.title }}</div>
+                                    <div class="cd-lesson-dur">{{ video.get_duration_display }}</div>
                                 </div>
                             </div>
-                            {% empty %}
-                            <p class="text-muted italic small">No lessons added to this chapter yet.</p>
-                            {% endfor %}
+                            <span class="cd-lesson-badge">Video</span>
                         </div>
+                        {% empty %}
+                        <div style="padding:16px 24px 16px 60px;color:#9ca3af;font-size:0.83rem">No lessons added yet.</div>
+                        {% endfor %}
 
                         {% if chapter.grammar_focus or chapter.vocabulary_list %}
-                        <div class="mt-4 pt-4 border-top">
-                            <div class="row">
+                        <div class="cd-chapter-info">
+                            <div class="cd-chapter-info-grid">
                                 {% if chapter.grammar_focus %}
-                                <div class="col-md-6 mb-3">
-                                    <h6 class="fw-bold small text-uppercase letter-spacing-1 mb-2" style="color: #64748b;">Grammar Focus</h6>
-                                    <p class="small text-muted mb-0">{{ chapter.grammar_focus }}</p>
+                                <div class="cd-chapter-info-item">
+                                    <h6>Grammar Focus</h6>
+                                    <p style="margin:0">{{ chapter.grammar_focus }}</p>
                                 </div>
                                 {% endif %}
                                 {% if chapter.vocabulary_list %}
-                                <div class="col-md-6 mb-3">
-                                    <h6 class="fw-bold small text-uppercase letter-spacing-1 mb-2" style="color: #64748b;">Key Vocabulary</h6>
-                                    <p class="small text-muted mb-0">{{ chapter.vocabulary_list }}</p>
+                                <div class="cd-chapter-info-item">
+                                    <h6>Key Vocabulary</h6>
+                                    <p style="margin:0">{{ chapter.vocabulary_list }}</p>
                                 </div>
                                 {% endif %}
                             </div>
@@ -659,124 +366,189 @@
                         {% endif %}
                     </div>
                 </div>
+                {% empty %}
+                <div style="padding:40px;text-align:center;color:#9ca3af">
+                    <i class="fas fa-layer-group fa-2x" style="margin-bottom:10px;display:block;opacity:.3"></i>
+                    Curriculum coming soon.
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="text-center py-5">
-                <i class="fas fa-layer-group fa-3x text-muted opacity-25 mb-3"></i>
-                <h5 class="text-muted">Curriculum Coming Soon</h5>
-                <p class="text-muted small">We are currently preparing the lesson plan for this course.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
 
-<!-- Mock Exams Section -->
-<section class="mock-exams-section py-5" style="background: #ffffff; border-top: 1px solid #eee;">
-    <div class="container">
-        <div class="description-box mb-4">
-            <h3 class="section-title">Official Mock Exams</h3>
-            <p class="text-muted lead mb-5">Simulate the real DELF/DALF environment. Our timed exams are designed to build your confidence and readiness.</p>
-        </div>
-
-        <div class="row g-4">
-            {% for exam in mock_exams %}
-            <div class="col-lg-6">
-                <div class="exam-premium-card">
-                    <div class="exam-card-content">
-                        <div class="exam-type-badge">Official {{ course.level.code }} Exam</div>
-                        <h4 class="exam-title">{{ exam.title }}</h4>
-                        <p class="exam-desc">{{ exam.description|truncatewords:25 }}</p>
-                        
-                        <div class="exam-meta-grid">
-                            <div class="meta-item">
-                                <i class="far fa-clock"></i>
-                                <span>{{ exam.duration_minutes }} Minutes</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-bullseye"></i>
-                                <span>{{ exam.total_marks }} Marks</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-layer-group"></i>
-                                <span>4 Sections</span>
+            <!-- Mock Exams -->
+            {% if mock_exams %}
+            <div class="cd-card">
+                <div class="cd-card-head">Official Mock Exams</div>
+                <div class="cd-card-body">
+                    <div class="row g-3">
+                        {% for exam in mock_exams %}
+                        <div class="col-md-6">
+                            <div class="cd-exam-card">
+                                <div class="cd-exam-card-body">
+                                    <div class="cd-exam-type">{{ course.level.code }} Exam</div>
+                                    <div class="cd-exam-title">{{ exam.title }}</div>
+                                    <div class="cd-exam-desc">{{ exam.description|truncatewords:20 }}</div>
+                                    <div class="cd-exam-meta">
+                                        <span><i class="far fa-clock"></i> {{ exam.duration_minutes }} min</span>
+                                        <span><i class="fas fa-bullseye"></i> {{ exam.total_marks }} marks</span>
+                                    </div>
+                                </div>
+                                <div class="cd-exam-card-foot">
+                                    {% if is_enrolled %}
+                                    <a href="{% url 'exams:start_mock_exam' exam.id %}" class="cd-exam-start">
+                                        <span>START EXAM</span><i class="fas fa-arrow-right"></i>
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'payments:create_payment' course.id %}" class="cd-exam-lock">
+                                        <i class="fas fa-lock me-2"></i> Enroll to Unlock
+                                    </a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    <div class="exam-card-footer">
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Description -->
+            <div class="cd-card">
+                <div class="cd-card-head">Description</div>
+                <div class="cd-card-body">
+                    <div class="cd-desc" id="descBox" style="max-height:140px;overflow:hidden;position:relative">
+                        {{ course.description|linebreaks }}
+                        <div id="descFade" style="position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,#fff)"></div>
+                    </div>
+                    <button class="cd-readmore" id="readMoreBtn" onclick="toggleDesc()">
+                        Show more <i class="fas fa-chevron-down" style="font-size:0.7rem"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /cd-left -->
+
+        <!-- ═══════════ RIGHT SIDEBAR ═══════════ -->
+        <div class="cd-sidebar">
+            <div class="cd-sidebar-card">
+
+                    <!-- Image -->
+                    {% if course.image %}
+                    <img src="{{ course.image.url }}" alt="{{ course.name }}" class="cd-sidebar-img">
+                    {% else %}
+                    <div class="cd-sidebar-img-placeholder">
+                        <i class="fas fa-graduation-cap fa-3x" style="color:rgba(255,255,255,.3)"></i>
+                    </div>
+                    {% endif %}
+
+                    <div class="cd-sidebar-body">
+
+                        <!-- Price -->
+                        <div class="cd-price">{{ course.price }} <span style="font-size:1rem;font-weight:600;color:#6b7280">{{ course.currency }}</span></div>
+                        <div class="cd-price-sub">
+                            {% if course.duration_months %}{{ course.duration_months }} months access{% else %}Lifetime access{% endif %}
+                        </div>
+
+                        <!-- CTA -->
                         {% if is_enrolled %}
-                        <a href="{% url 'exams:start_mock_exam' exam.id %}" class="exam-direct-btn">
-                            <span>START EXAM NOW</span>
-                            <i class="fas fa-arrow-right"></i>
+                        <a href="{% url 'dashboard:my_courses' %}" class="cd-enrolled-btn">
+                            <i class="fas fa-play me-2"></i> Continue Learning
                         </a>
                         {% else %}
-                        <a href="{% url 'payments:create_payment' course.id %}" class="exam-unlock-btn">
-                            <i class="fas fa-lock me-2"></i> ENROLL TO UNLOCK
+                        <a href="{% url 'payments:create_payment' course.id %}" class="cd-enroll-btn">
+                            Join Now
                         </a>
                         {% endif %}
+
+                        <!-- Includes -->
+                        <div class="cd-includes-title">Course Includes</div>
+                        <ul class="cd-includes-list">
+                            <li><i class="fas fa-video"></i> {{ stats.videos }} video lessons</li>
+                            <li><i class="fas fa-tasks"></i> {{ stats.exercises }} exercises</li>
+                            {% if stats.mock_exams > 0 %}
+                            <li><i class="fas fa-file-alt"></i> {{ stats.mock_exams }} mock exams</li>
+                            {% endif %}
+                            <li><i class="fas fa-file-pdf"></i> Lesson resources & PDFs</li>
+                            <li><i class="fas fa-language"></i> Word meanings & vocabulary</li>
+                            <li>
+                                <i class="fas fa-{% if course.duration_months %}calendar-check{% else %}infinity{% endif %}"></i>
+                                {% if course.duration_months %}{{ course.duration_months }} months access{% else %}Lifetime access{% endif %}
+                            </li>
+                            <li><i class="fas fa-certificate"></i> Certificate of completion</li>
+                        </ul>
+
+                        <!-- Coupon -->
+                        <div style="border-top:1px solid #f3f4f6;padding-top:14px;margin-bottom:14px">
+                            <div style="color:#0055A4;font-size:0.82rem;font-weight:700;margin-bottom:8px;cursor:pointer">
+                                <i class="fas fa-tag me-1"></i> Discount Coupon
+                            </div>
+                            <div class="cd-coupon">
+                                <input type="text" placeholder="Enter Promo">
+                                <button type="button"><i class="fas fa-check me-1"></i>Apply</button>
+                            </div>
+                        </div>
+
+                        <!-- Learning path -->
+                        <div style="border-top:1px solid #f3f4f6;padding-top:14px">
+                            <div class="cd-lp-title">Learning Path</div>
+                            <div class="cd-lp-desc">Follow the structured roadmap to build your French skills progressively.</div>
+                            <a href="{% url 'courses:course_list' %}" class="cd-lp-btn">View Roadmap</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">
-                <div class="opacity-25 mb-3">
-                    <i class="fas fa-clipboard-list fa-4x"></i>
-                </div>
-                <h5 class="text-muted">Coming Soon</h5>
-                <p class="text-muted small">New mock exams are currently being prepared for this level.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+        </div><!-- /cd-sidebar -->
 
-<section class="description-section">
-    <div class="container">
-        <div class="description-box">
-            <h3>Course Description</h3>
-            <div class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
-                {{ course.description|linebreaks }}
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Sticky Enroll Bar -->
-<div class="enroll-bar" id="enrollBar">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h5 class="fw-bold mb-0">{{ course.name }}</h5>
-            <small class="text-muted">Get lifetime access today</small>
-        </div>
-        <div class="d-flex align-items-center gap-4">
-            <span class="fw-bold fs-4">{{ course.price }} {{ course.currency }}</span>
-            {% if is_enrolled %}
-            <a href="{% url 'dashboard:my_courses' %}" class="main-cta" style="background: var(--book-primary); color: white; padding: 0.75rem 2rem;">
-                Go to Course
-            </a>
-            {% else %}
-            <a href="{% url 'payments:create_payment' course.id %}" class="main-cta" style="background: white; color: var(--book-primary) !important; padding: 0.75rem 2rem;">
-                Enroll Now
-            </a>
-            {% endif %}
-        </div>
-    </div>
+    </div><!-- /cd-layout -->
 </div>
+
+<!-- Sticky bottom bar (mobile / scroll) -->
+<div id="stickyBar" style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:200;transform:translateY(100%);transition:transform .3s;box-shadow:0 -4px 16px rgba(0,0,0,.07)">
+    <div>
+        <div style="font-weight:800;font-size:0.95rem;color:#111827">{{ course.name }}</div>
+        <div style="font-size:0.78rem;color:#9ca3af">{{ course.price }} {{ course.currency }}</div>
+    </div>
+    {% if is_enrolled %}
+    <a href="{% url 'dashboard:my_courses' %}" style="background:#16a34a;color:#fff;padding:10px 20px;border-radius:6px;font-weight:800;font-size:0.85rem;text-decoration:none;white-space:nowrap">
+        Continue Learning
+    </a>
+    {% else %}
+    <a href="{% url 'payments:create_payment' course.id %}" style="background:#0055A4;color:#fff;padding:10px 20px;border-radius:6px;font-weight:800;font-size:0.85rem;text-decoration:none;white-space:nowrap">
+        Join Now
+    </a>
+    {% endif %}
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Show sticky enroll bar on scroll
-    window.addEventListener('scroll', function () {
-        const enrollBar = document.getElementById('enrollBar');
-        const heroSection = document.querySelector('.course-hero');
-        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+/* ── Chapter accordion ── */
+function toggleChapter(n) {
+    const body = document.getElementById(`ch-${n}`);
+    const chev = document.getElementById(`chev-${n}`);
+    const open = body.classList.toggle('open');
+    chev.style.transform = open ? 'rotate(180deg)' : '';
+}
 
-        if (window.scrollY > heroBottom) {
-            enrollBar.classList.add('visible');
-        } else {
-            enrollBar.classList.remove('visible');
-        }
-    });
+/* ── Description read more ── */
+let descExpanded = false;
+function toggleDesc() {
+    const box = document.getElementById('descBox');
+    const fade = document.getElementById('descFade');
+    const btn = document.getElementById('readMoreBtn');
+    descExpanded = !descExpanded;
+    box.style.maxHeight = descExpanded ? 'none' : '140px';
+    if (fade) fade.style.display = descExpanded ? 'none' : 'block';
+    btn.innerHTML = descExpanded
+        ? 'Show less <i class="fas fa-chevron-up" style="font-size:.7rem"></i>'
+        : 'Show more <i class="fas fa-chevron-down" style="font-size:.7rem"></i>';
+}
+
+/* ── Sticky bar on scroll ── */
+const bar = document.getElementById('stickyBar');
+window.addEventListener('scroll', () => {
+    bar.style.transform = window.scrollY > 300 ? 'translateY(0)' : 'translateY(100%)';
+});
 </script>
 {% endblock %}

@@ -4,6 +4,10 @@ from . import views
 app_name = 'custom_admin'
 
 urlpatterns = [
+    # Auth
+    path('login/', views.admin_login, name='login'),
+    path('logout/', views.admin_logout, name='logout'),
+
     # Dashboard
     path('', views.dashboard, name='dashboard'),
 

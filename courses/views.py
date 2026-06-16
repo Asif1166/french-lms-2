@@ -189,13 +189,15 @@ def course_detail_view(request, course_id):
     # Calculate stats dynamically
     total_videos = 0
     total_exercises = 0
-    if course.level:
-        chapters = course.level.chapters.all().prefetch_related('videos__questions')
-        for chapter in chapters:
-            videos = chapter.videos.all()
-            total_videos += videos.count()
-            for video in videos:
-                total_exercises += video.questions.count()
+    if course.is_full_access and course.level:
+        chapters = course.level.chapters.filter(is_active=True).prefetch_related('videos__questions').order_by('order_index')
+    else:
+        chapters = course.chapters.filter(is_active=True).prefetch_related('videos__questions').order_by('order_index')
+    for chapter in chapters:
+        videos = chapter.videos.all()
+        total_videos += videos.count()
+        for video in videos:
+            total_exercises += video.questions.count()
     
     total_mock_exams = 0
     mock_exams = []
@@ -205,6 +207,7 @@ def course_detail_view(request, course_id):
     
     context = {
         'course': course,
+        'chapters': chapters,
         'is_enrolled': is_enrolled,
         'mock_exams': mock_exams,
         'stats': {

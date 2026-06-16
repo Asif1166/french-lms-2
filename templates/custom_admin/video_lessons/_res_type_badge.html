@@ -1,0 +1,9 @@
+{% if rtype == "PDF" %}
+<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700">PDF</span>
+{% elif rtype == "IMAGE" %}
+<span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700">IMAGE</span>
+{% elif rtype == "DOC" %}
+<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700">DOC</span>
+{% else %}
+<span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700">{{ rtype }}</span>
+{% endif %}

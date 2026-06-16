@@ -27,35 +27,32 @@
 
 <div class="row g-4">
 
-    <!-- ── Left column: main fields ── -->
+    <!-- ── Left column ── -->
     <div class="col-lg-8">
 
         <div class="ca-card mb-4">
             <div class="ca-card-head"><h3>Course Details</h3></div>
-            <div style="padding:24px">
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
 
-                <!-- Name -->
-                <div class="mb-4">
+                <div>
                     <label class="ca-form-label">Course Name <span class="req">*</span></label>
                     <input type="text" name="name"
                            value="{{ form.name.value|default:'' }}"
                            class="ca-input {% if form.name.errors %}err{% endif %}"
-                           placeholder="e.g. French A1 Complete Course">
+                           placeholder="e.g. A1 Grammar Essentials">
                     {% for e in form.name.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
                 </div>
 
-                <!-- Description -->
-                <div class="mb-4">
+                <div>
                     <label class="ca-form-label">Description <span class="req">*</span></label>
                     <textarea name="description"
                               class="ca-input {% if form.description.errors %}err{% endif %}"
-                              placeholder="Describe what students will get from this course…"
+                              placeholder="Describe what students will get…"
                               rows="4">{{ form.description.value|default:'' }}</textarea>
                     {% for e in form.description.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
                 </div>
 
-                <!-- Price + Currency -->
-                <div class="row g-3 mb-4">
+                <div class="row g-3">
                     <div class="col-sm-6">
                         <label class="ca-form-label">Price <span class="req">*</span></label>
                         <input type="number" name="price"
@@ -76,11 +73,17 @@
                     </div>
                 </div>
 
-                <!-- Level -->
-                <div class="mb-4">
+                <div>
+                    <label class="ca-form-label">What You Will Learn</label>
+                    <textarea name="learning_outcomes" rows="6" class="ca-input"
+                              placeholder="Enter one outcome per line, e.g.:&#10;Conversational French from day one&#10;French grammar rules &amp; structure&#10;Listening &amp; reading comprehension">{{ form.learning_outcomes.value|default:'' }}</textarea>
+                    <div class="ca-form-hint">Each line becomes one bullet point on the course page.</div>
+                </div>
+
+                <div>
                     <label class="ca-form-label">Level</label>
-                    <select name="level" class="ca-input">
-                        <option value="">— No specific level —</option>
+                    <select name="level" id="levelSelect" class="ca-input" onchange="filterChapters()">
+                        <option value="">— Select Level —</option>
                         {% for lvl in form.level.field.queryset %}
                         <option value="{{ lvl.pk }}"
                             {% if form.level.value|stringformat:"s" == lvl.pk|stringformat:"s" %}selected{% endif %}>
@@ -88,68 +91,135 @@
                         </option>
                         {% endfor %}
                     </select>
-                    <div class="ca-form-hint">Leave empty if this package covers all levels.</div>
+                    <div class="ca-form-hint">Select the level this course belongs to.</div>
                 </div>
 
-                <!-- Duration -->
                 <div>
                     <label class="ca-form-label">Access Duration (months)</label>
                     <input type="number" name="duration_months"
                            value="{{ form.duration_months.value|default:'' }}"
-                           min="1"
-                           class="ca-input"
+                           min="1" class="ca-input"
                            placeholder="Leave empty for lifetime access">
-                    <div class="ca-form-hint">How many months students can access. Empty = lifetime.</div>
+                    <div class="ca-form-hint">Empty = lifetime access.</div>
                 </div>
 
             </div>
         </div>
 
+        <!-- ── Chapter Selection ── -->
+        <div class="ca-card mb-4" id="chaptersCard">
+            <div class="ca-card-head">
+                <div>
+                    <h3 style="margin:0;display:flex;align-items:center;gap:8px">
+                        <i class="bi bi-collection-fill" style="color:#6366f1"></i>
+                        Included Chapters
+                    </h3>
+                    <p style="font-size:0.77rem;color:#94a3b8;margin:3px 0 0">
+                        Select which chapters are included in this course
+                    </p>
+                </div>
+                <div id="chapterCountBadge" style="background:#f1f5f9;color:#475569;font-size:0.78rem;font-weight:700;padding:4px 12px;border-radius:12px">
+                    0 selected
+                </div>
+            </div>
+
+            <!-- Full access notice -->
+            <div id="fullAccessNotice" style="display:none;margin:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;font-size:0.83rem;color:#1d4ed8;display:flex;align-items:center;gap:8px">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>Full Access is ON — student gets <strong>all chapters</strong> under this level. Chapter selection below is ignored.</span>
+            </div>
+
+            <div style="padding:16px" id="chapterList">
+
+                {% regroup form.chapters.field.queryset by level as level_list %}
+                {% for level_group in level_list %}
+                <div class="level-group" data-level="{{ level_group.grouper.pk }}"
+                     style="margin-bottom:16px;border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden">
+
+                    <!-- Level header -->
+                    <div style="background:#f8fafc;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0">
+                        <span style="font-weight:700;font-size:0.85rem;color:#334155;display:flex;align-items:center;gap:6px">
+                            <i class="bi bi-layers-fill" style="color:#6366f1"></i>
+                            {{ level_group.grouper }}
+                        </span>
+                        <button type="button" onclick="toggleLevel(this, {{ level_group.grouper.pk }})"
+                                style="font-size:0.72rem;color:#6366f1;background:none;border:1px solid #c7d2fe;padding:3px 10px;border-radius:5px;cursor:pointer;font-weight:600">
+                            Select All
+                        </button>
+                    </div>
+
+                    <!-- Chapter checkboxes -->
+                    <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+                        {% for chapter in level_group.list %}
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 10px;border-radius:7px;transition:background .15s"
+                               onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background=''">
+                            <input type="checkbox" name="chapters" value="{{ chapter.pk }}"
+                                   class="chapter-cb level-{{ level_group.grouper.pk }}"
+                                   onchange="updateCount()"
+                                   {% for sel in form.chapters.value %}{% if sel|stringformat:"s" == chapter.pk|stringformat:"s" %}checked{% endif %}{% endfor %}
+                                   style="width:16px;height:16px;accent-color:#6366f1;cursor:pointer;flex-shrink:0">
+                            <div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#1e293b">{{ chapter.title }}</div>
+                                {% if chapter.description %}
+                                <div style="font-size:0.75rem;color:#94a3b8;margin-top:1px">{{ chapter.description|truncatechars:60 }}</div>
+                                {% endif %}
+                            </div>
+                            <span style="margin-left:auto;font-size:0.7rem;color:#94a3b8;font-weight:600">
+                                Order {{ chapter.order_index }}
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div style="text-align:center;padding:32px;color:#94a3b8">
+                    <i class="bi bi-collection" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                    No chapters found. Create chapters first, then assign them to a course.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
 
-    <!-- ── Right column: image + settings ── -->
+    <!-- ── Right column ── -->
     <div class="col-lg-4">
 
         <!-- Image -->
         <div class="ca-card mb-4">
             <div class="ca-card-head"><h3>Course Image</h3></div>
             <div style="padding:20px">
-                {% if course and course.image %}
-                <img src="{{ course.image.url }}" class="ca-img-preview visible" id="imgPreview" alt="Current image">
+                {% if obj and obj.image %}
+                <img src="{{ obj.image.url }}" class="ca-img-preview visible" id="imgPreview" alt="">
                 {% else %}
-                <img class="ca-img-preview" id="imgPreview" alt="Preview">
+                <img class="ca-img-preview" id="imgPreview" alt="">
                 {% endif %}
 
-                <label class="ca-img-drop" for="imgInput" id="imgDrop">
+                <label class="ca-img-drop" for="imgInput" id="imgDrop" {% if obj and obj.image %}style="display:none"{% endif %}>
                     <i class="bi bi-cloud-arrow-up" style="font-size:1.8rem"></i>
                     <span>Click to upload image</span>
                     <span style="font-size:0.72rem;color:#cbd5e1">PNG, JPG up to 5MB</span>
                 </label>
-
                 <input type="file" name="image" id="imgInput" accept="image/*"
                        style="display:none" onchange="handleImg(this)">
-
-                {% if course and course.image %}
-                <div style="font-size:0.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px">
-                    <i class="bi bi-check-circle-fill" style="color:#16a34a"></i>
-                    Image already uploaded — upload a new one to replace it.
-                </div>
-                {% endif %}
             </div>
         </div>
 
         <!-- Settings -->
         <div class="ca-card mb-4">
             <div class="ca-card-head"><h3>Settings</h3></div>
-            <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+
                 <label class="ca-toggle">
-                    <input type="checkbox" name="is_full_access"
-                           {% if form.is_full_access.value %}checked{% endif %}>
+                    <input type="checkbox" name="is_full_access" id="fullAccessToggle"
+                           {% if form.is_full_access.value %}checked{% endif %}
+                           onchange="onFullAccessToggle()">
                     <div>
-                        <div class="ca-toggle-title">Full Access</div>
-                        <div class="ca-toggle-desc">Grants access to all CEFR levels</div>
+                        <div class="ca-toggle-title">Full Level Access</div>
+                        <div class="ca-toggle-desc">Student gets ALL chapters under this level</div>
                     </div>
                 </label>
+
                 <label class="ca-toggle">
                     <input type="checkbox" name="is_active"
                            {% if form.is_active.value %}checked{% endif %}>
@@ -158,10 +228,18 @@
                         <div class="ca-toggle-desc">Course is visible and purchasable</div>
                     </div>
                 </label>
+
             </div>
         </div>
 
-        <!-- Submit -->
+        <!-- Access summary box -->
+        <div id="accessSummary" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:16px;font-size:0.82rem;color:#475569">
+            <div style="font-weight:700;color:#1e293b;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+                <i class="bi bi-shield-check-fill" style="color:#6366f1"></i> Access Summary
+            </div>
+            <div id="summaryText">Configure level and chapters above.</div>
+        </div>
+
         <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px;font-size:0.9rem">
             <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
             {{ action }} Course
@@ -169,7 +247,7 @@
 
         {% if action == 'Edit' %}
         <div style="margin-top:10px">
-            <a href="{% url 'custom_admin:course_delete' course.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+            <a href="{% url 'custom_admin:course_delete' obj.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
                 <i class="bi bi-trash-fill"></i> Delete This Course
             </a>
         </div>
@@ -191,9 +269,63 @@ function handleImg(input) {
     reader.onload = e => {
         preview.src = e.target.result;
         preview.classList.add('visible');
-        drop.style.display = 'none';
+        if (drop) drop.style.display = 'none';
     };
     reader.readAsDataURL(input.files[0]);
 }
+
+/* Filter chapters to show only the selected level's group */
+function filterChapters() {
+    const levelId = document.getElementById('levelSelect').value;
+    document.querySelectorAll('.level-group').forEach(g => {
+        g.style.display = (!levelId || g.dataset.level === levelId) ? '' : 'none';
+    });
+    updateSummary();
+}
+
+/* Toggle all checkboxes for a level */
+function toggleLevel(btn, levelId) {
+    const cbs = document.querySelectorAll(`.level-${levelId}`);
+    const allChecked = [...cbs].every(cb => cb.checked);
+    cbs.forEach(cb => cb.checked = !allChecked);
+    btn.textContent = allChecked ? 'Select All' : 'Deselect All';
+    updateCount();
+}
+
+function updateCount() {
+    const total = document.querySelectorAll('.chapter-cb:checked').length;
+    document.getElementById('chapterCountBadge').textContent = `${total} selected`;
+    updateSummary();
+}
+
+function onFullAccessToggle() {
+    const isFullAccess = document.getElementById('fullAccessToggle').checked;
+    const notice = document.getElementById('fullAccessNotice');
+    if (notice) notice.style.display = isFullAccess ? 'flex' : 'none';
+    updateSummary();
+}
+
+function updateSummary() {
+    const isFullAccess = document.getElementById('fullAccessToggle').checked;
+    const levelSel = document.getElementById('levelSelect');
+    const levelText = levelSel.options[levelSel.selectedIndex]?.text || '—';
+    const count = document.querySelectorAll('.chapter-cb:checked').length;
+    let html = '';
+    if (isFullAccess) {
+        html = `<span style="color:#16a34a;font-weight:600">✓ Full Access</span> — all chapters under <strong>${levelText}</strong>`;
+    } else if (count > 0) {
+        html = `<strong>${count} chapter${count>1?'s':''}</strong> selected from <strong>${levelText}</strong>`;
+    } else {
+        html = `No chapters selected yet.`;
+    }
+    document.getElementById('summaryText').innerHTML = html;
+}
+
+/* Run on load */
+document.addEventListener('DOMContentLoaded', () => {
+    filterChapters();
+    updateCount();
+    onFullAccessToggle();
+});
 </script>
 {% endblock %}

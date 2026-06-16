@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — French LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background decorations */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+            top: -100px; right: -100px;
+            border-radius: 50%;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
+            bottom: -100px; left: -100px;
+            border-radius: 50%;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Top branding */
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .brand-icon {
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 14px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+        }
+        .brand h1 {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .brand p {
+            color: #64748b;
+            font-size: 0.82rem;
+            margin-top: 4px;
+        }
+
+        /* Card */
+        .login-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+        }
+
+        .card-title {
+            color: #f1f5f9;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .card-sub {
+            color: #64748b;
+            font-size: 0.82rem;
+            margin-bottom: 24px;
+        }
+
+        /* Error alert */
+        .error-alert {
+            background: rgba(220,38,38,0.12);
+            border: 1px solid rgba(220,38,38,0.3);
+            border-radius: 9px;
+            padding: 12px 14px;
+            color: #f87171;
+            font-size: 0.83rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Form */
+        .field { margin-bottom: 18px; }
+        .field label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 7px;
+        }
+
+        .input-wrap { position: relative; }
+        .input-wrap i {
+            position: absolute;
+            left: 13px; top: 50%;
+            transform: translateY(-50%);
+            color: #475569;
+            font-size: 0.95rem;
+        }
+        .input-wrap input {
+            width: 100%;
+            padding: 11px 13px 11px 38px;
+            background: #0f172a;
+            border: 1.5px solid #334155;
+            border-radius: 9px;
+            color: #f1f5f9;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .input-wrap input::placeholder { color: #475569; }
+        .input-wrap input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        /* Password toggle */
+        .input-wrap .toggle-pw {
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: #475569;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            padding: 2px;
+            line-height: 1;
+        }
+        .input-wrap .toggle-pw:hover { color: #94a3b8; }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.15s, transform 0.1s;
+            margin-top: 6px;
+            letter-spacing: 0.01em;
+        }
+        .btn-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-submit:active { transform: translateY(0); }
+
+        /* Footer links */
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #475569;
+            font-size: 0.78rem;
+        }
+        .login-footer a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+        .login-footer a:hover { color: #818cf8; }
+
+        /* Back to site */
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.78rem;
+            margin-top: 20px;
+            transition: color 0.12s;
+        }
+        .back-link:hover { color: #94a3b8; }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid #1e293b;
+            margin: 22px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <!-- Brand -->
+    <div class="brand">
+        <div class="brand-icon">🇫🇷</div>
+        <h1>French LMS</h1>
+        <p>Admin Control Panel</p>
+    </div>
+
+    <!-- Card -->
+    <div class="login-card">
+        <div class="card-title">Welcome back</div>
+        <div class="card-sub">Sign in to manage your LMS</div>
+
+        {% if error %}
+        <div class="error-alert">
+            <i class="bi bi-x-circle-fill"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Email Address</label>
+                <div class="input-wrap">
+                    <i class="bi bi-envelope-fill"></i>
+                    <input type="email" name="email" placeholder="admin@example.com"
+                           value="{{ request.POST.email|default:'' }}"
+                           autocomplete="email" autofocus required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <div class="input-wrap">
+                    <i class="bi bi-lock-fill"></i>
+                    <input type="password" name="password" placeholder="••••••••"
+                           id="passwordInput" autocomplete="current-password" required>
+                    <button type="button" class="toggle-pw" onclick="togglePw()" title="Show/hide password">
+                        <i class="bi bi-eye-fill" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-shield-lock-fill"></i>
+                Sign in to Admin Panel
+            </button>
+        </form>
+
+        <hr class="divider">
+
+        <div class="login-footer">
+            Only <strong style="color:#94a3b8">staff</strong> and <strong style="color:#94a3b8">admin</strong> accounts can access this panel.
+        </div>
+    </div>
+
+    <a href="/" class="back-link">
+        <i class="bi bi-arrow-left"></i> Back to main site
+    </a>
+
+</div>
+
+<script>
+function togglePw() {
+    const input = document.getElementById('passwordInput');
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash-fill';
+    } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye-fill';
+    }
+}
+</script>
+
+</body>
+</html>

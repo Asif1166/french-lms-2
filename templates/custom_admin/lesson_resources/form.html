@@ -2,8 +2,14 @@
 {% block title %}{{ action }} Lesson Resource{% endblock %}
 {% block page_title %}{{ action }} Lesson Resource{% endblock %}
 {% block breadcrumb %}
+{% if video_id %}
+<span>/</span><a href="{% url 'custom_admin:video_lesson_list' %}">Video Lessons</a>
+<span>/</span><a href="{% url 'custom_admin:video_lesson_edit' video_id %}">Edit Lesson</a>
+<span>/</span><span>{{ action }} Resource</span>
+{% else %}
 <span>/</span><a href="{% url 'custom_admin:lesson_resource_list' %}">Lesson Resources</a>
 <span>/</span><span>{{ action }}</span>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -12,20 +18,38 @@
         <h2>{{ action }} Lesson Resource</h2>
         <p>Attach a PDF, document, or image to a video lesson</p>
     </div>
+    {% if video_id %}
+    <a href="{% url 'custom_admin:video_lesson_edit' video_id %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back to Video Lesson
+    </a>
+    {% else %}
     <a href="{% url 'custom_admin:lesson_resource_list' %}" class="ca-btn-outline">
         <i class="bi bi-arrow-left"></i> Back
     </a>
+    {% endif %}
 </div>
 
 <div style="max-width:640px">
     <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
+        <!-- Persist video_id through POST (for validation errors) -->
+        <input type="hidden" name="_video_id" value="{{ video_id }}">
+
         <div class="ca-card mb-4">
             <div class="ca-card-head"><h3>Resource Details</h3></div>
             <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
 
+                <!-- Video Lesson field -->
                 <div>
                     <label class="ca-form-label">Video Lesson <span class="req">*</span></label>
+                    {% if video_id %}
+                    <!-- Pre-filled from video lesson: show as locked display -->
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;color:#334155;font-size:0.875rem;font-weight:500">
+                        <i class="bi bi-play-circle-fill" style="color:#6366f1"></i>
+                        {% for vl in form.video.field.queryset %}{% if vl.pk|stringformat:"s" == video_id %}{{ vl.chapter.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}{% endif %}{% endfor %}
+                    </div>
+                    <input type="hidden" name="video" value="{{ video_id }}">
+                    {% else %}
                     <select name="video" class="ca-input {% if form.video.errors %}err{% endif %}">
                         <option value="">— Select video lesson —</option>
                         {% for vl in form.video.field.queryset %}
@@ -35,6 +59,7 @@
                         {% endfor %}
                     </select>
                     {% for e in form.video.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    {% endif %}
                 </div>
 
                 <div>
@@ -59,7 +84,7 @@
                     {% if obj and obj.file %}
                     <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:0.83rem;color:#15803d;display:flex;align-items:center;gap:8px">
                         <i class="bi bi-file-earmark-fill"></i>
-                        Current: {{ obj.file.name|truncatechars:45 }}
+                        {{ obj.file.name|truncatechars:45 }}
                         <a href="{{ obj.file.url }}" target="_blank" style="color:#15803d;margin-left:auto">
                             <i class="bi bi-download"></i> Download
                         </a>
@@ -67,9 +92,7 @@
                     {% endif %}
                     <input type="file" name="file" class="ca-input {% if form.file.errors %}err{% endif %}">
                     {% for e in form.file.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
-                    {% if action == 'Edit' %}
-                    <div class="ca-form-hint">Leave empty to keep the current file.</div>
-                    {% endif %}
+                    {% if action == 'Edit' %}<div class="ca-form-hint">Leave empty to keep the current file.</div>{% endif %}
                 </div>
 
                 <div>
