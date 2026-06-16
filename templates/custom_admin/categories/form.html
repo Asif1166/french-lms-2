@@ -1,0 +1,78 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Category{% endblock %}
+{% block page_title %}{{ action }} Category{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:category_list' %}">Categories</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Category</h2>
+        <p>Skill categories used to tag video lessons</p>
+    </div>
+    <a href="{% url 'custom_admin:category_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div style="max-width:600px">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Category Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Skill Category <span class="req">*</span></label>
+                    <select name="name" class="ca-input {% if form.name.errors %}err{% endif %}">
+                        <option value="">— Select category —</option>
+                        {% for val, label in form.name.field.choices %}
+                        {% if val %}
+                        <option value="{{ val }}" {% if form.name.value == val %}selected{% endif %}>{{ label }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    {% for e in form.name.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    <div class="ca-form-hint">Each category can only be created once.</div>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Description</label>
+                    <textarea name="description" rows="3" class="ca-input"
+                              placeholder="Brief description of this skill…">{{ form.description.value|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Icon Class</label>
+                    <input type="text" name="icon" value="{{ form.icon.value|default:'' }}"
+                           class="ca-input"
+                           placeholder="e.g. bi bi-headphones-fill">
+                    <div class="ca-form-hint">Bootstrap Icons class name (optional).</div>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Display Order</label>
+                    <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
+                           class="ca-input" min="0" placeholder="0">
+                    <div class="ca-form-hint">Lower number appears first.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+            <button type="submit" class="ca-btn-primary" style="padding:11px 24px">
+                <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+                {{ action }} Category
+            </button>
+            {% if action == 'Edit' %}
+            <a href="{% url 'custom_admin:category_delete' obj.pk %}" class="ca-btn-del" style="padding:11px 18px">
+                <i class="bi bi-trash-fill"></i> Delete
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

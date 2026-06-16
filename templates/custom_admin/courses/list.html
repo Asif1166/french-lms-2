@@ -1,0 +1,134 @@
+{% extends "custom_admin/base.html" %}
+
+{% block title %}Courses{% endblock %}
+{% block page_title %}Courses{% endblock %}
+
+{% block breadcrumb %}
+<span>/</span>
+<span>Courses</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="ca-page-head">
+    <div>
+        <h2>Courses</h2>
+        <p>Manage course packages available for enrollment</p>
+    </div>
+    <a href="{% url 'custom_admin:course_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Course
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>
+            All Courses
+            <span style="font-weight:400;color:#94a3b8;font-size:0.82rem;margin-left:6px">({{ courses.count }})</span>
+        </h3>
+        <form method="get" class="ca-search">
+            <i class="bi bi-search"></i>
+            <input type="text" name="q" value="{{ search }}"
+                   placeholder="Search courses…"
+                   class="ca-input" style="width:240px">
+        </form>
+    </div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th style="width:40px">#</th>
+                    <th>Course</th>
+                    <th>Level</th>
+                    <th>Price</th>
+                    <th>Access</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ course.pk }}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            {% if course.image %}
+                            <img src="{{ course.image.url }}" class="ca-thumb" alt="">
+                            {% else %}
+                            <div class="ca-thumb-ph"><i class="bi bi-mortarboard"></i></div>
+                            {% endif %}
+                            <div>
+                                <div style="font-weight:600;color:#0f172a;white-space:nowrap">{{ course.name }}</div>
+                                <div style="font-size:0.73rem;color:#94a3b8">{{ course.description|truncatechars:44 }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if course.level %}
+                        <span class="tag-level">{{ course.level.code }}</span>
+                        {% else %}
+                        <span style="color:#cbd5e1;font-size:0.82rem">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="font-weight:700;color:#0f172a">{{ course.price }}</span>
+                        <span style="color:#94a3b8;font-size:0.75rem"> {{ course.currency }}</span>
+                    </td>
+                    <td>
+                        {% if course.is_full_access %}
+                        <span class="tag-full">Full Access</span>
+                        {% else %}
+                        <span class="tag-std">Level Only</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#64748b;font-size:0.83rem">
+                        {% if course.duration_months %}
+                        {{ course.duration_months }} mo
+                        {% else %}
+                        Lifetime
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if course.is_active %}
+                        <span class="badge-on">Active</span>
+                        {% else %}
+                        <span class="badge-off">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#64748b;font-size:0.8rem;white-space:nowrap">{{ course.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:course_edit' course.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:course_delete' course.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align:center;padding:60px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2.5rem;display:block;margin-bottom:10px"></i>
+                        <strong style="color:#64748b">No courses found</strong><br>
+                        <span style="font-size:0.85rem">
+                        {% if search %}
+                            No results for "{{ search }}".
+                            <a href="{% url 'custom_admin:course_list' %}" style="color:var(--primary)">Clear search</a>
+                        {% else %}
+                            <a href="{% url 'custom_admin:course_create' %}" style="color:var(--primary)">Add your first course</a>
+                        {% endif %}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

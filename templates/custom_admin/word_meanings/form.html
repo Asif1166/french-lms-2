@@ -1,0 +1,102 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Word Meaning{% endblock %}
+{% block page_title %}{{ action }} Word Meaning{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:word_meaning_list' %}">Word Meanings</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Word Meaning</h2>
+        <p>Add French vocabulary with pronunciation and meaning</p>
+    </div>
+    <a href="{% url 'custom_admin:word_meaning_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div style="max-width:640px">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Word Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Video Lesson <span class="req">*</span></label>
+                    <select name="video" class="ca-input {% if form.video.errors %}err{% endif %}">
+                        <option value="">— Select video lesson —</option>
+                        {% for vl in form.video.field.queryset %}
+                        <option value="{{ vl.pk }}" {% if form.video.value|stringformat:"s" == vl.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ vl.chapter.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% for e in form.video.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">French Word / Phrase <span class="req">*</span></label>
+                    <input type="text" name="word" value="{{ form.word.value|default:'' }}"
+                           class="ca-input {% if form.word.errors %}err{% endif %}"
+                           placeholder="e.g. bonjour, s'il vous plaît">
+                    {% for e in form.word.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">IPA Pronunciation</label>
+                    <input type="text" name="ipa_pronunciation" value="{{ form.ipa_pronunciation.value|default:'' }}"
+                           class="ca-input"
+                           placeholder="e.g. /bɔ̃.ʒuʁ/"
+                           style="font-family:serif;font-size:1rem">
+                    <div class="ca-form-hint">International Phonetic Alphabet transcription (optional).</div>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Meaning <span class="req">*</span></label>
+                    <textarea name="meaning" rows="3" class="ca-input {% if form.meaning.errors %}err{% endif %}"
+                              placeholder="English or Bengali meaning of the word…">{{ form.meaning.value|default:'' }}</textarea>
+                    {% for e in form.meaning.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Audio File (Pronunciation)</label>
+                    {% if obj and obj.audio_file %}
+                    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:0.83rem;color:#15803d;display:flex;align-items:center;gap:8px">
+                        <i class="bi bi-volume-up-fill"></i>
+                        Current: {{ obj.audio_file.name|truncatechars:40 }}
+                        <audio controls style="height:28px;margin-left:auto">
+                            <source src="{{ obj.audio_file.url }}">
+                        </audio>
+                    </div>
+                    {% endif %}
+                    <input type="file" name="audio_file" class="ca-input" accept="audio/*">
+                    <div class="ca-form-hint">Upload an MP3 or WAV pronunciation audio.</div>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Display Order</label>
+                    <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
+                           class="ca-input" min="0" placeholder="0">
+                    <div class="ca-form-hint">Order in which this word appears.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+            <button type="submit" class="ca-btn-primary" style="padding:11px 24px">
+                <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+                {{ action }} Word
+            </button>
+            {% if action == 'Edit' %}
+            <a href="{% url 'custom_admin:word_meaning_delete' obj.pk %}" class="ca-btn-del" style="padding:11px 18px">
+                <i class="bi bi-trash-fill"></i> Delete
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

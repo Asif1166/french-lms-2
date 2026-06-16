@@ -1,0 +1,97 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Lesson Resources{% endblock %}
+{% block page_title %}Lesson Resources{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Lesson Resources</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Lesson Resources</h2>
+        <p>PDFs, documents, and images attached to video lessons</p>
+    </div>
+    <a href="{% url 'custom_admin:lesson_resource_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Resource
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>All Resources <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ resources.count }})</span></h3>
+        <form method="get" style="display:flex;gap:8px">
+            <select name="video" class="ca-input" style="width:230px" onchange="this.form.submit()">
+                <option value="">All Video Lessons</option>
+                {% for v in videos %}
+                <option value="{{ v.pk }}" {% if video_filter == v.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ v.chapter.level.code }} — {{ v.title|truncatechars:28 }}
+                </option>
+                {% endfor %}
+            </select>
+            <div class="ca-search">
+                <i class="bi bi-search"></i>
+                <input type="text" name="q" value="{{ search }}" placeholder="Search…" class="ca-input" style="width:180px">
+            </div>
+        </form>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Video Lesson</th>
+                    <th>Type</th>
+                    <th>File</th>
+                    <th>Order</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in resources %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ res.pk }}</td>
+                    <td style="font-weight:600;color:#0f172a">{{ res.title }}</td>
+                    <td>
+                        <span class="tag-level">{{ res.video.chapter.level.code }}</span>
+                        <span style="color:#64748b;font-size:0.82rem;margin-left:6px">{{ res.video.title|truncatechars:28 }}</span>
+                    </td>
+                    <td>
+                        {% if res.resource_type == 'PDF' %}
+                        <span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:4px;font-size:0.73rem;font-weight:700">PDF</span>
+                        {% elif res.resource_type == 'IMAGE' %}
+                        <span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:4px;font-size:0.73rem;font-weight:700">Image</span>
+                        {% elif res.resource_type == 'DOC' %}
+                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.73rem;font-weight:700">Doc</span>
+                        {% else %}
+                        <span class="tag-std">{{ res.resource_type }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ res.file.url }}" target="_blank" style="color:var(--primary);font-size:0.82rem;display:flex;align-items:center;gap:4px;text-decoration:none">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </td>
+                    <td style="color:#64748b">{{ res.order_index }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:lesson_resource_edit' res.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:lesson_resource_delete' res.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center;padding:56px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No resources yet. <a href="{% url 'custom_admin:lesson_resource_create' %}" style="color:var(--primary)">Add one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

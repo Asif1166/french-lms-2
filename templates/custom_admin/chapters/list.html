@@ -1,0 +1,93 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Chapters{% endblock %}
+{% block page_title %}Chapters{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Chapters</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Chapters</h2>
+        <p>Chapters within each CEFR level</p>
+    </div>
+    <a href="{% url 'custom_admin:chapter_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Chapter
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>All Chapters <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ chapters.count }})</span></h3>
+        <div style="display:flex;gap:8px;align-items:center">
+            <form method="get" style="display:flex;gap:8px">
+                <select name="level" class="ca-input" style="width:160px" onchange="this.form.submit()">
+                    <option value="">All Levels</option>
+                    {% for lvl in levels %}
+                    <option value="{{ lvl.pk }}" {% if level_filter == lvl.pk|stringformat:"s" %}selected{% endif %}>{{ lvl.code }} — {{ lvl.title|truncatechars:22 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="ca-search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="q" value="{{ search }}" placeholder="Search…" class="ca-input" style="width:200px">
+                </div>
+                {% if level_filter %}<input type="hidden" name="level" value="{{ level_filter }}">{% endif %}
+            </form>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Level</th>
+                    <th>Title</th>
+                    <th>Objectives</th>
+                    <th>Videos</th>
+                    <th>Order</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ch in chapters %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ ch.pk }}</td>
+                    <td><span class="tag-level">{{ ch.level.code }}</span></td>
+                    <td>
+                        <div style="font-weight:600;color:#0f172a">{{ ch.title }}</div>
+                        <div style="font-size:0.73rem;color:#94a3b8">{{ ch.description|truncatechars:40 }}</div>
+                    </td>
+                    <td style="color:#64748b;font-size:0.82rem">{{ ch.objectives|truncatechars:50 }}</td>
+                    <td>
+                        <span style="background:#dbeafe;color:#2563eb;padding:3px 8px;border-radius:5px;font-size:0.78rem;font-weight:600">
+                            {{ ch.videos.count }} video{{ ch.videos.count|pluralize }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b">{{ ch.order_index }}</td>
+                    <td>
+                        {% if ch.is_active %}<span class="badge-on">Active</span>
+                        {% else %}<span class="badge-off">Inactive</span>{% endif %}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:chapter_edit' ch.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:chapter_delete' ch.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align:center;padding:56px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No chapters yet. <a href="{% url 'custom_admin:chapter_create' %}" style="color:var(--primary)">Create one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

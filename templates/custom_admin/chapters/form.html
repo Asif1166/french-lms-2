@@ -1,0 +1,141 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Chapter{% endblock %}
+{% block page_title %}{{ action }} Chapter{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:chapter_list' %}">Chapters</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Chapter</h2>
+        <p>{% if action == 'Create' %}Add a new chapter to a level{% else %}Update chapter details{% endif %}</p>
+    </div>
+    <a href="{% url 'custom_admin:chapter_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <!-- Basic Info -->
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Basic Information</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Level <span class="req">*</span></label>
+                    <select name="level" class="ca-input {% if form.level.errors %}err{% endif %}">
+                        <option value="">— Select level —</option>
+                        {% for lvl in form.level.field.queryset %}
+                        <option value="{{ lvl.pk }}" {% if form.level.value|stringformat:"s" == lvl.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ lvl.code }} — {{ lvl.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% for e in form.level.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Title <span class="req">*</span></label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+                           class="ca-input {% if form.title.errors %}err{% endif %}"
+                           placeholder="e.g. Introduction to Greetings">
+                    {% for e in form.title.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Description <span class="req">*</span></label>
+                    <textarea name="description" rows="3" class="ca-input {% if form.description.errors %}err{% endif %}"
+                              placeholder="Overview of this chapter…">{{ form.description.value|default:'' }}</textarea>
+                    {% for e in form.description.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Learning Objectives <span class="req">*</span></label>
+                    <textarea name="objectives" rows="3" class="ca-input {% if form.objectives.errors %}err{% endif %}"
+                              placeholder="What students will achieve after this chapter…">{{ form.objectives.value|default:'' }}</textarea>
+                    {% for e in form.objectives.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Academic Content -->
+        <div class="ca-card mb-4">
+            <div class="ca-card-head">
+                <h3>Academic Content <span style="font-weight:400;color:#94a3b8;font-size:0.8rem">(all optional)</span></h3>
+            </div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Grammar Focus</label>
+                    <textarea name="grammar_focus" rows="3" class="ca-input"
+                              placeholder="Grammar topics covered in this chapter…">{{ form.grammar_focus.value|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Vocabulary List</label>
+                    <textarea name="vocabulary_list" rows="3" class="ca-input"
+                              placeholder="Key vocabulary introduced…">{{ form.vocabulary_list.value|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Cultural Notes</label>
+                    <textarea name="cultural_notes" rows="3" class="ca-input"
+                              placeholder="Cultural context and notes…">{{ form.cultural_notes.value|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Exam Relevance</label>
+                    <textarea name="exam_relevance" rows="3" class="ca-input"
+                              placeholder="How this chapter relates to DELF/DALF exams…">{{ form.exam_relevance.value|default:'' }}</textarea>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Settings</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div>
+                    <label class="ca-form-label">Display Order <span class="req">*</span></label>
+                    <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
+                           class="ca-input {% if form.order_index.errors %}err{% endif %}" min="0" placeholder="0">
+                    {% for e in form.order_index.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    <div class="ca-form-hint">Must be unique per level. Lower = shown first.</div>
+                </div>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Active</div>
+                        <div class="ca-toggle-desc">Chapter is visible to enrolled students</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px">
+            <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+            {{ action }} Chapter
+        </button>
+        {% if action == 'Edit' %}
+        <div style="margin-top:10px">
+            <a href="{% url 'custom_admin:chapter_delete' obj.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+                <i class="bi bi-trash-fill"></i> Delete This Chapter
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+</form>
+{% endblock %}

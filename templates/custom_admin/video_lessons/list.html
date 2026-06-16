@@ -1,0 +1,116 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Video Lessons{% endblock %}
+{% block page_title %}Video Lessons{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Video Lessons</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Video Lessons</h2>
+        <p>All video lessons within chapters</p>
+    </div>
+    <a href="{% url 'custom_admin:video_lesson_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Video Lesson
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>All Video Lessons <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ video_lessons.count }})</span></h3>
+        <form method="get" style="display:flex;gap:8px">
+            <select name="chapter" class="ca-input" style="width:200px" onchange="this.form.submit()">
+                <option value="">All Chapters</option>
+                {% for ch in chapters %}
+                <option value="{{ ch.pk }}" {% if chapter_filter == ch.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ ch.level.code }} — {{ ch.title|truncatechars:28 }}
+                </option>
+                {% endfor %}
+            </select>
+            <div class="ca-search">
+                <i class="bi bi-search"></i>
+                <input type="text" name="q" value="{{ search }}" placeholder="Search lessons…" class="ca-input" style="width:200px">
+            </div>
+        </form>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Lesson</th>
+                    <th>Chapter</th>
+                    <th>Category</th>
+                    <th>Duration</th>
+                    <th>Media</th>
+                    <th>Order</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vl in video_lessons %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ vl.pk }}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            {% if vl.thumbnail %}
+                            <img src="{{ vl.thumbnail.url }}" class="ca-thumb" alt="">
+                            {% else %}
+                            <div class="ca-thumb-ph"><i class="bi bi-play-circle"></i></div>
+                            {% endif %}
+                            <div>
+                                <div style="font-weight:600;color:#0f172a">{{ vl.title }}</div>
+                                <div style="font-size:0.73rem;color:#94a3b8">{{ vl.description|truncatechars:38 }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="tag-level">{{ vl.chapter.level.code }}</span>
+                        <div style="font-size:0.73rem;color:#64748b;margin-top:3px">{{ vl.chapter.title|truncatechars:24 }}</div>
+                    </td>
+                    <td>
+                        {% if vl.category %}
+                        <span class="tag-std">{{ vl.category.get_name_display|truncatechars:12 }}</span>
+                        {% else %}<span style="color:#94a3b8">—</span>{% endif %}
+                    </td>
+                    <td style="color:#64748b;font-size:0.83rem;white-space:nowrap">
+                        <i class="bi bi-clock" style="color:#94a3b8"></i> {{ vl.get_duration_display }}
+                    </td>
+                    <td>
+                        {% if vl.video_url %}
+                        <span style="background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:600">URL</span>
+                        {% elif vl.video_file %}
+                        <span style="background:#dbeafe;color:#2563eb;padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:600">File</span>
+                        {% else %}
+                        <span style="color:#94a3b8;font-size:0.8rem">None</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#64748b">{{ vl.order_index }}</td>
+                    <td>
+                        {% if vl.is_active %}<span class="badge-on">Active</span>
+                        {% else %}<span class="badge-off">Inactive</span>{% endif %}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:video_lesson_edit' vl.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:video_lesson_delete' vl.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align:center;padding:56px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No video lessons yet. <a href="{% url 'custom_admin:video_lesson_create' %}" style="color:var(--primary)">Add one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

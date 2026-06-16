@@ -1,0 +1,98 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Lesson Resource{% endblock %}
+{% block page_title %}{{ action }} Lesson Resource{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:lesson_resource_list' %}">Lesson Resources</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Lesson Resource</h2>
+        <p>Attach a PDF, document, or image to a video lesson</p>
+    </div>
+    <a href="{% url 'custom_admin:lesson_resource_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div style="max-width:640px">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Resource Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Video Lesson <span class="req">*</span></label>
+                    <select name="video" class="ca-input {% if form.video.errors %}err{% endif %}">
+                        <option value="">— Select video lesson —</option>
+                        {% for vl in form.video.field.queryset %}
+                        <option value="{{ vl.pk }}" {% if form.video.value|stringformat:"s" == vl.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ vl.chapter.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% for e in form.video.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Resource Title <span class="req">*</span></label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+                           class="ca-input {% if form.title.errors %}err{% endif %}"
+                           placeholder="e.g. Grammar Worksheet — Lesson 1">
+                    {% for e in form.title.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Resource Type <span class="req">*</span></label>
+                    <select name="resource_type" class="ca-input">
+                        {% for val, label in form.resource_type.field.choices %}
+                        <option value="{{ val }}" {% if form.resource_type.value == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">File <span class="req">*</span></label>
+                    {% if obj and obj.file %}
+                    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:0.83rem;color:#15803d;display:flex;align-items:center;gap:8px">
+                        <i class="bi bi-file-earmark-fill"></i>
+                        Current: {{ obj.file.name|truncatechars:45 }}
+                        <a href="{{ obj.file.url }}" target="_blank" style="color:#15803d;margin-left:auto">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </div>
+                    {% endif %}
+                    <input type="file" name="file" class="ca-input {% if form.file.errors %}err{% endif %}">
+                    {% for e in form.file.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    {% if action == 'Edit' %}
+                    <div class="ca-form-hint">Leave empty to keep the current file.</div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Display Order</label>
+                    <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
+                           class="ca-input" min="0" placeholder="0">
+                    <div class="ca-form-hint">Lower number appears first in the lesson.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+            <button type="submit" class="ca-btn-primary" style="padding:11px 24px">
+                <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+                {{ action }} Resource
+            </button>
+            {% if action == 'Edit' %}
+            <a href="{% url 'custom_admin:lesson_resource_delete' obj.pk %}" class="ca-btn-del" style="padding:11px 18px">
+                <i class="bi bi-trash-fill"></i> Delete
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Levels{% endblock %}
+{% block page_title %}Levels{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Levels</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Levels</h2>
+        <p>CEFR course levels with pricing</p>
+    </div>
+    <a href="{% url 'custom_admin:level_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Level
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>All Levels <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ levels.count }})</span></h3>
+        <form method="get" class="ca-search">
+            <i class="bi bi-search"></i>
+            <input type="text" name="q" value="{{ search }}" placeholder="Search levels…" class="ca-input" style="width:240px">
+        </form>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Discounted</th>
+                    <th>Chapters</th>
+                    <th>Order</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for level in levels %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ level.pk }}</td>
+                    <td><span class="tag-level">{{ level.code }}</span></td>
+                    <td>
+                        <div style="font-weight:600;color:#0f172a">{{ level.title }}</div>
+                        <div style="font-size:0.73rem;color:#94a3b8">{{ level.description|truncatechars:44 }}</div>
+                    </td>
+                    <td style="font-weight:700;color:#0f172a">{{ level.currency }} {{ level.price }}</td>
+                    <td style="color:#16a34a;font-size:0.85rem">
+                        {% if level.discounted_price %}{{ level.currency }} {{ level.discounted_price }}{% else %}<span style="color:#94a3b8">—</span>{% endif %}
+                    </td>
+                    <td>
+                        <span style="background:#f1f5f9;color:#475569;padding:3px 8px;border-radius:5px;font-size:0.78rem;font-weight:600">
+                            {{ level.chapters.count }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b">{{ level.order_index }}</td>
+                    <td>
+                        {% if level.is_active %}<span class="badge-on">Active</span>
+                        {% else %}<span class="badge-off">Inactive</span>{% endif %}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:level_edit' level.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:level_delete' level.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align:center;padding:56px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No levels yet. <a href="{% url 'custom_admin:level_create' %}" style="color:var(--primary)">Create one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

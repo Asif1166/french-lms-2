@@ -1,0 +1,199 @@
+{% extends "custom_admin/base.html" %}
+
+{% block title %}{{ action }} Course{% endblock %}
+{% block page_title %}{{ action }} Course{% endblock %}
+
+{% block breadcrumb %}
+<span>/</span>
+<a href="{% url 'custom_admin:course_list' %}">Courses</a>
+<span>/</span>
+<span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Course</h2>
+        <p>{% if action == 'Create' %}Add a new course package for students{% else %}Update course details{% endif %}</p>
+    </div>
+    <a href="{% url 'custom_admin:course_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+{% csrf_token %}
+
+<div class="row g-4">
+
+    <!-- ── Left column: main fields ── -->
+    <div class="col-lg-8">
+
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Course Details</h3></div>
+            <div style="padding:24px">
+
+                <!-- Name -->
+                <div class="mb-4">
+                    <label class="ca-form-label">Course Name <span class="req">*</span></label>
+                    <input type="text" name="name"
+                           value="{{ form.name.value|default:'' }}"
+                           class="ca-input {% if form.name.errors %}err{% endif %}"
+                           placeholder="e.g. French A1 Complete Course">
+                    {% for e in form.name.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label class="ca-form-label">Description <span class="req">*</span></label>
+                    <textarea name="description"
+                              class="ca-input {% if form.description.errors %}err{% endif %}"
+                              placeholder="Describe what students will get from this course…"
+                              rows="4">{{ form.description.value|default:'' }}</textarea>
+                    {% for e in form.description.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <!-- Price + Currency -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <label class="ca-form-label">Price <span class="req">*</span></label>
+                        <input type="number" name="price"
+                               value="{{ form.price.value|default:'' }}"
+                               step="0.01" min="0"
+                               class="ca-input {% if form.price.errors %}err{% endif %}"
+                               placeholder="0.00">
+                        {% for e in form.price.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="ca-form-label">Currency</label>
+                        <select name="currency" class="ca-input">
+                            <option value="EUR" {% if form.currency.value == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                            <option value="USD" {% if form.currency.value == 'USD' %}selected{% endif %}>USD ($)</option>
+                            <option value="BDT" {% if form.currency.value == 'BDT' %}selected{% endif %}>BDT (৳)</option>
+                            <option value="GBP" {% if form.currency.value == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Level -->
+                <div class="mb-4">
+                    <label class="ca-form-label">Level</label>
+                    <select name="level" class="ca-input">
+                        <option value="">— No specific level —</option>
+                        {% for lvl in form.level.field.queryset %}
+                        <option value="{{ lvl.pk }}"
+                            {% if form.level.value|stringformat:"s" == lvl.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ lvl }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="ca-form-hint">Leave empty if this package covers all levels.</div>
+                </div>
+
+                <!-- Duration -->
+                <div>
+                    <label class="ca-form-label">Access Duration (months)</label>
+                    <input type="number" name="duration_months"
+                           value="{{ form.duration_months.value|default:'' }}"
+                           min="1"
+                           class="ca-input"
+                           placeholder="Leave empty for lifetime access">
+                    <div class="ca-form-hint">How many months students can access. Empty = lifetime.</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Right column: image + settings ── -->
+    <div class="col-lg-4">
+
+        <!-- Image -->
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Course Image</h3></div>
+            <div style="padding:20px">
+                {% if course and course.image %}
+                <img src="{{ course.image.url }}" class="ca-img-preview visible" id="imgPreview" alt="Current image">
+                {% else %}
+                <img class="ca-img-preview" id="imgPreview" alt="Preview">
+                {% endif %}
+
+                <label class="ca-img-drop" for="imgInput" id="imgDrop">
+                    <i class="bi bi-cloud-arrow-up" style="font-size:1.8rem"></i>
+                    <span>Click to upload image</span>
+                    <span style="font-size:0.72rem;color:#cbd5e1">PNG, JPG up to 5MB</span>
+                </label>
+
+                <input type="file" name="image" id="imgInput" accept="image/*"
+                       style="display:none" onchange="handleImg(this)">
+
+                {% if course and course.image %}
+                <div style="font-size:0.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px">
+                    <i class="bi bi-check-circle-fill" style="color:#16a34a"></i>
+                    Image already uploaded — upload a new one to replace it.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Settings</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_full_access"
+                           {% if form.is_full_access.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Full Access</div>
+                        <div class="ca-toggle-desc">Grants access to all CEFR levels</div>
+                    </div>
+                </label>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_active"
+                           {% if form.is_active.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Active</div>
+                        <div class="ca-toggle-desc">Course is visible and purchasable</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px;font-size:0.9rem">
+            <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+            {{ action }} Course
+        </button>
+
+        {% if action == 'Edit' %}
+        <div style="margin-top:10px">
+            <a href="{% url 'custom_admin:course_delete' course.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+                <i class="bi bi-trash-fill"></i> Delete This Course
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function handleImg(input) {
+    if (!input.files || !input.files[0]) return;
+    const preview = document.getElementById('imgPreview');
+    const drop = document.getElementById('imgDrop');
+    const reader = new FileReader();
+    reader.onload = e => {
+        preview.src = e.target.result;
+        preview.classList.add('visible');
+        drop.style.display = 'none';
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+</script>
+{% endblock %}

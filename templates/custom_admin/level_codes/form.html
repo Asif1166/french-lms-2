@@ -1,0 +1,55 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Level Code{% endblock %}
+{% block page_title %}{{ action }} Level Code{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:level_code_list' %}">Level Codes</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Level Code</h2>
+        <p>{% if action == 'Create' %}Add a new CEFR level code{% else %}Update level code{% endif %}</p>
+    </div>
+    <a href="{% url 'custom_admin:level_code_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div style="max-width:560px">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Level Code Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Code <span class="req">*</span></label>
+                    <input type="text" name="code" value="{{ form.code.value|default:'' }}"
+                           class="ca-input {% if form.code.errors %}err{% endif %}"
+                           placeholder="e.g. A1, A2, B1, B2"
+                           style="text-transform:uppercase;font-weight:700;font-size:1rem;letter-spacing:0.05em">
+                    {% for e in form.code.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    <div class="ca-form-hint">Must be unique. Standard CEFR codes: A1, A2, B1, B2, C1, C2.</div>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Name / Description</label>
+                    <input type="text" name="name" value="{{ form.name.value|default:'' }}"
+                           class="ca-input {% if form.name.errors %}err{% endif %}"
+                           placeholder="e.g. Beginner, Elementary, Intermediate…">
+                    {% for e in form.name.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    <div class="ca-form-hint">Optional label for this code.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <button type="submit" class="ca-btn-primary" style="padding:11px 24px">
+            <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+            {{ action }} Level Code
+        </button>
+    </form>
+</div>
+{% endblock %}

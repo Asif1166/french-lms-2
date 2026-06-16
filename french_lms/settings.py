@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'payments',
     'enrollments',
     'dashboard',
+    'custom_admin',
 ]
 
 MIDDLEWARE = [

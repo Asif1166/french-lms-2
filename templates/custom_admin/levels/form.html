@@ -1,0 +1,132 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Level{% endblock %}
+{% block page_title %}{{ action }} Level{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:level_list' %}">Levels</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Level</h2>
+        <p>{% if action == 'Create' %}Add a new CEFR level{% else %}Update level details{% endif %}</p>
+    </div>
+    <a href="{% url 'custom_admin:level_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+<div class="row g-4">
+
+    <div class="col-lg-8">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Level Information</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+
+                <div>
+                    <label class="ca-form-label">Level Code <span class="req">*</span></label>
+                    <select name="level_code" class="ca-input {% if form.level_code.errors %}err{% endif %}">
+                        <option value="">— Select a code —</option>
+                        {% for lc in form.level_code.field.queryset %}
+                        <option value="{{ lc.pk }}" {% if form.level_code.value|stringformat:"s" == lc.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ lc.code }}{% if lc.name %} — {{ lc.name }}{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% for e in form.level_code.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Title <span class="req">*</span></label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+                           class="ca-input {% if form.title.errors %}err{% endif %}"
+                           placeholder="e.g. A1 — Complete Beginner French">
+                    {% for e in form.title.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Description <span class="req">*</span></label>
+                    <textarea name="description" rows="3"
+                              class="ca-input {% if form.description.errors %}err{% endif %}"
+                              placeholder="What students will learn at this level…">{{ form.description.value|default:'' }}</textarea>
+                    {% for e in form.description.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Pricing</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+
+                <div>
+                    <label class="ca-form-label">Currency</label>
+                    <select name="currency" class="ca-input">
+                        <option value="EUR" {% if form.currency.value == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                        <option value="USD" {% if form.currency.value == 'USD' %}selected{% endif %}>USD ($)</option>
+                        <option value="BDT" {% if form.currency.value == 'BDT' %}selected{% endif %}>BDT (৳)</option>
+                        <option value="GBP" {% if form.currency.value == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Price <span class="req">*</span></label>
+                    <input type="number" name="price" value="{{ form.price.value|default:'' }}"
+                           step="0.01" min="0"
+                           class="ca-input {% if form.price.errors %}err{% endif %}"
+                           placeholder="0.00">
+                    {% for e in form.price.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Discounted Price</label>
+                    <input type="number" name="discounted_price" value="{{ form.discounted_price.value|default:'' }}"
+                           step="0.01" min="0"
+                           class="ca-input"
+                           placeholder="Leave empty if no discount">
+                    <div class="ca-form-hint">Optional sale price shown to students.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Settings</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+                <div>
+                    <label class="ca-form-label">Display Order</label>
+                    <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
+                           class="ca-input" min="0" placeholder="0">
+                    <div class="ca-form-hint">Lower number = shown first.</div>
+                </div>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Active</div>
+                        <div class="ca-toggle-desc">Level is visible to students</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px">
+            <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+            {{ action }} Level
+        </button>
+        {% if action == 'Edit' %}
+        <div style="margin-top:10px">
+            <a href="{% url 'custom_admin:level_delete' obj.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+                <i class="bi bi-trash-fill"></i> Delete This Level
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+</form>
+{% endblock %}

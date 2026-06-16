@@ -1,0 +1,147 @@
+{% extends "custom_admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Stats row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+        <div class="ca-stat">
+            <div class="ca-stat-icon ic-purple"><i class="bi bi-mortarboard-fill"></i></div>
+            <div>
+                <div class="ca-stat-val">{{ stats.total_courses }}</div>
+                <div class="ca-stat-lbl">Total Courses</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="ca-stat">
+            <div class="ca-stat-icon ic-blue"><i class="bi bi-people-fill"></i></div>
+            <div>
+                <div class="ca-stat-val">{{ stats.total_users }}</div>
+                <div class="ca-stat-lbl">Registered Users</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="ca-stat">
+            <div class="ca-stat-icon ic-green"><i class="bi bi-clipboard-check-fill"></i></div>
+            <div>
+                <div class="ca-stat-val">{{ stats.total_enrollments }}</div>
+                <div class="ca-stat-lbl">Total Enrollments</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="ca-stat">
+            <div class="ca-stat-icon ic-orange"><i class="bi bi-lightning-charge-fill"></i></div>
+            <div>
+                <div class="ca-stat-val">{{ stats.active_courses }}</div>
+                <div class="ca-stat-lbl">Active Courses</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick actions + Recent courses -->
+<div class="row g-3">
+
+    <!-- Quick actions -->
+    <div class="col-lg-4">
+        <div class="ca-card h-100">
+            <div class="ca-card-head">
+                <h3>Quick Actions</h3>
+            </div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+                <a href="{% url 'custom_admin:course_create' %}" class="ca-btn-primary" style="justify-content:center;padding:11px">
+                    <i class="bi bi-plus-lg"></i> Create New Course
+                </a>
+                <a href="{% url 'custom_admin:course_list' %}" class="ca-btn-outline" style="justify-content:center;padding:11px">
+                    <i class="bi bi-mortarboard-fill"></i> Manage Courses
+                </a>
+                <a href="/admin/" target="_blank" class="ca-btn-outline" style="justify-content:center;padding:11px">
+                    <i class="bi bi-shield-lock-fill"></i> Django Admin
+                </a>
+                <a href="/" target="_blank" class="ca-btn-outline" style="justify-content:center;padding:11px">
+                    <i class="bi bi-globe"></i> View Live Site
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent courses -->
+    <div class="col-lg-8">
+        <div class="ca-card">
+            <div class="ca-card-head">
+                <h3>Recent Courses</h3>
+                <a href="{% url 'custom_admin:course_list' %}" class="ca-btn-outline" style="font-size:0.78rem;padding:5px 12px">
+                    View all <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="ca-table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Level</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in recent_courses %}
+                        <tr>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    {% if course.image %}
+                                    <img src="{{ course.image.url }}" class="ca-thumb" alt="">
+                                    {% else %}
+                                    <div class="ca-thumb-ph"><i class="bi bi-mortarboard"></i></div>
+                                    {% endif %}
+                                    <div>
+                                        <div style="font-weight:600;color:#0f172a">{{ course.name }}</div>
+                                        <div style="font-size:0.73rem;color:#94a3b8">{{ course.description|truncatechars:40 }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if course.level %}
+                                <span class="tag-level">{{ course.level.code }}</span>
+                                {% else %}
+                                <span style="color:#94a3b8;font-size:0.8rem">All</span>
+                                {% endif %}
+                            </td>
+                            <td style="font-weight:600">{{ course.currency }} {{ course.price }}</td>
+                            <td>
+                                {% if course.is_active %}
+                                <span class="badge-on">Active</span>
+                                {% else %}
+                                <span class="badge-off">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'custom_admin:course_edit' course.pk %}" class="ca-btn-edit">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:48px;color:#94a3b8">
+                                <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                                No courses yet.
+                                <a href="{% url 'custom_admin:course_create' %}" style="color:var(--primary)">Create one</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

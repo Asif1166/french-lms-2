@@ -1,0 +1,75 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Level Codes{% endblock %}
+{% block page_title %}Level Codes{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Level Codes</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Level Codes</h2>
+        <p>CEFR level codes: A1, A2, B1, B2…</p>
+    </div>
+    <a href="{% url 'custom_admin:level_code_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Level Code
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>All Level Codes <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ level_codes.count }})</span></h3>
+        <form method="get" class="ca-search">
+            <i class="bi bi-search"></i>
+            <input type="text" name="q" value="{{ search }}" placeholder="Search…" class="ca-input" style="width:220px">
+        </form>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Name / Description</th>
+                    <th>Levels</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lc in level_codes %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ lc.pk }}</td>
+                    <td>
+                        <span style="background:#ede9fe;color:#7c3aed;padding:4px 12px;border-radius:6px;font-weight:800;font-size:0.9rem;letter-spacing:0.05em">
+                            {{ lc.code }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b">{{ lc.name|default:"—" }}</td>
+                    <td>
+                        <span style="background:#f1f5f9;color:#475569;padding:3px 8px;border-radius:5px;font-size:0.78rem;font-weight:600">
+                            {{ lc.levels.count }} level{{ lc.levels.count|pluralize }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:level_code_edit' lc.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:level_code_delete' lc.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:56px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No level codes yet.
+                        <a href="{% url 'custom_admin:level_code_create' %}" style="color:var(--primary)">Add one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

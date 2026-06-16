@@ -1,0 +1,60 @@
+{% extends "custom_admin/base.html" %}
+
+{% block title %}Delete {{ object_type }}{% endblock %}
+{% block page_title %}Delete {{ object_type }}{% endblock %}
+
+{% block breadcrumb %}
+<span>/</span>
+<a href="{{ cancel_url }}">{{ object_type }}s</a>
+<span>/</span>
+<span>Delete</span>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:500px;margin:0 auto">
+    <div class="ca-card">
+        <div style="padding:40px 36px;text-align:center">
+
+            <div style="width:68px;height:68px;background:#fee2e2;border-radius:50%;
+                        display:flex;align-items:center;justify-content:center;
+                        margin:0 auto 18px;font-size:1.8rem;color:#dc2626">
+                <i class="bi bi-trash3-fill"></i>
+            </div>
+
+            <h3 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:8px">
+                Delete {{ object_type }}
+            </h3>
+            <p style="color:#64748b;margin-bottom:6px;font-size:0.88rem">You are about to permanently delete:</p>
+            <p style="font-weight:700;color:#0f172a;font-size:1.05rem;margin-bottom:24px;
+                      padding:10px 16px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0">
+                "{{ object_label }}"
+            </p>
+
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;
+                        padding:13px 16px;text-align:left;margin-bottom:28px;
+                        display:flex;gap:10px;align-items:flex-start">
+                <i class="bi bi-exclamation-triangle-fill" style="color:#ea580c;flex-shrink:0;margin-top:2px"></i>
+                <p style="margin:0;font-size:0.83rem;color:#9a3412">
+                    <strong>This cannot be undone.</strong> All related records will also be affected.
+                </p>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:center">
+                <a href="{{ cancel_url }}" class="ca-btn-outline" style="padding:10px 22px">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+                <form method="post" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="background:#dc2626;color:#fff;border:none;
+                                   padding:10px 22px;border-radius:8px;
+                                   font-size:0.855rem;font-weight:700;cursor:pointer;
+                                   display:inline-flex;align-items:center;gap:6px">
+                        <i class="bi bi-trash-fill"></i> Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

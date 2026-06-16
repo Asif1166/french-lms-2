@@ -1,0 +1,95 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Word Meanings{% endblock %}
+{% block page_title %}Word Meanings{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Word Meanings</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Word Meanings</h2>
+        <p>French vocabulary words and pronunciations for video lessons</p>
+    </div>
+    <a href="{% url 'custom_admin:word_meaning_create' %}" class="ca-btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Word
+    </a>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <h3>All Words <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ word_meanings.count }})</span></h3>
+        <form method="get" style="display:flex;gap:8px">
+            <select name="video" class="ca-input" style="width:230px" onchange="this.form.submit()">
+                <option value="">All Video Lessons</option>
+                {% for v in videos %}
+                <option value="{{ v.pk }}" {% if video_filter == v.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ v.chapter.level.code }} — {{ v.title|truncatechars:28 }}
+                </option>
+                {% endfor %}
+            </select>
+            <div class="ca-search">
+                <i class="bi bi-search"></i>
+                <input type="text" name="q" value="{{ search }}" placeholder="Search words…" class="ca-input" style="width:180px">
+            </div>
+        </form>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Word (French)</th>
+                    <th>IPA</th>
+                    <th>Meaning</th>
+                    <th>Audio</th>
+                    <th>Video Lesson</th>
+                    <th>Order</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for wm in word_meanings %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.78rem">{{ wm.pk }}</td>
+                    <td>
+                        <span style="font-weight:700;color:#0f172a;font-size:0.9rem">{{ wm.word }}</span>
+                    </td>
+                    <td style="font-family:serif;color:#7c3aed;font-size:0.88rem">{{ wm.ipa_pronunciation|default:"—" }}</td>
+                    <td style="color:#334155;font-size:0.83rem">{{ wm.meaning|truncatechars:50 }}</td>
+                    <td>
+                        {% if wm.audio_file %}
+                        <a href="{{ wm.audio_file.url }}" target="_blank" style="color:var(--primary);font-size:0.82rem;display:flex;align-items:center;gap:4px;text-decoration:none">
+                            <i class="bi bi-volume-up-fill"></i> Play
+                        </a>
+                        {% else %}
+                        <span style="color:#94a3b8;font-size:0.8rem">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="tag-level">{{ wm.video.chapter.level.code }}</span>
+                        <div style="font-size:0.73rem;color:#64748b;margin-top:3px">{{ wm.video.title|truncatechars:24 }}</div>
+                    </td>
+                    <td style="color:#64748b">{{ wm.order_index }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:word_meaning_edit' wm.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:word_meaning_delete' wm.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align:center;padding:56px;color:#94a3b8">
+                        <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No words yet. <a href="{% url 'custom_admin:word_meaning_create' %}" style="color:var(--primary)">Add one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
