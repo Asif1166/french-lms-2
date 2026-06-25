@@ -22,7 +22,7 @@
                 <option value="">All Video Lessons</option>
                 {% for v in videos %}
                 <option value="{{ v.pk }}" {% if video_filter == v.pk|stringformat:"s" %}selected{% endif %}>
-                    {{ v.chapter.level.code }} — {{ v.title|truncatechars:28 }}
+                    {{ v.chapter.course.level.code }} — {{ v.title|truncatechars:28 }}
                 </option>
                 {% endfor %}
             </select>
@@ -51,7 +51,7 @@
                     <td style="color:#94a3b8;font-size:0.78rem">{{ res.pk }}</td>
                     <td style="font-weight:600;color:#0f172a">{{ res.title }}</td>
                     <td>
-                        <span class="tag-level">{{ res.video.chapter.level.code }}</span>
+                        <span class="tag-level">{{ res.video.chapter.course.level.code }}</span>
                         <span style="color:#64748b;font-size:0.82rem;margin-left:6px">{{ res.video.title|truncatechars:28 }}</span>
                     </td>
                     <td>

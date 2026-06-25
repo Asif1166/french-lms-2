@@ -293,7 +293,6 @@ class MockExamSection(models.Model):
     Sections within a mock exam (Listening, Reading, Writing, Speaking)
     """
     exam = models.ForeignKey(MockExam, on_delete=models.CASCADE, related_name='sections')
-    category = models.ForeignKey('courses.Category', on_delete=models.CASCADE, related_name='exam_sections')
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     duration_minutes = models.IntegerField(help_text="Section duration in minutes")
@@ -307,7 +306,7 @@ class MockExamSection(models.Model):
         verbose_name_plural = 'Mock Exam Sections'
     
     def __str__(self):
-        return f"{self.exam.title} - {self.category.get_name_display()}"
+        return f"{self.exam.title} - {self.title}"
 
 
 class MockExamQuestion(models.Model):

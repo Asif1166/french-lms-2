@@ -39,7 +39,7 @@
                     <th>#</th>
                     <th>Lesson</th>
                     <th>Chapter</th>
-                    <th>Category</th>
+                    
                     <th>Duration</th>
                     <th>Media</th>
                     <th>Order</th>
@@ -65,14 +65,10 @@
                         </div>
                     </td>
                     <td>
-                        <span class="tag-level">{{ vl.chapter.level.code }}</span>
+                        <span class="tag-level">{{ vl.chapter.course.level.code }}</span>
                         <div style="font-size:0.73rem;color:#64748b;margin-top:3px">{{ vl.chapter.title|truncatechars:24 }}</div>
                     </td>
-                    <td>
-                        {% if vl.category %}
-                        <span class="tag-std">{{ vl.category.get_name_display|truncatechars:12 }}</span>
-                        {% else %}<span style="color:#94a3b8">—</span>{% endif %}
-                    </td>
+
                     <td style="color:#64748b;font-size:0.83rem;white-space:nowrap">
                         <i class="bi bi-clock" style="color:#94a3b8"></i> {{ vl.get_duration_display }}
                     </td>

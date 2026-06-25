@@ -395,10 +395,6 @@
                class="{% if request.resolver_match.url_name in 'level_list level_create level_edit level_delete' %}active{% endif %}">
                 <i class="bi bi-layers-fill"></i> Levels
             </a>
-            <a href="{% url 'custom_admin:category_list' %}"
-               class="{% if 'category' in request.resolver_match.url_name %}active{% endif %}">
-                <i class="bi bi-tags-fill"></i> Categories
-            </a>
             <a href="{% url 'custom_admin:chapter_list' %}"
                class="{% if 'chapter' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-collection-fill"></i> Chapters

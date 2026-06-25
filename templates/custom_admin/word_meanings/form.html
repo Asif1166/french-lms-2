@@ -44,7 +44,7 @@
                     {% if video_id %}
                     <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;color:#334155;font-size:0.875rem;font-weight:500">
                         <i class="bi bi-play-circle-fill" style="color:#6366f1"></i>
-                        {% for vl in form.video.field.queryset %}{% if vl.pk|stringformat:"s" == video_id %}{{ vl.chapter.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}{% endif %}{% endfor %}
+                        {% for vl in form.video.field.queryset %}{% if vl.pk|stringformat:"s" == video_id %}{{ vl.chapter.course.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}{% endif %}{% endfor %}
                     </div>
                     <input type="hidden" name="video" value="{{ video_id }}">
                     {% else %}
@@ -52,7 +52,7 @@
                         <option value="">— Select video lesson —</option>
                         {% for vl in form.video.field.queryset %}
                         <option value="{{ vl.pk }}" {% if form.video.value|stringformat:"s" == vl.pk|stringformat:"s" %}selected{% endif %}>
-                            {{ vl.chapter.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}
+                            {{ vl.chapter.course.level.code }} / {{ vl.chapter.title }} / {{ vl.title }}
                         </option>
                         {% endfor %}
                     </select>

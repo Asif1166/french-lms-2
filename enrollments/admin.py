@@ -25,7 +25,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
 @admin.register(VideoProgress)
 class VideoProgressAdmin(admin.ModelAdmin):
     list_display = ['user', 'video', 'is_completed', 'watched_duration', 'last_watched_at']
-    list_filter = ['is_completed', 'video__chapter__level']
+    list_filter = ['is_completed', 'video__chapter__course']
     search_fields = ['user__email', 'video__title']
     ordering = ['-last_watched_at']
 
@@ -33,6 +33,6 @@ class VideoProgressAdmin(admin.ModelAdmin):
 @admin.register(ChapterProgress)
 class ChapterProgressAdmin(admin.ModelAdmin):
     list_display = ['user', 'chapter', 'completion_percentage', 'is_completed', 'updated_at']
-    list_filter = ['is_completed', 'chapter__level']
+    list_filter = ['is_completed', 'chapter__course']
     search_fields = ['user__email', 'chapter__title']
     ordering = ['-updated_at']

@@ -7,7 +7,7 @@
 <div class="ca-page-head">
     <div>
         <h2>Chapters</h2>
-        <p>Chapters within each CEFR level</p>
+        <p>Chapters within each course</p>
     </div>
     <a href="{% url 'custom_admin:chapter_create' %}" class="ca-btn-primary">
         <i class="bi bi-plus-lg"></i> Add Chapter
@@ -19,17 +19,17 @@
         <h3>All Chapters <span style="color:#94a3b8;font-weight:400;font-size:0.82rem">({{ chapters.count }})</span></h3>
         <div style="display:flex;gap:8px;align-items:center">
             <form method="get" style="display:flex;gap:8px">
-                <select name="level" class="ca-input" style="width:160px" onchange="this.form.submit()">
-                    <option value="">All Levels</option>
-                    {% for lvl in levels %}
-                    <option value="{{ lvl.pk }}" {% if level_filter == lvl.pk|stringformat:"s" %}selected{% endif %}>{{ lvl.code }} — {{ lvl.title|truncatechars:22 }}</option>
+                <select name="course" class="ca-input" style="width:160px" onchange="this.form.submit()">
+                    <option value="">All Courses</option>
+                    {% for c in courses %}
+                    <option value="{{ c.pk }}" {% if course_filter == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }} — {{ c.name|truncatechars:35 }}</option>
                     {% endfor %}
                 </select>
                 <div class="ca-search">
                     <i class="bi bi-search"></i>
                     <input type="text" name="q" value="{{ search }}" placeholder="Search…" class="ca-input" style="width:200px">
                 </div>
-                {% if level_filter %}<input type="hidden" name="level" value="{{ level_filter }}">{% endif %}
+                {% if course_filter %}<input type="hidden" name="course" value="{{ course_filter }}">{% endif %}
             </form>
         </div>
     </div>
@@ -38,7 +38,7 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Level</th>
+                    <th>Course</th>
                     <th>Title</th>
                     <th>Objectives</th>
                     <th>Videos</th>
@@ -51,7 +51,7 @@
                 {% for ch in chapters %}
                 <tr>
                     <td style="color:#94a3b8;font-size:0.78rem">{{ ch.pk }}</td>
-                    <td><span class="tag-level">{{ ch.level.code }}</span></td>
+                    <td><span class="tag-level">{{ ch.course.name|truncatechars:20 }}</span></td>
                     <td>
                         <div style="font-weight:600;color:#0f172a">{{ ch.title }}</div>
                         <div style="font-size:0.73rem;color:#94a3b8">{{ ch.description|truncatechars:40 }}</div>

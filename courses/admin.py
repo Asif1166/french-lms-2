@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Level, LevelCode, Category, Chapter, VideoLesson, Course, WordMeaning
+from .models import Level, LevelCode, Chapter, VideoLesson, Course, WordMeaning
 
 
 
@@ -18,25 +18,13 @@ class LevelAdmin(admin.ModelAdmin):
     ordering = ['order_index', 'level_code__code']
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'order_index']
-    ordering = ['order_index']
-
-
-class VideoLessonInline(admin.TabularInline):
-    model = VideoLesson
-    extra = 1
-    fields = ['title', 'category', 'order_index', 'duration', 'is_active']
-
-
 @admin.register(Chapter)
 class ChapterAdmin(admin.ModelAdmin):
-    list_display = ['title', 'level', 'order_index', 'is_active', 'created_at']
-    list_filter = ['level', 'is_active']
+    list_display = ['title', 'course', 'order_index', 'is_active', 'created_at']
+    list_filter = ['course', 'is_active']
     search_fields = ['title', 'description', 'objectives']
-    ordering = ['level', 'order_index']
-    inlines = [VideoLessonInline]
+    ordering = ['course', 'order_index']
+    
 
 
 class WordMeaningInline(admin.TabularInline):
@@ -47,8 +35,8 @@ class WordMeaningInline(admin.TabularInline):
 
 @admin.register(VideoLesson)
 class VideoLessonAdmin(admin.ModelAdmin):
-    list_display = ['title', 'chapter', 'category', 'duration', 'order_index', 'is_active']
-    list_filter = ['chapter__level', 'category', 'is_active']
+    list_display = ['title', 'chapter', 'duration', 'order_index', 'is_active']
+    list_filter = ['chapter__course', 'is_active']
     search_fields = ['title', 'description']
     ordering = ['chapter', 'order_index']
     inlines = [WordMeaningInline]
@@ -65,7 +53,7 @@ class CourseAdmin(admin.ModelAdmin):
 @admin.register(WordMeaning)
 class WordMeaningAdmin(admin.ModelAdmin):
     list_display = ['word', 'video', 'ipa_pronunciation', 'meaning', 'order_index']
-    list_filter = ['video__chapter__level', 'video']
+    list_filter = ['video__chapter__course', 'video']
     search_fields = ['word', 'meaning']
     ordering = ['video', 'order_index', 'word']
 

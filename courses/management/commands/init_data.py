@@ -4,7 +4,7 @@ Management command to populate initial data:
 - Categories (Listening, Reading, Writing, Speaking)
 """
 from django.core.management.base import BaseCommand
-from courses.models import Level, Category, LevelCode
+from courses.models import Level, LevelCode
 
 
 class Command(BaseCommand):

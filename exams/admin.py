@@ -96,7 +96,7 @@ class MockExamQuestionInline(admin.TabularInline):
 class MockExamSectionInline(admin.TabularInline):
     model = MockExamSection
     extra = 1
-    fields = ['category', 'title', 'duration_minutes', 'marks', 'order_index']
+    fields = ['title', 'duration_minutes', 'marks', 'order_index']
 
 
 @admin.register(MockExam)
@@ -109,8 +109,8 @@ class MockExamAdmin(admin.ModelAdmin):
 
 @admin.register(MockExamSection)
 class MockExamSectionAdmin(admin.ModelAdmin):
-    list_display = ['title', 'exam', 'category', 'duration_minutes', 'marks', 'order_index']
-    list_filter = ['exam', 'category']
+    list_display = ['title', 'exam', 'duration_minutes', 'marks', 'order_index']
+    list_filter = ['exam']
     ordering = ['exam', 'order_index']
     inlines = [MockExamQuestionInline]
 
@@ -118,7 +118,7 @@ class MockExamSectionAdmin(admin.ModelAdmin):
 @admin.register(MockExamQuestion)
 class MockExamQuestionAdmin(admin.ModelAdmin):
     list_display = ['section', 'question', 'order_index']
-    list_filter = ['section__exam', 'section__category']
+    list_filter = ['section__exam']
     ordering = ['section', 'order_index']
 
 

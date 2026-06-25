@@ -23,12 +23,6 @@ urlpatterns = [
     path('levels/<int:pk>/edit/', views.level_edit, name='level_edit'),
     path('levels/<int:pk>/delete/', views.level_delete, name='level_delete'),
 
-    # Categories
-    path('categories/', views.category_list, name='category_list'),
-    path('categories/create/', views.category_create, name='category_create'),
-    path('categories/<int:pk>/edit/', views.category_edit, name='category_edit'),
-    path('categories/<int:pk>/delete/', views.category_delete, name='category_delete'),
-
     # Chapters
     path('chapters/', views.chapter_list, name='chapter_list'),
     path('chapters/create/', views.chapter_create, name='chapter_create'),

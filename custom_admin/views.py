@@ -6,14 +6,14 @@ from django.urls import reverse
 from django.db.models import Q
 
 from courses.models import (
-    LevelCode, Level, Category, Chapter,
+    LevelCode, Level, Chapter,
     VideoLesson, LessonResource, WordMeaning, Course,
 )
 from accounts.models import User
 from enrollments.models import Enrollment
 from .decorators import admin_required
 from .forms import (
-    LevelCodeForm, LevelForm, CategoryForm, ChapterForm,
+    LevelCodeForm, LevelForm, ChapterForm,
     VideoLessonForm, LessonResourceForm, WordMeaningForm, CourseForm,
 )
 
@@ -183,72 +183,22 @@ def level_delete(request, pk):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Categories
-# ─────────────────────────────────────────────────────────────────────────────
-
-@admin_required
-def category_list(request):
-    qs = Category.objects.all().order_by('order_index')
-    return render(request, 'custom_admin/categories/list.html', {'categories': qs})
-
-
-@admin_required
-def category_create(request):
-    form = CategoryForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Category created successfully.')
-        return redirect('custom_admin:category_list')
-    return render(request, 'custom_admin/categories/form.html', {
-        'form': form, 'action': 'Create', 'obj': None,
-    })
-
-
-@admin_required
-def category_edit(request, pk):
-    obj = get_object_or_404(Category, pk=pk)
-    form = CategoryForm(request.POST or None, instance=obj)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, f'Category "{obj.get_name_display()}" updated.')
-        return redirect('custom_admin:category_list')
-    return render(request, 'custom_admin/categories/form.html', {
-        'form': form, 'action': 'Edit', 'obj': obj,
-    })
-
-
-@admin_required
-def category_delete(request, pk):
-    obj = get_object_or_404(Category, pk=pk)
-    if request.method == 'POST':
-        label = obj.get_name_display()
-        obj.delete()
-        messages.success(request, f'Category "{label}" deleted.')
-        return redirect('custom_admin:category_list')
-    return render(request, 'custom_admin/confirm_delete.html', {
-        'object_type': 'Category',
-        'object_label': str(obj),
-        'cancel_url': '/panel/categories/',
-    })
-
-
-# ─────────────────────────────────────────────────────────────────────────────
 # Chapters
 # ─────────────────────────────────────────────────────────────────────────────
 
 @admin_required
 def chapter_list(request):
-    qs = Chapter.objects.select_related('level__level_code').order_by('level__level_code__code', 'order_index')
+    qs = Chapter.objects.select_related('course').order_by('course__name', 'order_index')
     search = request.GET.get('q', '').strip()
     if search:
-        qs = qs.filter(Q(title__icontains=search) | Q(level__title__icontains=search))
-    level_filter = request.GET.get('level', '').strip()
-    if level_filter:
-        qs = qs.filter(level_id=level_filter)
-    levels = Level.objects.select_related('level_code').order_by('order_index')
+        qs = qs.filter(Q(title__icontains=search) | Q(course__name__icontains=search))
+    course_filter = request.GET.get('course', '').strip()
+    if course_filter:
+        qs = qs.filter(course_id=course_filter)
+    courses = Course.objects.all().order_by('-created_at')
     return render(request, 'custom_admin/chapters/list.html', {
         'chapters': qs, 'search': search,
-        'levels': levels, 'level_filter': level_filter,
+        'courses': courses, 'course_filter': course_filter,
     })
 
 
@@ -299,15 +249,15 @@ def chapter_delete(request, pk):
 @admin_required
 def video_lesson_list(request):
     qs = VideoLesson.objects.select_related(
-        'chapter__level__level_code', 'category'
-    ).order_by('chapter__level__level_code__code', 'chapter__order_index', 'order_index')
+        'chapter__course'
+    ).order_by('chapter__course__level__level_code__code', 'chapter__order_index', 'order_index')
     search = request.GET.get('q', '').strip()
     if search:
         qs = qs.filter(Q(title__icontains=search) | Q(chapter__title__icontains=search))
     chapter_filter = request.GET.get('chapter', '').strip()
     if chapter_filter:
         qs = qs.filter(chapter_id=chapter_filter)
-    chapters = Chapter.objects.select_related('level__level_code').order_by('level__level_code__code', 'order_index')
+    chapters = Chapter.objects.select_related('course').order_by('course__name', 'order_index')
     return render(request, 'custom_admin/video_lessons/list.html', {
         'video_lessons': qs, 'search': search,
         'chapters': chapters, 'chapter_filter': chapter_filter,
@@ -362,14 +312,14 @@ def video_lesson_delete(request, pk):
 
 @admin_required
 def lesson_resource_list(request):
-    qs = LessonResource.objects.select_related('video__chapter__level__level_code').order_by('video__title', 'order_index')
+    qs = LessonResource.objects.select_related('video__chapter__course').order_by('video__title', 'order_index')
     search = request.GET.get('q', '').strip()
     if search:
         qs = qs.filter(Q(title__icontains=search) | Q(video__title__icontains=search))
     video_filter = request.GET.get('video', '').strip()
     if video_filter:
         qs = qs.filter(video_id=video_filter)
-    videos = VideoLesson.objects.select_related('chapter__level__level_code').order_by('chapter__level__level_code__code', 'title')
+    videos = VideoLesson.objects.select_related('chapter__course__level__level_code').order_by('chapter__course__level__level_code__code', 'title')
     return render(request, 'custom_admin/lesson_resources/list.html', {
         'resources': qs, 'search': search,
         'videos': videos, 'video_filter': video_filter,
@@ -453,14 +403,14 @@ def lesson_resource_delete(request, pk):
 
 @admin_required
 def word_meaning_list(request):
-    qs = WordMeaning.objects.select_related('video__chapter__level__level_code').order_by('video__title', 'order_index', 'word')
+    qs = WordMeaning.objects.select_related('video__chapter__course').order_by('video__title', 'order_index', 'word')
     search = request.GET.get('q', '').strip()
     if search:
         qs = qs.filter(Q(word__icontains=search) | Q(video__title__icontains=search))
     video_filter = request.GET.get('video', '').strip()
     if video_filter:
         qs = qs.filter(video_id=video_filter)
-    videos = VideoLesson.objects.select_related('chapter__level__level_code').order_by('chapter__level__level_code__code', 'title')
+    videos = VideoLesson.objects.select_related('chapter__course__level__level_code').order_by('chapter__course__level__level_code__code', 'title')
     return render(request, 'custom_admin/word_meanings/list.html', {
         'word_meanings': qs, 'search': search,
         'videos': videos, 'video_filter': video_filter,

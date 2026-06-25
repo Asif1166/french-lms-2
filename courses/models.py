@@ -52,37 +52,39 @@ class Level(models.Model):
         return f"{self.code} - {self.title}"
 
 
-class Category(models.Model):
+
+
+class Course(models.Model):
     """
-    Skill Categories: Listening, Reading, Writing, Speaking
+    Course/Package for payment and enrollment
     """
-    NAME_CHOICES = [
-        ('LISTENING', 'Compréhension de l\'oral (Listening)'),
-        ('READING', 'Compréhension des écrits (Reading)'),
-        ('WRITING', 'Production écrite (Writing)'),
-        ('SPEAKING', 'Production orale (Speaking)'),
-    ]
-    
-    name = models.CharField(max_length=50, choices=NAME_CHOICES, unique=True)
-    description = models.TextField(blank=True)
-    icon = models.CharField(max_length=100, blank=True)
-    order_index = models.IntegerField(default=0)
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
+    image = models.ImageField(upload_to='course_images/', blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    currency = models.CharField(max_length=3, default='EUR')
+    learning_outcomes = models.TextField(blank=True, help_text="One outcome per line. Shown as bullet points on the course page.")
+    is_full_access = models.BooleanField(default=False, help_text="If True, gives access to all chapters under the level")
+    duration_months = models.IntegerField(null=True, blank=True, help_text="Access duration in months (null = lifetime)")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        db_table = 'categories'
-        ordering = ['order_index']
-        verbose_name = 'Category'
-        verbose_name_plural = 'Categories'
+        db_table = 'courses'
+        verbose_name = 'Course'
+        verbose_name_plural = 'Courses'
     
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
 
 class Chapter(models.Model):
     """
     Chapters within each Level
     """
-    level = models.ForeignKey(Level, on_delete=models.CASCADE, related_name='chapters')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='chapters')
     title = models.CharField(max_length=200)
     description = models.TextField()
     objectives = models.TextField(help_text="Learning objectives for this chapter")
@@ -97,13 +99,13 @@ class Chapter(models.Model):
     
     class Meta:
         db_table = 'chapters'
-        ordering = ['level', 'order_index']
-        unique_together = ['level', 'order_index']
+        ordering = ['course', 'order_index']
+        unique_together = ['course', 'order_index']
         verbose_name = 'Chapter'
         verbose_name_plural = 'Chapters'
     
     def __str__(self):
-        return f"{self.level.code} - {self.title}"
+        return f"{self.course.name} - {self.title}"
 
 
 class VideoLesson(models.Model):
@@ -111,7 +113,6 @@ class VideoLesson(models.Model):
     Video lessons within chapters
     """
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='videos')
     title = models.CharField(max_length=200)
     description = models.TextField()
     learning_goals = models.TextField(help_text="What students will learn")
@@ -134,7 +135,7 @@ class VideoLesson(models.Model):
         verbose_name_plural = 'Video Lessons'
     
     def __str__(self):
-        return f"{self.chapter.level.code} - {self.title}"
+        return f"{self.chapter.course.name} - {self.title}"
     
     def get_duration_display(self):
         """Convert seconds to MM:SS format"""
@@ -153,31 +154,6 @@ class VideoLesson(models.Model):
         return self.video_url
 
 
-class Course(models.Model):
-    """
-    Course/Package for payment and enrollment
-    """
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
-    image = models.ImageField(upload_to='course_images/', blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    currency = models.CharField(max_length=3, default='EUR')
-    learning_outcomes = models.TextField(blank=True, help_text="One outcome per line. Shown as bullet points on the course page.")
-    chapters = models.ManyToManyField('Chapter', blank=True, related_name='courses', help_text="Specific chapters included in this course (ignored if is_full_access is True)")
-    is_full_access = models.BooleanField(default=False, help_text="If True, gives access to all chapters under the level")
-    duration_months = models.IntegerField(null=True, blank=True, help_text="Access duration in months (null = lifetime)")
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'courses'
-        verbose_name = 'Course'
-        verbose_name_plural = 'Courses'
-    
-    def __str__(self):
-        return self.name
 
 
 class LessonResource(models.Model):

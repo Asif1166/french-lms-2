@@ -10,7 +10,7 @@
 <div class="ca-page-head">
     <div>
         <h2>{{ action }} Chapter</h2>
-        <p>{% if action == 'Create' %}Add a new chapter to a level{% else %}Update chapter details{% endif %}</p>
+        <p>{% if action == 'Create' %}Add a new chapter to a course{% else %}Update chapter details{% endif %}</p>
     </div>
     <a href="{% url 'custom_admin:chapter_list' %}" class="ca-btn-outline">
         <i class="bi bi-arrow-left"></i> Back
@@ -29,16 +29,16 @@
             <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
 
                 <div>
-                    <label class="ca-form-label">Level <span class="req">*</span></label>
-                    <select name="level" class="ca-input {% if form.level.errors %}err{% endif %}">
-                        <option value="">— Select level —</option>
-                        {% for lvl in form.level.field.queryset %}
-                        <option value="{{ lvl.pk }}" {% if form.level.value|stringformat:"s" == lvl.pk|stringformat:"s" %}selected{% endif %}>
-                            {{ lvl.code }} — {{ lvl.title }}
+                    <label class="ca-form-label">Course <span class="req">*</span></label>
+                    <select name="course" class="ca-input {% if form.course.errors %}err{% endif %}">
+                        <option value="">— Select course —</option>
+                        {% for c in form.course.field.queryset %}
+                        <option value="{{ c.pk }}" {% if form.course.value|stringformat:"s" == c.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ c.name }}
                         </option>
                         {% endfor %}
                     </select>
-                    {% for e in form.level.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    {% for e in form.course.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
                 </div>
 
                 <div>
@@ -111,7 +111,7 @@
                     <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
                            class="ca-input {% if form.order_index.errors %}err{% endif %}" min="0" placeholder="0">
                     {% for e in form.order_index.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
-                    <div class="ca-form-hint">Must be unique per level. Lower = shown first.</div>
+                    <div class="ca-form-hint">Must be unique per course. Lower = shown first.</div>
                 </div>
                 <label class="ca-toggle">
                     <input type="checkbox" name="is_active" {% if form.is_active.value %}checked{% endif %}>
