@@ -395,6 +395,10 @@
                class="{% if request.resolver_match.url_name in 'level_list level_create level_edit level_delete' %}active{% endif %}">
                 <i class="bi bi-layers-fill"></i> Levels
             </a>
+            <a href="{% url 'custom_admin:course_list' %}"
+               class="{% if 'course' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-mortarboard-fill"></i> Courses (Packages)
+            </a>
             <a href="{% url 'custom_admin:chapter_list' %}"
                class="{% if 'chapter' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-collection-fill"></i> Chapters
@@ -413,10 +417,6 @@
                style="padding-left:28px;font-size:0.8rem;{% if 'word_meaning' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
                class="{% if 'word_meaning' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-translate" style="font-size:0.85rem"></i> Word Meanings
-            </a>
-            <a href="{% url 'custom_admin:course_list' %}"
-               class="{% if 'course' in request.resolver_match.url_name %}active{% endif %}">
-                <i class="bi bi-mortarboard-fill"></i> Courses (Packages)
             </a>
         </div>
     </div>
