@@ -1,0 +1,106 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Mock Exams{% endblock %}
+{% block page_title %}Mock Exams{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Mock Exams</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Mock Exams</h2>
+        <p>Manage DELF/DALF mock exams for each level</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="{% url 'custom_admin:mock_exam_attempt_list' %}" class="ca-btn-outline">
+            <i class="bi bi-journal-check"></i> Submissions
+        </a>
+        <a href="{% url 'custom_admin:mock_exam_purchase_list' %}" class="ca-btn-outline">
+            <i class="bi bi-receipt"></i> Purchases
+        </a>
+        <a href="{% url 'custom_admin:mock_exam_package_list' %}" class="ca-btn-outline">
+            <i class="bi bi-box-seam-fill"></i> Packages
+        </a>
+        <a href="{% url 'custom_admin:mock_exam_create' %}" class="ca-btn-primary">
+            <i class="bi bi-plus-circle-fill"></i> Add Mock Exam
+        </a>
+    </div>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1">
+            <input type="text" name="q" value="{{ search }}" class="ca-input" style="max-width:260px" placeholder="Search exams...">
+            <select name="level" class="ca-input" style="max-width:200px" onchange="this.form.submit()">
+                <option value="">All Levels</option>
+                {% for lv in levels %}
+                <option value="{{ lv.pk }}" {% if level_filter == lv.pk|stringformat:"s" %}selected{% endif %}>{{ lv.code }} - {{ lv.title }}</option>
+                {% endfor %}
+            </select>
+            <button class="ca-btn-primary" style="padding:8px 14px"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Level</th>
+                    <th>Duration</th>
+                    <th>Marks</th>
+                    <th>Package</th>
+                    <th>Sections</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exam in mock_exams %}
+                <tr>
+                    <td style="font-weight:600;color:#0f172a">{{ exam.title }}</td>
+                    <td>
+                        <span style="background:#dbeafe;color:#2563eb;padding:2px 10px;border-radius:4px;font-size:0.75rem;font-weight:700">
+                            {{ exam.level.code }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b">{{ exam.duration_minutes }} min</td>
+                    <td style="color:#64748b;font-weight:600">{{ exam.total_marks }}</td>
+                    <td style="font-size:0.82rem;color:#475569">{{ exam.package.name|default:"—" }}</td>
+                    <td>
+                        <span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:12px;font-size:0.78rem;font-weight:600">
+                            {{ exam.sections.count }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if exam.is_active %}
+                        <span style="background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">Active</span>
+                        {% else %}
+                        <span style="background:#fee2e2;color:#dc2626;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">Inactive</span>
+                        {% endif %}
+                        {% if exam.is_free %}
+                        <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:12px;font-size:0.72rem;font-weight:700;margin-left:4px">Free</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:mock_exam_edit' exam.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a href="{% url 'custom_admin:mock_exam_delete' exam.pk %}" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align:center;padding:40px;color:#94a3b8">
+                        <i class="bi bi-clipboard2-check" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No mock exams yet. <a href="{% url 'custom_admin:mock_exam_create' %}" style="color:#6366f1">Create one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

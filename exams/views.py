@@ -25,7 +25,7 @@ def submit_answers_view(request, video_id):
     has_access = False
     enrollments = Enrollment.objects.filter(user=request.user, status='ACTIVE')
     for enrollment in enrollments:
-        if enrollment.has_access_to_level(video.chapter.level):
+        if enrollment.has_access_to_level(video.chapter.course.level):
             has_access = True
             break
     
@@ -175,7 +175,16 @@ def mock_exam_list_view(request):
 
     # Attach access status and sort
     for exam in exams:
-        exam.has_access = (exam.level_id in enrolled_levels) or (exam.id in direct_access_ids)
+        if exam.is_free:
+            exam.has_access = True
+        elif exam.id in direct_access_ids:
+            exam.has_access = True
+        elif exam.included_with_enrollment and exam.level_id in enrolled_levels:
+            exam.has_access = True
+        elif not exam.package and exam.level_id in enrolled_levels:
+            exam.has_access = True
+        else:
+            exam.has_access = False
     
     # Sort: Accessible first, then by level, then by ID
     exams.sort(key=lambda x: (not x.has_access, x.level.code if x.level else '', x.id))
@@ -190,19 +199,25 @@ def mock_exam_list_view(request):
 def mock_exam_detail_view(request, exam_id):
     """Start or view mock exam"""
     exam = get_object_or_404(MockExam, id=exam_id, is_active=True)
-    
-    # Check enrollment
+
+    # Check access
     has_access = False
-    enrollments = Enrollment.objects.filter(user=request.user, status='ACTIVE')
-    for enrollment in enrollments:
-        if enrollment.has_access_to_level(exam.level):
+    if exam.is_free:
+        has_access = True
+    elif MockExamAccess.objects.filter(user=request.user, exam=exam, is_active=True).exists():
+        has_access = True
+    else:
+        enrollments = Enrollment.objects.filter(user=request.user, status='ACTIVE')
+        level_enrolled = any(enrollment.has_access_to_level(exam.level) for enrollment in enrollments)
+        if exam.included_with_enrollment and level_enrolled:
             has_access = True
-            break
-    
+        elif not exam.package and level_enrolled:
+            has_access = True
+
     if not has_access:
-        messages.warning(request, 'You need to enroll to take mock exams')
-        return redirect('courses:course_list')
-    
+        messages.warning(request, 'You need to purchase this exam package to access it.')
+        return redirect('exams:mock_exam_list')
+
     # Get existing attempt or create new one
     attempt = MockExamAttempt.objects.filter(
         user=request.user,
@@ -220,19 +235,25 @@ def mock_exam_detail_view(request, exam_id):
 def start_mock_exam_view(request, exam_id):
     """Start a new mock exam attempt"""
     exam = get_object_or_404(MockExam, id=exam_id, is_active=True)
-    
-    # Check enrollment
+
+    # Check access
     has_access = False
-    enrollments = Enrollment.objects.filter(user=request.user, status='ACTIVE')
-    for enrollment in enrollments:
-        if enrollment.has_access_to_level(exam.level):
+    if exam.is_free:
+        has_access = True
+    elif MockExamAccess.objects.filter(user=request.user, exam=exam, is_active=True).exists():
+        has_access = True
+    else:
+        enrollments = Enrollment.objects.filter(user=request.user, status='ACTIVE')
+        level_enrolled = any(enrollment.has_access_to_level(exam.level) for enrollment in enrollments)
+        if exam.included_with_enrollment and level_enrolled:
             has_access = True
-            break
-    
+        elif not exam.package and level_enrolled:
+            has_access = True
+
     if not has_access:
-        messages.warning(request, 'You need to enroll to take mock exams')
-        return redirect('courses:course_list')
-    
+        messages.warning(request, 'You need to purchase this exam package to access it.')
+        return redirect('exams:mock_exam_list')
+
     # Create new attempt
     attempt = MockExamAttempt.objects.create(
         user=request.user,
@@ -376,14 +397,15 @@ def submit_mock_exam_view(request, exam_id, attempt_id):
                 
                 submission.save()
             
-            # Update section scores
-            if section.category.name == 'LISTENING':
+            # Update section scores based on title
+            section_title = section.title.upper()
+            if 'LISTENING' in section_title:
                 listening_score = section_score
-            elif section.category.name == 'READING':
+            elif 'READING' in section_title:
                 reading_score = section_score
-            elif section.category.name == 'WRITING':
+            elif 'WRITING' in section_title or 'WRIT' in section_title:
                 writing_score = section_score
-            elif section.category.name == 'SPEAKING':
+            elif 'SPEAKING' in section_title:
                 speaking_score = section_score
             
             total_score += section_score
@@ -410,10 +432,33 @@ def mock_exam_result_view(request, exam_id, attempt_id):
     """View mock exam results"""
     exam = get_object_or_404(MockExam, id=exam_id)
     attempt = get_object_or_404(MockExamAttempt, id=attempt_id, user=request.user, exam=exam)
-    
+
+    sections = exam.sections.order_by('order_index')
+    sections_data = []
+    for sec in sections:
+        section_title = sec.title.upper()
+        if 'LISTENING' in section_title:
+            score = attempt.listening_score or 0
+        elif 'READING' in section_title:
+            score = attempt.reading_score or 0
+        elif 'WRITING' in section_title or 'WRIT' in section_title:
+            score = attempt.writing_score or 0
+        elif 'SPEAKING' in section_title:
+            score = attempt.speaking_score or 0
+        else:
+            score = 0
+        pct = int(score / sec.marks * 100) if sec.marks else 0
+        sections_data.append({
+            'title': sec.title,
+            'marks': sec.marks,
+            'score': score,
+            'percentage': pct,
+        })
+
     context = {
         'exam': exam,
-        'attempt': attempt
+        'attempt': attempt,
+        'sections_data': sections_data,
     }
     return render(request, 'exams/mock_exam_result.html', context)
 from django.shortcuts import render, get_object_or_404, redirect
@@ -478,7 +523,7 @@ def purchase_package_view(request, package_id):
                     'user_id': str(request.user.id),
                     'package_id': str(package.id),
                     'package_name': package.name,
-                    'package_level': package.level,
+                    'package_level': str(package.level),
                 }
             )
             

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ chapter.title }} - {{ chapter.level.code }} - French LMS{% endblock %}
+{% block title %}{{ chapter.title }} - {{ chapter.course.level.code }} - French LMS{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -417,7 +417,7 @@
             <span class="stat-label">Videos</span>
         </div>
         <div class="stat-item" style="border-left: 2px solid #f9fafb; border-right: 2px solid #f9fafb;">
-            <span class="stat-value">{{ chapter.level.code }}</span>
+            <span class="stat-value">{{ chapter.course.level.code }}</span>
             <span class="stat-label">Level</span>
         </div>
         <div class="stat-item">

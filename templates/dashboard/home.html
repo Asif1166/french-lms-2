@@ -110,7 +110,7 @@
 
     .modern-hero {
         padding: 12rem 0 15rem;
-        background: var(--primary-color);
+        background: #0055A4;
         color: white;
         overflow: hidden;
         position: relative;
@@ -168,13 +168,13 @@
 
     .floating-stat {
         position: absolute;
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 1.25rem 2rem;
-        border-radius: 24px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        padding: 1rem 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         z-index: 15;
         animation: floatStat 6s ease-in-out infinite alternate;
         display: flex;
@@ -192,8 +192,8 @@
     .stat-2 { bottom: 5%; left: -10%; animation-delay: 2s; }
     .stat-3 { top: 40%; left: -15%; animation-delay: 1s; }
 
-    .stat-val { font-size: 1.25rem; font-weight: 900; color: var(--france-red); margin-bottom: 2px; }
-    .stat-txt { font-size: 0.7rem; color: #fff; text-transform: uppercase; font-weight: 700; opacity: 0.6; }
+    .stat-val { font-size: 1.3rem; font-weight: 900; color: #0055A4; margin-bottom: 2px; }
+    .stat-txt { font-size: 0.7rem; color: #475569; text-transform: uppercase; font-weight: 700; }
 
     .btn-hero-primary {
         background: var(--white);
@@ -560,8 +560,8 @@
 
     .stat-card-new:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border-color: var(--gold);
+        box-shadow: 0 8px 25px rgba(0, 35, 149, 0.15);
+        border-color: #0055A4;
     }
 
     /* Trusted By Section */
@@ -836,8 +836,8 @@
 
     .feature-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        border-color: var(--gold);
+        box-shadow: 0 15px 40px rgba(0, 35, 149, 0.15);
+        border-color: #0055A4;
     }
 
     .feature-icon-wrapper {
@@ -932,8 +932,8 @@
 
     .course-card:hover {
         transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        border-color: var(--gold);
+        box-shadow: 0 20px 40px rgba(0, 35, 149, 0.15);
+        border-color: #0055A4;
     }
 
     .course-card-header {
@@ -1024,8 +1024,8 @@
 
     .level-card:hover {
         transform: translateY(-12px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        border-color: var(--gold);
+        box-shadow: 0 20px 40px rgba(0, 35, 149, 0.15);
+        border-color: #0055A4;
     }
 
     .level-icon {
@@ -1309,8 +1309,8 @@
     }
 
     .path-step.active .step-content {
-        border-color: var(--gold);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        border-color: #0055A4;
+        box-shadow: 0 8px 30px rgba(0, 35, 149, 0.15);
     }
 
     .step-badge {
@@ -1369,7 +1369,7 @@
         font-weight: 700;
         text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 35, 149, 0.2);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-size: 0.9rem;
@@ -1378,7 +1378,7 @@
     .btn-step-action:hover {
         background: var(--book-primary);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 85, 164, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 35, 149, 0.3);
         color: white;
     }
 
@@ -1996,6 +1996,156 @@
         transform: translateY(-3px);
     }
 
+    /* ═══════ Founder Speech Section ═══════ */
+    .founder-section {
+        padding: 80px 0;
+        background: #fff;
+        position: relative;
+    }
+
+    .founder-card {
+        background: #f8fafc;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+    }
+
+    .founder-img-wrap {
+        position: relative;
+        height: 100%;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .founder-img-frame {
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 5px solid #0055A4;
+        box-shadow: 0 15px 40px rgba(0, 85, 164, 0.2);
+        position: relative;
+        z-index: 2;
+    }
+
+    .founder-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .founder-accent-dot {
+        position: absolute;
+        border-radius: 50%;
+        z-index: 1;
+    }
+    .founder-accent-dot.dot-1 {
+        width: 80px; height: 80px;
+        background: rgba(0, 85, 164, 0.08);
+        top: 20px; right: 30px;
+    }
+    .founder-accent-dot.dot-2 {
+        width: 50px; height: 50px;
+        background: rgba(239, 65, 53, 0.08);
+        bottom: 30px; left: 20px;
+    }
+    .founder-accent-dot.dot-3 {
+        width: 120px; height: 120px;
+        background: rgba(0, 85, 164, 0.05);
+        bottom: 50px; right: 10px;
+    }
+
+    .founder-content {
+        padding: 50px 50px 50px 20px;
+    }
+
+    .founder-quote-icon {
+        color: #0055A4;
+        font-size: 3rem;
+        line-height: 1;
+        margin-bottom: 10px;
+        opacity: 0.3;
+    }
+
+    .founder-speech {
+        font-size: 1.15rem;
+        line-height: 1.9;
+        color: #334155;
+        margin-bottom: 24px;
+        font-style: italic;
+    }
+
+    .founder-info {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .founder-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 2px;
+    }
+
+    .founder-title {
+        font-size: 0.85rem;
+        color: #0055A4;
+        font-weight: 600;
+    }
+
+    .founder-stats-row {
+        display: flex;
+        gap: 30px;
+    }
+
+    .founder-stat {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fs-val {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #0055A4;
+    }
+
+    .fs-label {
+        font-size: 0.78rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    @media (max-width: 991px) {
+        .founder-img-wrap {
+            min-height: 300px;
+            padding: 30px;
+        }
+        .founder-img-frame {
+            width: 220px;
+            height: 220px;
+        }
+        .founder-content {
+            padding: 30px;
+        }
+        .founder-speech {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .founder-stats-row {
+            gap: 20px;
+        }
+        .fs-val {
+            font-size: 1.15rem;
+        }
+    }
+
     /* Pricing Section */
     .pricing-section {
         padding: 100px 0;
@@ -2031,45 +2181,47 @@
 
     .price-card {
         background: white;
-        border-radius: 24px;
+        border-radius: 14px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
         border: 1px solid #eee;
         position: relative;
     }
 
     .price-card:hover {
-        transform: translateY(-15px);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        transform: translateY(-6px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .price-card-header {
-        height: 48px;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: 800;
         text-transform: uppercase;
         color: white;
         letter-spacing: 1px;
     }
 
+    .price-card-header { background: #0055A4; }
     .level-A1 .price-card-header { background: #4f46e5; }
     .level-A2 .price-card-header { background: #7c3aed; }
     .level-B1 .price-card-header { background: #db2777; }
     .level-B2 .price-card-header { background: #0891b2; }
 
+    .price-card { background: linear-gradient(to bottom, #ffffff, #f0f9ff); }
     .price-card.level-A1 { background: linear-gradient(to bottom, #ffffff, #f5f3ff); }
     .price-card.level-A2 { background: linear-gradient(to bottom, #ffffff, #faf5ff); }
     .price-card.level-B1 { background: linear-gradient(to bottom, #ffffff, #fff1f2); }
     .price-card.level-B2 { background: linear-gradient(to bottom, #ffffff, #ecfeff); }
 
     .price-card-body {
-        padding: 40px 30px;
+        padding: 20px 20px;
         text-align: center;
         flex-grow: 1;
         display: flex;
@@ -2077,91 +2229,92 @@
     }
 
     .level-logo-box {
-        margin-bottom: 24px;
+        margin-bottom: 12px;
     }
 
     .level-logo-text {
-        font-size: 48px;
+        font-size: 32px;
         font-weight: 900;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         font-family: 'Inter', sans-serif;
     }
 
+    .level-logo-text { color: #0055A4; }
     .level-A1 .level-logo-text { color: #4f46e5; }
     .level-A2 .level-logo-text { color: #7c3aed; }
     .level-B1 .level-logo-text { color: #db2777; }
     .level-B2 .level-logo-text { color: #0891b2; }
 
     .level-tagline {
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 700;
         color: #1a1a1a;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
 
     .level-features-list {
         list-style: none;
         padding: 0;
-        margin: 0 0 30px 0;
+        margin: 0 0 14px 0;
         text-align: left;
     }
 
     .level-features-list li {
-        font-size: 14px;
+        font-size: 12px;
         color: #666;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
     }
 
     .level-features-list li i {
         color: #10b981;
-        font-size: 12px;
+        font-size: 10px;
     }
 
     .price-box {
         margin-top: auto;
-        padding: 20px 0;
+        padding: 12px 0;
         border-top: 1px solid #f1f5f9;
     }
 
     .price-from {
-        font-size: 13px;
+        font-size: 11px;
         color: #666;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         display: block;
     }
 
     .price-amount {
-        font-size: 32px;
+        font-size: 24px;
         font-weight: 800;
         color: #1a1a1a;
     }
 
     .price-currency {
-        font-size: 18px;
+        font-size: 14px;
         font-weight: 600;
-        margin-right: 4px;
+        margin-right: 3px;
     }
 
     .price-card-footer {
-        padding: 0 30px 40px;
+        padding: 0 20px 20px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 10px;
     }
 
     .btn-pricing-get {
         background: #0055A4 !important;
         color: white !important;
-        padding: 14px;
-        border-radius: 14px;
-        font-weight: 800;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: 700;
         text-decoration: none;
         transition: all 0.3s;
         text-align: center;
-        font-size: 15px;
+        font-size: 13px;
     }
 
     .btn-pricing-get:hover {
@@ -2242,6 +2395,57 @@
                         </div>
                         
                         <img src="{% static 'public/images/hero_3d.png' %}" alt="French Learning 3D" class="hero-3d-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════ Founder Speech Section ═══════════════════ -->
+<section class="founder-section">
+    <div class="container">
+        <div class="founder-card">
+            <div class="row align-items-center g-0">
+                <div class="col-lg-5">
+                    <div class="founder-img-wrap">
+                        <div class="founder-img-frame">
+                            <img src="{% static 'public/images/founder.jpg' %}" alt="Founder" class="founder-img"
+                                 onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:linear-gradient(135deg,#0055A4,#003d7a);display:flex;align-items:center;justify-content:center;color:white;font-size:4rem\'><i class=\'bi bi-person-fill\'></i></div>'">
+                        </div>
+                        <div class="founder-accent-dot dot-1"></div>
+                        <div class="founder-accent-dot dot-2"></div>
+                        <div class="founder-accent-dot dot-3"></div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="founder-content">
+                        <div class="founder-quote-icon">
+                            <i class="bi bi-quote"></i>
+                        </div>
+                        <p class="founder-speech">
+                            আমি বিশ্বাস করি, ভাষা শেখা শুধু পড়াশোনা নয় — এটি একটি নতুন জগতের দরজা খোলা।
+                            আমাদের লক্ষ্য হলো বাংলাদেশের প্রতিটি শিক্ষার্থীকে আন্তর্জাতিক মানের ফরাসি ভাষা শিক্ষা দেওয়া,
+                            যাতে তারা DELF/DALF পরীক্ষায় সফল হতে পারে এবং ফ্রান্সে উচ্চশিক্ষা ও ক্যারিয়ারের স্বপ্ন পূরণ করতে পারে।
+                        </p>
+                        <div class="founder-info">
+                            <div class="founder-name">প্রতিষ্ঠাতার নাম</div>
+                            <div class="founder-title">Founder & Lead Instructor, French LMS</div>
+                        </div>
+                        <div class="founder-stats-row">
+                            <div class="founder-stat">
+                                <span class="fs-val">১০+</span>
+                                <span class="fs-label">বছরের অভিজ্ঞতা</span>
+                            </div>
+                            <div class="founder-stat">
+                                <span class="fs-val">৫০০০+</span>
+                                <span class="fs-label">শিক্ষার্থী</span>
+                            </div>
+                            <div class="founder-stat">
+                                <span class="fs-val">DELF</span>
+                                <span class="fs-label">সার্টিফাইড</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

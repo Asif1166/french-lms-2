@@ -1,0 +1,344 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Mock Exam{% endblock %}
+{% block page_title %}{{ action }} Mock Exam{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:mock_exam_list' %}">Mock Exams</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Mock Exam</h2>
+        <p>{% if action == 'Create' %}Create a new DELF/DALF mock exam{% else %}Update exam details and manage sections{% endif %}</p>
+    </div>
+    <a href="{% url 'custom_admin:mock_exam_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Exam Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+                <div>
+                    <label class="ca-form-label">Level <span class="req">*</span></label>
+                    <select name="level" class="ca-input {% if form.level.errors %}err{% endif %}">
+                        <option value="">— Select level —</option>
+                        {% for lv in form.level.field.queryset %}
+                        <option value="{{ lv.pk }}" {% if form.level.value|stringformat:"s" == lv.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ lv.code }} - {{ lv.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% for e in form.level.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="ca-form-label">Title <span class="req">*</span></label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+                           class="ca-input {% if form.title.errors %}err{% endif %}" placeholder="e.g. A1 Mock Exam 1">
+                    {% for e in form.title.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="ca-form-label">Description <span class="req">*</span></label>
+                    <textarea name="description" rows="3" class="ca-input {% if form.description.errors %}err{% endif %}"
+                              placeholder="Exam description...">{{ form.description.value|default:'' }}</textarea>
+                    {% for e in form.description.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="ca-form-label">Duration (minutes) <span class="req">*</span></label>
+                        <input type="number" name="duration_minutes" value="{{ form.duration_minutes.value|default:'' }}"
+                               class="ca-input {% if form.duration_minutes.errors %}err{% endif %}" min="1" placeholder="90">
+                        {% for e in form.duration_minutes.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="ca-form-label">Total Marks</label>
+                        <input type="number" name="total_marks" step="0.01" value="{{ form.total_marks.value|default:'100' }}"
+                               class="ca-input" min="0">
+                    </div>
+                </div>
+                <div>
+                    <label class="ca-form-label">Package <span style="color:#94a3b8;font-weight:400">(optional)</span></label>
+                    <select name="package" class="ca-input">
+                        <option value="">— No package —</option>
+                        {% for pkg in form.package.field.queryset %}
+                        <option value="{{ pkg.pk }}" {% if form.package.value|stringformat:"s" == pkg.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ pkg }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Settings</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Active</div>
+                        <div class="ca-toggle-desc">Visible to students</div>
+                    </div>
+                </label>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_free" {% if form.is_free.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Free</div>
+                        <div class="ca-toggle-desc">Accessible without purchase</div>
+                    </div>
+                </label>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="included_with_enrollment" {% if form.included_with_enrollment.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Included with Enrollment</div>
+                        <div class="ca-toggle-desc">Course-enrolled students get free access</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px">
+            <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+            {{ action }} Mock Exam
+        </button>
+        {% if action == 'Edit' %}
+        <div style="margin-top:10px">
+            <a href="{% url 'custom_admin:mock_exam_delete' obj.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+                <i class="bi bi-trash-fill"></i> Delete
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</form>
+
+{% if action == 'Edit' %}
+<script>
+const EXAM_ID = {{ obj.pk }};
+const CSRF = '{{ csrf_token }}';
+</script>
+
+<div class="ca-card mt-4 mb-4" style="border-left:4px solid #0ea5e9;background:#f0f9ff">
+    <div class="ca-card-head" style="background:#e0f2fe">
+        <div>
+            <h3 style="display:flex;align-items:center;gap:8px;margin:0">
+                <i class="bi bi-layout-text-sidebar" style="color:#0284c7"></i>
+                Exam Sections
+                <span id="sec-badge" style="background:#bae6fd;color:#0369a1;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ sections.count }}</span>
+            </h3>
+            <p style="font-size:0.77rem;color:#64748b;margin:3px 0 0">Listening, Reading, Writing, Speaking sections</p>
+        </div>
+        <button type="button" onclick="addSecCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px;background:#0284c7">
+            <i class="bi bi-plus-lg"></i> Add Section
+        </button>
+    </div>
+
+    <div id="sec-cards" style="padding:0 16px"></div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>Section</th><th>Description</th><th>Duration</th><th>Marks</th><th>Questions</th><th>Order</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="sec-tbody">
+                {% for sec in sections %}
+                <tr id="sec-row-{{ sec.pk }}">
+                    <td style="font-weight:700;color:#0f172a">
+                        <i class="bi bi-layout-text-sidebar" style="color:#0284c7;margin-right:4px"></i>{{ sec.title }}
+                    </td>
+                    <td style="color:#64748b;font-size:0.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sec.description|truncatechars:40|default:"—" }}</td>
+                    <td style="color:#64748b">{{ sec.duration_minutes }} min</td>
+                    <td style="color:#64748b;font-weight:600">{{ sec.marks }}</td>
+                    <td>
+                        <span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:12px;font-size:0.78rem;font-weight:600">
+                            {{ sec.questions.count }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b">{{ sec.order_index }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:mock_exam_section_edit' sec.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <button type="button" onclick="delSec({{ sec.pk }}, '{{ sec.title|escapejs }}')" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="sec-empty">
+                    <td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
+                        <i class="bi bi-layout-text-sidebar" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
+                        No sections yet.
+                        <a href="#" onclick="addSecCard();return false" style="color:#0284c7">Add a section</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if action == 'Edit' %}
+<script>
+let _uid = 0;
+function uid() { return ++_uid; }
+function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function removeCard(id) { document.getElementById(id)?.remove(); }
+function updateBadge(id, delta) { const el = document.getElementById(id); if (el) el.textContent = Math.max(0, parseInt(el.textContent || 0) + delta); }
+function showInlineError(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+function inlineCard(containerId, headerHtml, bodyHtml, cardId) {
+    const html = `
+    <div id="${cardId}" style="border:2px dashed #0284c7;border-radius:12px;margin-bottom:10px;margin-top:10px;overflow:hidden;background:#fafbff">
+        <div style="padding:13px 18px;background:#e0f2fe;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #bae6fd">
+            ${headerHtml}
+            <button type="button" onclick="removeCard('${cardId}')" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:1.1rem;padding:2px 6px;line-height:1"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div style="padding:18px 20px">${bodyHtml}</div>
+    </div>`;
+    document.getElementById(containerId).insertAdjacentHTML('beforeend', html);
+}
+
+function addSecCard() {
+    const id = `sec-card-${uid()}`;
+    const header = `<span style="font-size:0.88rem;font-weight:700;color:#0284c7;display:flex;align-items:center;gap:6px">
+        <i class="bi bi-layout-text-sidebar"></i> New Section
+    </span>`;
+    const body = `
+    <div class="row g-3">
+        <div class="col-sm-5">
+            <label class="ca-form-label">Title <span class="req">*</span></label>
+            <input type="text" class="ca-input f-title" placeholder="e.g. Listening Comprehension">
+        </div>
+        <div class="col-sm-3">
+            <label class="ca-form-label">Duration (min) <span class="req">*</span></label>
+            <input type="number" class="ca-input f-duration" min="1" placeholder="25">
+        </div>
+        <div class="col-sm-2">
+            <label class="ca-form-label">Marks</label>
+            <input type="number" step="0.01" value="25" class="ca-input f-marks">
+        </div>
+        <div class="col-sm-2">
+            <label class="ca-form-label">Order</label>
+            <input type="number" value="0" min="0" class="ca-input f-order">
+        </div>
+        <div class="col-12">
+            <label class="ca-form-label">Description <span style="color:#94a3b8;font-weight:400">(optional)</span></label>
+            <input type="text" class="ca-input f-desc" placeholder="Brief description...">
+        </div>
+        <div class="col-12">
+            <div class="inline-err" style="display:none;background:#fee2e2;color:#dc2626;padding:8px 12px;border-radius:7px;font-size:0.82rem;margin-bottom:10px"></div>
+            <div style="display:flex;gap:8px">
+                <button type="button" onclick="saveSec('${id}')" class="ca-btn-primary" style="padding:8px 18px;background:#0284c7">
+                    <i class="bi bi-check-circle-fill"></i> Save Section
+                </button>
+                <button type="button" onclick="removeCard('${id}')" class="ca-btn-outline" style="padding:8px 14px">Cancel</button>
+            </div>
+        </div>
+    </div>`;
+    inlineCard('sec-cards', header, body, id);
+    document.querySelector(`#${id} .f-title`).focus();
+}
+
+async function saveSec(cardId) {
+    const card = document.getElementById(cardId);
+    const errEl = card.querySelector('.inline-err');
+    const title = card.querySelector('.f-title').value.trim();
+    const duration = card.querySelector('.f-duration').value;
+    const marks = card.querySelector('.f-marks').value;
+    const order = card.querySelector('.f-order').value;
+    const desc = card.querySelector('.f-desc').value.trim();
+
+    if (!title) { showInlineError(errEl, 'Title is required.'); return; }
+    if (!duration) { showInlineError(errEl, 'Duration is required.'); return; }
+    errEl.style.display = 'none';
+
+    const btn = card.querySelector('button[onclick^="saveSec"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+
+    const fd = new FormData();
+    fd.append('title', title);
+    fd.append('duration_minutes', duration);
+    fd.append('marks', marks);
+    fd.append('order_index', order);
+    fd.append('description', desc);
+    fd.append('exam', EXAM_ID);
+    fd.append('csrfmiddlewaretoken', CSRF);
+
+    try {
+        const resp = await fetch('/panel/mock-exam-sections/create/', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd,
+        });
+        const data = await resp.json();
+        if (data.success) {
+            card.remove();
+            const tbody = document.getElementById('sec-tbody');
+            const empty = document.getElementById('sec-empty');
+            if (empty) empty.remove();
+            const row = document.createElement('tr');
+            row.id = `sec-row-${data.id}`;
+            row.innerHTML = `
+                <td style="font-weight:700;color:#0f172a"><i class="bi bi-layout-text-sidebar" style="color:#0284c7;margin-right:4px"></i>${esc(data.title)}</td>
+                <td style="color:#64748b;font-size:0.82rem">${esc(data.description) || '—'}</td>
+                <td style="color:#64748b">${data.duration_minutes} min</td>
+                <td style="color:#64748b;font-weight:600">${data.marks}</td>
+                <td><span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:12px;font-size:0.78rem;font-weight:600">0</span></td>
+                <td style="color:#64748b">${data.order_index}</td>
+                <td><div style="display:flex;gap:6px;justify-content:flex-end">
+                    <a href="${data.edit_url}" class="ca-btn-edit"><i class="bi bi-pencil-fill"></i> Edit</a>
+                    <button type="button" onclick="delSec(${data.id},'${esc(data.title).replace(/'/g,"\\'")}')" class="ca-btn-del"><i class="bi bi-trash-fill"></i></button>
+                </div></td>`;
+            tbody.appendChild(row);
+            updateBadge('sec-badge', 1);
+        } else {
+            showInlineError(errEl, Object.values(data.errors).flat().join(' ') || 'Error.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Section';
+        }
+    } catch {
+        showInlineError(errEl, 'Network error.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Section';
+    }
+}
+
+async function delSec(pk, title) {
+    if (!confirm(`Delete section "${title}"?`)) return;
+    try {
+        const resp = await fetch(`/panel/mock-exam-sections/${pk}/delete/`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': CSRF },
+        });
+        const data = await resp.json();
+        if (data.success) {
+            document.getElementById(`sec-row-${pk}`)?.remove();
+            updateBadge('sec-badge', -1);
+            const tbody = document.getElementById('sec-tbody');
+            if (!tbody.querySelector('tr')) {
+                tbody.innerHTML = `<tr id="sec-empty"><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
+                    <i class="bi bi-layout-text-sidebar" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
+                    No sections yet. <a href="#" onclick="addSecCard();return false" style="color:#0284c7">Add a section</a></td></tr>`;
+            }
+        }
+    } catch { alert('Delete failed.'); }
+}
+</script>
+{% endif %}
+{% endblock %}

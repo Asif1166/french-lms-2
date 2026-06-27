@@ -172,17 +172,17 @@ const CSRF = '{{ csrf_token }}';
 </script>
 
 <!-- ──────────────── LESSON RESOURCES ──────────────── -->
-<div class="ca-card mt-4">
-    <div class="ca-card-head">
+<div class="ca-card mt-4" style="border-left:4px solid #3b82f6;background:#eff6ff">
+    <div class="ca-card-head" style="background:#dbeafe">
         <div>
             <h3 style="display:flex;align-items:center;gap:8px;margin:0">
-                <i class="bi bi-file-earmark-fill" style="color:#6366f1"></i>
+                <i class="bi bi-file-earmark-fill" style="color:#2563eb"></i>
                 Lesson Resources
-                <span id="res-badge" style="background:#f1f5f9;color:#475569;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ resources.count }}</span>
+                <span id="res-badge" style="background:#bfdbfe;color:#1d4ed8;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ resources.count }}</span>
             </h3>
-            <p style="font-size:0.77rem;color:#94a3b8;margin:3px 0 0">PDFs, documents, images for this lesson</p>
+            <p style="font-size:0.77rem;color:#64748b;margin:3px 0 0">PDFs, documents, images for this lesson</p>
         </div>
-        <button type="button" onclick="addResCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px">
+        <button type="button" onclick="addResCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px;background:#2563eb">
             <i class="bi bi-plus-lg"></i> Add Resource
         </button>
     </div>
@@ -236,17 +236,17 @@ const CSRF = '{{ csrf_token }}';
 </div>
 
 <!-- ──────────────── WORD MEANINGS ──────────────── -->
-<div class="ca-card mt-4 mb-4">
-    <div class="ca-card-head">
+<div class="ca-card mt-4" style="border-left:4px solid #16a34a;background:#f0fdf4">
+    <div class="ca-card-head" style="background:#dcfce7">
         <div>
             <h3 style="display:flex;align-items:center;gap:8px;margin:0">
-                <i class="bi bi-translate" style="color:#6366f1"></i>
+                <i class="bi bi-translate" style="color:#16a34a"></i>
                 Word Meanings
-                <span id="wm-badge" style="background:#f1f5f9;color:#475569;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ word_meanings.count }}</span>
+                <span id="wm-badge" style="background:#bbf7d0;color:#15803d;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ word_meanings.count }}</span>
             </h3>
-            <p style="font-size:0.77rem;color:#94a3b8;margin:3px 0 0">French vocabulary with pronunciation</p>
+            <p style="font-size:0.77rem;color:#64748b;margin:3px 0 0">French vocabulary with pronunciation</p>
         </div>
-        <button type="button" onclick="addWmCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px">
+        <button type="button" onclick="addWmCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px;background:#16a34a">
             <i class="bi bi-plus-lg"></i> Add Word
         </button>
     </div>
@@ -291,6 +291,76 @@ const CSRF = '{{ csrf_token }}';
                         <i class="bi bi-translate" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
                         No words yet.
                         <a href="#" onclick="addWmCard();return false" style="color:#6366f1">Add vocabulary</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ──────────────── EXERCISES ──────────────── -->
+<div class="ca-card mt-4 mb-4" style="border-left:4px solid #d97706;background:#fffbeb">
+    <div class="ca-card-head" style="background:#fef3c7">
+        <div>
+            <h3 style="display:flex;align-items:center;gap:8px;margin:0">
+                <i class="bi bi-pencil-square" style="color:#d97706"></i>
+                Exercises
+                <span id="ex-badge" style="background:#fde68a;color:#92400e;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ exercises.count }}</span>
+            </h3>
+            <p style="font-size:0.77rem;color:#64748b;margin:3px 0 0">Practice exercises & questions for this lesson</p>
+        </div>
+        <button type="button" onclick="addExCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px;background:#d97706">
+            <i class="bi bi-plus-lg"></i> Add Exercise
+        </button>
+    </div>
+
+    <div id="ex-cards" style="padding:0 16px"></div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>Label</th><th>Instructions</th><th>Questions</th><th>Points</th><th>Order</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ex-tbody">
+                {% for ex in exercises %}
+                <tr id="ex-row-{{ ex.pk }}">
+                    <td style="font-weight:700;color:#0f172a">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <i class="bi bi-journal-text" style="color:#d97706"></i>
+                            {{ ex.label }}
+                        </div>
+                    </td>
+                    <td style="color:#334155;font-size:0.83rem;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        {{ ex.title|truncatechars:50|default:"—" }}
+                    </td>
+                    <td>
+                        <span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">
+                            {{ ex.questions.count }} question{{ ex.questions.count|pluralize }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b">{{ ex.total_points|default:"—" }}</td>
+                    <td style="color:#64748b">{{ ex.order_index }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:exercise_context_edit' ex.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Manage
+                            </a>
+                            <button type="button" onclick="delEx({{ ex.pk }}, '{{ ex.label|escapejs }}')" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="ex-empty">
+                    <td colspan="6" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
+                        <i class="bi bi-pencil-square" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
+                        No exercises yet.
+                        <a href="#" onclick="addExCard();return false" style="color:#d97706">Add an exercise</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -642,6 +712,403 @@ async function delWm(pk, word) {
                 tbody.innerHTML = `<tr id="wm-empty"><td colspan="6" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
                     <i class="bi bi-translate" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
                     No words yet. <a href="#" onclick="addWmCard();return false" style="color:#6366f1">Add vocabulary</a></td></tr>`;
+            }
+        }
+    } catch { alert('Delete failed.'); }
+}
+
+/* ═══════════════════════════════════════════════
+   EXERCISES  (with inline questions + options)
+═══════════════════════════════════════════════ */
+const Q_TYPES = [
+    ['MCQ_SINGLE', 'Multiple Choice (Single)'],
+    ['MCQ_MULTIPLE', 'Multiple Choice (Multiple)'],
+    ['TRUE_FALSE', 'True / False'],
+    ['FILL_BLANK', 'Fill in the Blank'],
+    ['MATCHING', 'Matching'],
+    ['YES_NO_NOT_MENTIONED', 'Yes / No / Not Mentioned'],
+    ['INFORMATION_EXTRACTION', 'Information Extraction'],
+    ['EMAIL_WRITING', 'Email Writing'],
+    ['SHORT_PARAGRAPH', 'Short Paragraph'],
+    ['OPINION_TEXT', 'Opinion-based Text'],
+    ['ROLE_PLAY', 'Role-play Simulation'],
+    ['IMAGE_DESCRIPTION', 'Image Description'],
+    ['TOPIC_MONOLOGUE', 'Topic Monologue'],
+];
+const NO_OPT_TYPES = ['FILL_BLANK','EMAIL_WRITING','SHORT_PARAGRAPH','OPINION_TEXT','ROLE_PLAY','TOPIC_MONOLOGUE'];
+const AUTO_OPT_TYPES = ['TRUE_FALSE','YES_NO_NOT_MENTIONED'];
+
+function addExCard() {
+    const id = `ex-card-${uid()}`;
+    const header = `<span style="font-size:0.88rem;font-weight:700;color:#6366f1;display:flex;align-items:center;gap:6px">
+        <i class="bi bi-pencil-square"></i> New Exercise
+    </span>`;
+    const body = `
+    <div class="row g-3">
+        <div class="col-sm-5">
+            <label class="ca-form-label">Label <span class="req">*</span></label>
+            <input type="text" class="ca-input f-label" placeholder="e.g. EXERCICE 1">
+        </div>
+        <div class="col-sm-4">
+            <label class="ca-form-label">Total Points</label>
+            <input type="number" step="0.01" class="ca-input f-points" placeholder="e.g. 10">
+        </div>
+        <div class="col-sm-3">
+            <label class="ca-form-label">Order</label>
+            <input type="number" value="0" min="0" class="ca-input f-order">
+        </div>
+        <div class="col-12">
+            <label class="ca-form-label">Instructions</label>
+            <textarea class="ca-input f-title" rows="2" placeholder="e.g. Lisez les questions. Ecoutez le document puis repondez."></textarea>
+        </div>
+        <div class="col-12">
+            <label class="ca-form-label">Context Text</label>
+            <textarea class="ca-input f-context" rows="2" placeholder="Scenario or context text (optional)"></textarea>
+        </div>
+        <div class="col-sm-6">
+            <label class="ca-form-label">Audio URL</label>
+            <input type="url" class="ca-input f-audio-url" placeholder="https://...">
+        </div>
+        <div class="col-sm-6">
+            <label class="ca-form-label">Audio File</label>
+            <input type="file" class="ca-input f-audio-file" accept="audio/*">
+        </div>
+
+        <!-- ── Questions Section inside exercise card ── -->
+        <div class="col-12">
+            <div style="border-top:2px solid #e2e8f0;margin-top:6px;padding-top:16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                    <span style="font-weight:700;font-size:0.9rem;color:#0f172a;display:flex;align-items:center;gap:6px">
+                        <i class="bi bi-question-circle-fill" style="color:#6366f1"></i>
+                        Questions
+                        <span class="ex-q-count" style="background:#ede9fe;color:#6366f1;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">0</span>
+                    </span>
+                    <button type="button" onclick="addInlineQ('${id}')" class="ca-btn-outline" style="padding:5px 12px;font-size:0.78rem">
+                        <i class="bi bi-plus-lg"></i> Add Question
+                    </button>
+                </div>
+                <div class="ex-questions" style="display:flex;flex-direction:column;gap:10px"></div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="inline-err" style="display:none;background:#fee2e2;color:#dc2626;padding:8px 12px;border-radius:7px;font-size:0.82rem;margin-bottom:10px"></div>
+            <div style="display:flex;gap:8px">
+                <button type="button" onclick="saveEx('${id}')" class="ca-btn-primary" style="padding:8px 18px">
+                    <i class="bi bi-check-circle-fill"></i> Save Exercise with Questions
+                </button>
+                <button type="button" onclick="removeCard('${id}')" class="ca-btn-outline" style="padding:8px 14px">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>`;
+    inlineCard('ex-cards', header, body, id);
+    document.querySelector(`#${id} .f-label`).focus();
+}
+
+/* ── Add a question block inside exercise card ── */
+function addInlineQ(exCardId) {
+    const qId = `${exCardId}-q-${uid()}`;
+    const card = document.getElementById(exCardId);
+    const container = card.querySelector('.ex-questions');
+    const qNum = container.children.length + 1;
+    const typeOpts = Q_TYPES.map(([v,l]) => `<option value="${v}">${l}</option>`).join('');
+
+    const html = `
+    <div id="${qId}" style="background:#fff;border:1px solid #d4d4f7;border-radius:10px;overflow:hidden">
+        <div style="padding:10px 14px;background:#f8f7ff;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ede9fe">
+            <span style="font-weight:700;font-size:0.82rem;color:#6366f1;display:flex;align-items:center;gap:5px">
+                <i class="bi bi-chat-left-text-fill"></i> Question ${qNum}
+            </span>
+            <button type="button" onclick="removeInlineQ('${exCardId}','${qId}')"
+                    style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.9rem;padding:2px 6px" title="Remove question">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div style="padding:14px">
+            <div class="row g-2">
+                <div class="col-sm-7">
+                    <label class="ca-form-label" style="font-size:0.78rem">Type <span class="req">*</span></label>
+                    <select class="ca-input iq-type" style="font-size:0.85rem;padding:6px 10px" onchange="toggleInlineOpts('${qId}',this.value)">${typeOpts}</select>
+                </div>
+                <div class="col-sm-3">
+                    <label class="ca-form-label" style="font-size:0.78rem">Marks</label>
+                    <input type="number" step="0.01" value="1.0" class="ca-input iq-marks" style="font-size:0.85rem;padding:6px 10px">
+                </div>
+                <div class="col-sm-2">
+                    <label class="ca-form-label" style="font-size:0.78rem">Order</label>
+                    <input type="number" value="${qNum - 1}" min="0" class="ca-input iq-order" style="font-size:0.85rem;padding:6px 10px">
+                </div>
+                <div class="col-12">
+                    <label class="ca-form-label" style="font-size:0.78rem">Question Text <span class="req">*</span></label>
+                    <textarea class="ca-input iq-text" rows="2" placeholder="Enter the question..." style="font-size:0.85rem;padding:6px 10px"></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="ca-form-label" style="font-size:0.78rem">Instruction <span style="color:#94a3b8;font-weight:400">(optional)</span></label>
+                    <input type="text" class="ca-input iq-instruction" placeholder="e.g. Choose the best answer" style="font-size:0.85rem;padding:6px 10px">
+                </div>
+                <div class="col-12">
+                    <label class="ca-form-label" style="font-size:0.78rem">Image <span style="color:#94a3b8;font-weight:400">(optional)</span></label>
+                    <input type="file" class="ca-input iq-image" accept="image/*" style="font-size:0.82rem;padding:5px 8px">
+                </div>
+
+                <!-- auto-options note -->
+                <div class="col-12 iq-auto-note" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 12px;font-size:0.8rem;color:#15803d"></div>
+
+                <!-- options area -->
+                <div class="col-12 iq-opts-area">
+                    <div style="margin-top:6px;padding:10px 12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                            <span style="font-size:0.78rem;font-weight:700;color:#475569;display:flex;align-items:center;gap:4px">
+                                <i class="bi bi-list-check"></i> Options
+                            </span>
+                            <button type="button" onclick="addInlineOpt('${qId}')" style="background:none;border:1px solid #cbd5e1;border-radius:6px;padding:3px 10px;font-size:0.72rem;color:#6366f1;cursor:pointer;font-weight:600">
+                                <i class="bi bi-plus"></i> Add
+                            </button>
+                        </div>
+                        <div class="iq-opt-rows" style="display:flex;flex-direction:column;gap:6px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+    updateExQCount(exCardId);
+    addInlineOpt(qId);
+    addInlineOpt(qId);
+    document.querySelector(`#${qId} .iq-text`).focus();
+}
+
+function removeInlineQ(exCardId, qId) {
+    document.getElementById(qId)?.remove();
+    updateExQCount(exCardId);
+}
+
+function updateExQCount(exCardId) {
+    const card = document.getElementById(exCardId);
+    const badge = card.querySelector('.ex-q-count');
+    const count = card.querySelectorAll('.ex-questions > div').length;
+    badge.textContent = count;
+}
+
+function toggleInlineOpts(qId, qType) {
+    const area = document.querySelector(`#${qId} .iq-opts-area`);
+    let autoNote = document.querySelector(`#${qId} .iq-auto-note`);
+    if (NO_OPT_TYPES.includes(qType)) {
+        area.style.display = 'none';
+        if (autoNote) autoNote.style.display = 'none';
+    } else if (AUTO_OPT_TYPES.includes(qType)) {
+        area.style.display = 'none';
+        if (autoNote) {
+            autoNote.style.display = 'block';
+            const label = qType === 'TRUE_FALSE' ? 'True / False' : 'Yes / No / Not Mentioned';
+            autoNote.innerHTML = `<i class="bi bi-info-circle-fill"></i> <strong>${label}</strong> options will be created automatically.`;
+        }
+    } else {
+        area.style.display = '';
+        if (autoNote) autoNote.style.display = 'none';
+    }
+}
+
+/* ── Add an option row inside a question block ── */
+function addInlineOpt(qId) {
+    const container = document.querySelector(`#${qId} .iq-opt-rows`);
+    const idx = container.children.length + 1;
+    const optId = `${qId}-opt-${uid()}`;
+    const html = `
+    <div id="${optId}" style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px;flex-wrap:wrap">
+        <span style="width:22px;height:22px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:#475569;flex-shrink:0">${idx}</span>
+        <input type="text" class="ca-input iopt-text" placeholder="Option text..." style="flex:1;font-size:0.83rem;padding:5px 8px;min-width:120px">
+        <input type="file" class="iopt-file" accept="image/*" style="font-size:0.72rem;width:110px" title="Image (optional)">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;font-size:0.75rem;font-weight:600;padding:3px 8px;border-radius:5px;transition:all 0.15s" class="iopt-correct-lbl">
+            <input type="checkbox" class="iopt-correct" onchange="styleIOptLabel(this)">
+            <i class="bi bi-check-circle"></i> Correct
+        </label>
+        <button type="button" onclick="document.getElementById('${optId}').remove();renumberInlineOpts('${qId}')"
+                style="background:none;border:none;color:#ef4444;cursor:pointer;padding:2px;font-size:0.85rem;flex-shrink:0" title="Remove">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+    styleIOptLabel(container.lastElementChild.querySelector('.iopt-correct'));
+}
+
+function renumberInlineOpts(qId) {
+    document.querySelectorAll(`#${qId} .iq-opt-rows > div`).forEach((row, i) => {
+        const n = row.querySelector('span:first-child');
+        if (n) n.textContent = i + 1;
+    });
+}
+
+function styleIOptLabel(checkbox) {
+    const lbl = checkbox.closest('.iopt-correct-lbl');
+    if (checkbox.checked) {
+        lbl.style.background = '#dcfce7'; lbl.style.color = '#16a34a';
+    } else {
+        lbl.style.background = '#f8fafc'; lbl.style.color = '#94a3b8';
+    }
+}
+
+/* ── Save exercise + all questions + all options ── */
+async function saveEx(cardId) {
+    const card = document.getElementById(cardId);
+    const errEl = card.querySelector('.inline-err');
+    const label = card.querySelector('.f-label').value.trim();
+    const title = card.querySelector('.f-title').value.trim();
+    const context = card.querySelector('.f-context').value.trim();
+    const points = card.querySelector('.f-points').value;
+    const order = card.querySelector('.f-order').value;
+    const audioUrl = card.querySelector('.f-audio-url').value.trim();
+    const audioInput = card.querySelector('.f-audio-file');
+
+    if (!label) { showInlineError(errEl, 'Label is required.'); return; }
+
+    const qBlocks = card.querySelectorAll('.ex-questions > div');
+    for (const qb of qBlocks) {
+        if (!qb.querySelector('.iq-text').value.trim()) {
+            showInlineError(errEl, 'All questions must have text.'); return;
+        }
+    }
+    errEl.style.display = 'none';
+
+    const btn = card.querySelector('button[onclick^="saveEx"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+
+    // Step 1: Create exercise context
+    const fd = new FormData();
+    fd.append('label', label);
+    fd.append('title', title);
+    fd.append('context_text', context);
+    if (points) fd.append('total_points', points);
+    fd.append('order_index', order);
+    if (audioUrl) fd.append('audio_url', audioUrl);
+    if (audioInput.files[0]) fd.append('audio_file', audioInput.files[0]);
+    fd.append('video', VIDEO_ID);
+    fd.append('csrfmiddlewaretoken', CSRF);
+
+    try {
+        const resp = await fetch('/panel/exercises/create/', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd,
+        });
+        const exData = await resp.json();
+        if (!exData.success) {
+            showInlineError(errEl, Object.values(exData.errors).flat().join(' ') || 'Error.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Exercise with Questions';
+            return;
+        }
+
+        // Step 2: Create each question
+        let totalQ = 0;
+        for (const qb of qBlocks) {
+            const qfd = new FormData();
+            qfd.append('question_type', qb.querySelector('.iq-type').value);
+            qfd.append('text', qb.querySelector('.iq-text').value.trim());
+            qfd.append('instruction', qb.querySelector('.iq-instruction').value.trim());
+            qfd.append('marks', qb.querySelector('.iq-marks').value);
+            qfd.append('order_index', qb.querySelector('.iq-order').value);
+            qfd.append('exercise_context', exData.id);
+            qfd.append('video', VIDEO_ID);
+            qfd.append('is_active', 'on');
+            const qImg = qb.querySelector('.iq-image');
+            if (qImg && qImg.files[0]) qfd.append('image', qImg.files[0]);
+            qfd.append('csrfmiddlewaretoken', CSRF);
+
+            const qResp = await fetch('/panel/questions/create/', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: qfd,
+            });
+            const qData = await qResp.json();
+            if (!qData.success) continue;
+            totalQ++;
+
+            // Step 3: Create options for this question
+            const optRows = qb.querySelectorAll('.iq-opt-rows > div');
+            for (let i = 0; i < optRows.length; i++) {
+                const r = optRows[i];
+                const optText = r.querySelector('.iopt-text').value.trim();
+                const optFile = r.querySelector('.iopt-file');
+                if (!optText && !(optFile && optFile.files[0])) continue;
+                const ofd = new FormData();
+                ofd.append('text', optText);
+                ofd.append('order_index', i);
+                ofd.append('question', qData.id);
+                if (r.querySelector('.iopt-correct').checked) ofd.append('is_correct', 'on');
+                if (optFile && optFile.files[0]) ofd.append('file', optFile.files[0]);
+                ofd.append('csrfmiddlewaretoken', CSRF);
+                await fetch('/panel/options/create/', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: ofd,
+                });
+            }
+        }
+
+        exData.question_count = totalQ;
+        card.remove();
+        appendExRow(exData);
+        updateBadge('ex-badge', 1);
+        const empty = document.getElementById('ex-empty');
+        if (empty) empty.remove();
+
+    } catch {
+        showInlineError(errEl, 'Network error. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Exercise with Questions';
+    }
+}
+
+function appendExRow(d) {
+    const tbody = document.getElementById('ex-tbody');
+    const qc = d.question_count || 0;
+    const row = document.createElement('tr');
+    row.id = `ex-row-${d.id}`;
+    row.innerHTML = `
+        <td style="font-weight:700;color:#0f172a">
+            <div style="display:flex;align-items:center;gap:6px">
+                <i class="bi bi-journal-text" style="color:#6366f1"></i>
+                ${esc(d.label)}
+            </div>
+        </td>
+        <td style="color:#334155;font-size:0.83rem;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            ${esc(d.title) || '—'}
+        </td>
+        <td>
+            <span style="background:#ede9fe;color:#6366f1;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">
+                ${qc} question${qc !== 1 ? 's' : ''}
+            </span>
+        </td>
+        <td style="color:#64748b">${d.total_points || '—'}</td>
+        <td style="color:#64748b">${d.order_index}</td>
+        <td><div style="display:flex;gap:6px;justify-content:flex-end">
+            <a href="${d.edit_url}" class="ca-btn-edit"><i class="bi bi-pencil-fill"></i> Manage</a>
+            <button type="button" onclick="delEx(${d.id},'${esc(d.label).replace(/'/g,"\\'")}')" class="ca-btn-del"><i class="bi bi-trash-fill"></i></button>
+        </div></td>`;
+    tbody.insertBefore(row, tbody.firstChild);
+}
+
+async function delEx(pk, label) {
+    if (!confirm(`Delete exercise "${label}" and all its questions?`)) return;
+    try {
+        const resp = await fetch(`/panel/exercises/${pk}/delete/`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': CSRF },
+        });
+        const data = await resp.json();
+        if (data.success) {
+            document.getElementById(`ex-row-${pk}`)?.remove();
+            updateBadge('ex-badge', -1);
+            const tbody = document.getElementById('ex-tbody');
+            if (!tbody.querySelector('tr:not([style*="display:none"])')) {
+                tbody.innerHTML = `<tr id="ex-empty"><td colspan="6" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
+                    <i class="bi bi-pencil-square" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
+                    No exercises yet. <a href="#" onclick="addExCard();return false" style="color:#6366f1">Add an exercise</a></td></tr>`;
             }
         }
     } catch { alert('Delete failed.'); }

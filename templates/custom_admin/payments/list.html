@@ -1,0 +1,109 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Payments{% endblock %}
+{% block page_title %}Payments{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Payments</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Payments</h2>
+        <p>{{ total }} total transactions &middot; {{ successful }} successful</p>
+    </div>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1">
+            <input type="text" name="q" value="{{ search }}" class="ca-input" style="max-width:280px" placeholder="Search email, course, txn ID...">
+            <select name="status" class="ca-input" style="max-width:160px" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
+                <option value="SUCCESS" {% if status_filter == 'SUCCESS' %}selected{% endif %}>Success</option>
+                <option value="FAILED" {% if status_filter == 'FAILED' %}selected{% endif %}>Failed</option>
+                <option value="CANCELLED" {% if status_filter == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
+                <option value="REFUNDED" {% if status_filter == 'REFUNDED' %}selected{% endif %}>Refunded</option>
+            </select>
+            <button class="ca-btn-primary" style="padding:8px 14px"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Course / Level</th>
+                    <th>Amount</th>
+                    <th>Gateway</th>
+                    <th>Status</th>
+                    <th>Transaction ID</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payments %}
+                <tr>
+                    <td>
+                        <div style="font-weight:600;color:#0f172a">{{ p.user.get_full_name|default:p.user.username }}</div>
+                        <div style="font-size:0.75rem;color:#94a3b8">{{ p.user.email }}</div>
+                    </td>
+                    <td>
+                        {% if p.course %}
+                        <div style="font-weight:500;color:#0f172a">{{ p.course.name }}</div>
+                        {% elif p.level %}
+                        <div style="font-weight:500;color:#0f172a">{{ p.level.title }}</div>
+                        <span style="background:#ede9fe;color:#7c3aed;padding:1px 8px;border-radius:4px;font-size:0.7rem;font-weight:700">{{ p.level.code }}</span>
+                        {% else %}
+                        <span style="color:#94a3b8">—</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-weight:700;color:#0f172a">{{ p.amount }} {{ p.currency }}</td>
+                    <td>
+                        <span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">
+                            {{ p.gateway }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if p.status == 'SUCCESS' %}
+                        <span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-check-circle-fill"></i> Success
+                        </span>
+                        {% elif p.status == 'PENDING' %}
+                        <span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-clock-fill"></i> Pending
+                        </span>
+                        {% elif p.status == 'FAILED' %}
+                        <span style="background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-x-circle-fill"></i> Failed
+                        </span>
+                        {% elif p.status == 'CANCELLED' %}
+                        <span style="background:#f1f5f9;color:#64748b;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-dash-circle-fill"></i> Cancelled
+                        </span>
+                        {% elif p.status == 'REFUNDED' %}
+                        <span style="background:#e0e7ff;color:#4338ca;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-arrow-return-left"></i> Refunded
+                        </span>
+                        {% endif %}
+                        {% if p.failure_reason %}
+                        <div style="font-size:0.7rem;color:#dc2626;margin-top:2px">{{ p.failure_reason|truncatechars:40 }}</div>
+                        {% endif %}
+                    </td>
+                    <td style="color:#64748b;font-size:0.78rem;font-family:monospace;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ p.transaction_id }}">
+                        {{ p.transaction_id|truncatechars:20 }}
+                    </td>
+                    <td style="color:#64748b;font-size:0.82rem;white-space:nowrap">{{ p.created_at|date:"d M Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center;padding:40px;color:#94a3b8">
+                        <i class="bi bi-credit-card" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No payment transactions found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

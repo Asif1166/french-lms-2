@@ -3,6 +3,10 @@ from courses.models import (
     LevelCode, Level, Chapter,
     VideoLesson, LessonResource, WordMeaning, Course,
 )
+from exams.models import (
+    ExerciseContext, Question, Option,
+    MockExam, MockExamPackage, PackageFeature, MockExamSection,
+)
 
 
 class LevelCodeForm(forms.ModelForm):
@@ -81,4 +85,86 @@ class CourseForm(forms.ModelForm):
         self.fields['level'].required = False
         self.fields['image'].required = False
         self.fields['duration_months'].required = False
+
+
+class ExerciseContextForm(forms.ModelForm):
+    class Meta:
+        model = ExerciseContext
+        fields = ['video', 'label', 'title', 'context_text', 'total_points',
+                  'order_index', 'audio_url', 'audio_file']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].required = False
+        self.fields['context_text'].required = False
+        self.fields['total_points'].required = False
+        self.fields['audio_url'].required = False
+        self.fields['audio_file'].required = False
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['video', 'exercise_context', 'question_type', 'text',
+                  'instruction', 'marks', 'order_index', 'is_active',
+                  'audio_url', 'audio_file', 'passage', 'image']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['instruction'].required = False
+        self.fields['audio_url'].required = False
+        self.fields['audio_file'].required = False
+        self.fields['passage'].required = False
+        self.fields['image'].required = False
+        self.fields['video'].required = False
+
+
+class OptionForm(forms.ModelForm):
+    class Meta:
+        model = Option
+        fields = ['question', 'text', 'file', 'is_correct', 'order_index', 'match_key']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['file'].required = False
+        self.fields['match_key'].required = False
+        self.fields['text'].required = False
+
+
+class MockExamForm(forms.ModelForm):
+    class Meta:
+        model = MockExam
+        fields = ['level', 'title', 'description', 'duration_minutes',
+                  'total_marks', 'package', 'is_free', 'included_with_enrollment', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['package'].required = False
+
+
+class MockExamPackageForm(forms.ModelForm):
+    class Meta:
+        model = MockExamPackage
+        fields = ['level', 'name', 'description', 'price', 'currency',
+                  'exam_count', 'features', 'is_active', 'is_popular', 'display_order']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['features'].required = False
+
+
+class PackageFeatureForm(forms.ModelForm):
+    class Meta:
+        model = PackageFeature
+        fields = ['name', 'icon']
+
+
+class MockExamSectionForm(forms.ModelForm):
+    class Meta:
+        model = MockExamSection
+        fields = ['exam', 'title', 'description', 'duration_minutes', 'marks', 'order_index']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['description'].required = False
 

@@ -354,7 +354,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{% url 'dashboard:my_courses' %}" class="text-white-50 text-decoration-none">My Courses</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' video.chapter.level.courses.first.id %}" class="text-white-50 text-decoration-none">{{ video.chapter.level.title }}</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' video.chapter.course.level.courses.first.id %}" class="text-white-50 text-decoration-none">{{ video.chapter.course.level.title }}</a></li>
                         <li class="breadcrumb-item active text-white" aria-current="page">{{ video.title }}</li>
                     </ol>
                 </nav>
@@ -403,7 +403,7 @@
                 <div class="playlist-card">
                     <div class="playlist-header">
                         <h6>Course Content</h6>
-                        <h4>{{ video.chapter.level.title }}</h4>
+                        <h4>{{ video.chapter.course.level.title }}</h4>
                     </div>
                     <div class="playlist-items custom-scrollbar">
                         {% for chapter in level_chapters %}

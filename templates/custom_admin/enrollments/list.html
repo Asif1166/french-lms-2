@@ -1,0 +1,96 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Enrollments{% endblock %}
+{% block page_title %}Enrollments{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Enrollments</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Enrollments</h2>
+        <p>{{ total }} total &middot; {{ active }} active</p>
+    </div>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1">
+            <input type="text" name="q" value="{{ search }}" class="ca-input" style="max-width:280px" placeholder="Search by email or course...">
+            <select name="status" class="ca-input" style="max-width:160px" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="ACTIVE" {% if status_filter == 'ACTIVE' %}selected{% endif %}>Active</option>
+                <option value="EXPIRED" {% if status_filter == 'EXPIRED' %}selected{% endif %}>Expired</option>
+                <option value="CANCELLED" {% if status_filter == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button class="ca-btn-primary" style="padding:8px 14px"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course / Level</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Enrolled</th>
+                    <th>Expires</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in enrollments %}
+                <tr>
+                    <td>
+                        <div style="font-weight:600;color:#0f172a">{{ e.user.get_full_name|default:e.user.username }}</div>
+                        <div style="font-size:0.75rem;color:#94a3b8">{{ e.user.email }}</div>
+                    </td>
+                    <td>
+                        {% if e.course %}
+                        <div style="font-weight:500;color:#0f172a">{{ e.course.name }}</div>
+                        {% if e.course.level %}
+                        <span style="background:#dbeafe;color:#2563eb;padding:1px 8px;border-radius:4px;font-size:0.7rem;font-weight:700">{{ e.course.level.code }}</span>
+                        {% endif %}
+                        {% elif e.level %}
+                        <div style="font-weight:500;color:#0f172a">{{ e.level.title }}</div>
+                        <span style="background:#ede9fe;color:#7c3aed;padding:1px 8px;border-radius:4px;font-size:0.7rem;font-weight:700">{{ e.level.code }} Full Access</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if e.status == 'ACTIVE' %}
+                        <span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-check-circle-fill"></i> Active
+                        </span>
+                        {% elif e.status == 'EXPIRED' %}
+                        <span style="background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-clock-fill"></i> Expired
+                        </span>
+                        {% elif e.status == 'CANCELLED' %}
+                        <span style="background:#f1f5f9;color:#64748b;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">
+                            <i class="bi bi-x-circle-fill"></i> Cancelled
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if e.payment_transaction %}
+                        <div style="font-weight:600;color:#0f172a">{{ e.payment_transaction.amount }} {{ e.payment_transaction.currency }}</div>
+                        <div style="font-size:0.7rem;color:#94a3b8">{{ e.payment_transaction.gateway }}</div>
+                        {% else %}
+                        <span style="color:#94a3b8">—</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#64748b;font-size:0.82rem;white-space:nowrap">{{ e.enrolled_at|date:"d M Y" }}</td>
+                    <td style="color:#64748b;font-size:0.82rem;white-space:nowrap">{{ e.expires_at|date:"d M Y"|default:"Lifetime" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:40px;color:#94a3b8">
+                        <i class="bi bi-bar-chart-line" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No enrollments found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

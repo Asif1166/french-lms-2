@@ -1,0 +1,559 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Exercise{% endblock %}
+{% block page_title %}{{ action }} Exercise{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:video_lesson_list' %}">Video Lessons</a>
+{% if obj and obj.video %}
+<span>/</span><a href="{% url 'custom_admin:video_lesson_edit' obj.video.pk %}">{{ obj.video.title|truncatechars:30 }}</a>
+{% endif %}
+<span>/</span><span>{{ action }} Exercise</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Exercise</h2>
+        <p>{% if action == 'Create' %}Add a new exercise group{% else %}Update exercise details and manage questions{% endif %}</p>
+    </div>
+    {% if obj and obj.video %}
+    <a href="{% url 'custom_admin:video_lesson_edit' obj.video.pk %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back to Lesson
+    </a>
+    {% else %}
+    <a href="{% url 'custom_admin:video_lesson_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+    {% endif %}
+</div>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+{% csrf_token %}
+{% if video_id %}
+<input type="hidden" name="video" value="{{ video_id }}">
+{% endif %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Exercise Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+                {% if action == 'Edit' %}
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;font-size:0.83rem;color:#15803d;display:flex;align-items:center;gap:8px">
+                    <i class="bi bi-play-circle-fill"></i>
+                    <strong>Video Lesson:</strong> {{ obj.video.title }}
+                </div>
+                {% endif %}
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="ca-form-label">Label <span class="req">*</span></label>
+                        <input type="text" name="label" value="{{ form.label.value|default:'' }}"
+                               class="ca-input {% if form.label.errors %}err{% endif %}" placeholder="e.g. EXERCICE 1">
+                        {% for e in form.label.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="ca-form-label">Total Points</label>
+                        <input type="number" name="total_points" step="0.01" value="{{ form.total_points.value|default:'' }}"
+                               class="ca-input" placeholder="e.g. 10">
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="ca-form-label">Order</label>
+                        <input type="number" name="order_index" value="{{ form.order_index.value|default:'0' }}"
+                               class="ca-input" min="0">
+                    </div>
+                </div>
+                <div>
+                    <label class="ca-form-label">Instructions</label>
+                    <textarea name="title" rows="2" class="ca-input"
+                              placeholder="e.g. Lisez les questions. Ecoutez le document puis repondez.">{{ form.title.value|default:'' }}</textarea>
+                </div>
+                <div>
+                    <label class="ca-form-label">Context Text</label>
+                    <textarea name="context_text" rows="3" class="ca-input"
+                              placeholder="Scenario or background text...">{{ form.context_text.value|default:'' }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Audio <span style="font-weight:400;color:#94a3b8;font-size:0.8rem">(optional)</span></h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+                <div>
+                    <label class="ca-form-label">Audio URL</label>
+                    <input type="url" name="audio_url" value="{{ form.audio_url.value|default:'' }}"
+                           class="ca-input" placeholder="https://...">
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;color:#94a3b8">
+                    <div style="flex:1;height:1px;background:#e2e8f0"></div>
+                    <span style="font-size:0.78rem;font-weight:600">OR</span>
+                    <div style="flex:1;height:1px;background:#e2e8f0"></div>
+                </div>
+                <div>
+                    <label class="ca-form-label">Upload Audio File</label>
+                    {% if obj and obj.audio_file %}
+                    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:0.83rem;color:#15803d;display:flex;align-items:center;gap:8px">
+                        <i class="bi bi-file-earmark-music-fill"></i> {{ obj.audio_file.name|truncatechars:40 }}
+                        <audio controls style="height:26px;margin-left:auto"><source src="{{ obj.audio_file.url }}"></audio>
+                    </div>
+                    {% endif %}
+                    <input type="file" name="audio_file" class="ca-input" accept="audio/*">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Actions</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+                <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px">
+                    <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+                    {{ action }} Exercise
+                </button>
+                {% if action == 'Edit' %}
+                <a href="{% url 'custom_admin:exercise_context_delete' obj.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+                    <i class="bi bi-trash-fill"></i> Delete Exercise
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if action == 'Edit' %}
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Summary</h3></div>
+            <div style="padding:20px">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9">
+                    <span style="color:#64748b;font-size:0.83rem">Questions</span>
+                    <span style="font-weight:700;color:#6366f1" id="q-summary-count">{{ questions.count }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9">
+                    <span style="color:#64748b;font-size:0.83rem">Total Points</span>
+                    <span style="font-weight:700;color:#0f172a">{{ obj.total_points|default:"—" }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0">
+                    <span style="color:#64748b;font-size:0.83rem">Video Lesson</span>
+                    <span style="font-weight:600;color:#0f172a;font-size:0.83rem">{{ obj.video.title|truncatechars:20 }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</form>
+
+<!-- ══════════════════════════════════════════════════════
+     QUESTIONS SECTION — only on Edit
+══════════════════════════════════════════════════════ -->
+{% if action == 'Edit' %}
+
+<script>
+const CTX_ID = {{ obj.pk }};
+const VIDEO_ID = {{ obj.video.pk }};
+const CSRF = '{{ csrf_token }}';
+</script>
+
+<div class="ca-card mt-4 mb-4">
+    <div class="ca-card-head">
+        <div>
+            <h3 style="display:flex;align-items:center;gap:8px;margin:0">
+                <i class="bi bi-question-circle-fill" style="color:#6366f1"></i>
+                Questions
+                <span id="q-badge" style="background:#f1f5f9;color:#475569;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ questions.count }}</span>
+            </h3>
+            <p style="font-size:0.77rem;color:#94a3b8;margin:3px 0 0">Add questions for this exercise</p>
+        </div>
+        <button type="button" onclick="addQCard()" class="ca-btn-primary" style="font-size:0.8rem;padding:7px 14px">
+            <i class="bi bi-plus-lg"></i> Add Question
+        </button>
+    </div>
+
+    <div id="q-cards" style="padding:0 16px"></div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th style="width:40px">#</th>
+                    <th>Question</th>
+                    <th>Type</th>
+                    <th>Options</th>
+                    <th>Marks</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="q-tbody">
+                {% for q in questions %}
+                <tr id="q-row-{{ q.pk }}">
+                    <td style="color:#64748b;font-weight:600">{{ forloop.counter }}</td>
+                    <td style="color:#0f172a;max-width:300px">
+                        <div style="font-weight:600;margin-bottom:2px">{{ q.text|truncatechars:60 }}</div>
+                        {% if q.instruction %}<div style="font-size:0.75rem;color:#94a3b8">{{ q.instruction|truncatechars:40 }}</div>{% endif %}
+                    </td>
+                    <td>
+                        <span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700;white-space:nowrap">
+                            {{ q.get_question_type_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:12px;font-size:0.78rem;font-weight:600">
+                            {{ q.options.count }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b;font-weight:600">{{ q.marks }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="{% url 'custom_admin:question_edit' q.pk %}" class="ca-btn-edit">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <button type="button" onclick="delQ({{ q.pk }})" class="ca-btn-del">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="q-empty">
+                    <td colspan="6" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
+                        <i class="bi bi-question-circle" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
+                        No questions yet.
+                        <a href="#" onclick="addQCard();return false" style="color:#6366f1">Add a question</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if action == 'Edit' %}
+<script>
+let _uid = 0;
+function uid() { return ++_uid; }
+function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function removeCard(id) { const el = document.getElementById(id); if (el) el.remove(); }
+function updateBadge(id, delta) { const el = document.getElementById(id); if (el) el.textContent = Math.max(0, parseInt(el.textContent || 0) + delta); }
+function showInlineError(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+function inlineCard(containerId, headerHtml, bodyHtml, cardId) {
+    const html = `
+    <div id="${cardId}" style="border:2px dashed #6366f1;border-radius:12px;margin-bottom:10px;margin-top:10px;overflow:hidden;background:#fafbff">
+        <div style="padding:13px 18px;background:#f5f3ff;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ede9fe">
+            ${headerHtml}
+            <button type="button" onclick="removeCard('${cardId}')"
+                    style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:1.1rem;padding:2px 6px;line-height:1">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div style="padding:18px 20px">${bodyHtml}</div>
+    </div>`;
+    document.getElementById(containerId).insertAdjacentHTML('beforeend', html);
+}
+
+const Q_TYPES = [
+    ['MCQ_SINGLE', 'Multiple Choice (Single Answer)'],
+    ['MCQ_MULTIPLE', 'Multiple Choice (Multiple Answers)'],
+    ['TRUE_FALSE', 'True / False'],
+    ['FILL_BLANK', 'Fill in the Blank'],
+    ['MATCHING', 'Matching'],
+    ['YES_NO_NOT_MENTIONED', 'Yes / No / Not Mentioned'],
+    ['INFORMATION_EXTRACTION', 'Information Extraction'],
+    ['EMAIL_WRITING', 'Email Writing'],
+    ['SHORT_PARAGRAPH', 'Short Paragraph'],
+    ['OPINION_TEXT', 'Opinion-based Text'],
+    ['ROLE_PLAY', 'Role-play Simulation'],
+    ['IMAGE_DESCRIPTION', 'Image-based Description'],
+    ['TOPIC_MONOLOGUE', 'Topic Monologue'],
+];
+
+function addQCard() {
+    const id = `q-card-${uid()}`;
+    const opts = Q_TYPES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+    const header = `<span style="font-size:0.88rem;font-weight:700;color:#6366f1;display:flex;align-items:center;gap:6px">
+        <i class="bi bi-question-circle-fill"></i> New Question
+    </span>`;
+    const body = `
+    <div class="row g-3">
+        <div class="col-sm-8">
+            <label class="ca-form-label">Question Type <span class="req">*</span></label>
+            <select class="ca-input f-type" onchange="toggleOptSection('${id}', this.value)">${opts}</select>
+        </div>
+        <div class="col-sm-4">
+            <label class="ca-form-label">Marks</label>
+            <input type="number" step="0.01" value="1.0" class="ca-input f-marks">
+        </div>
+        <div class="col-12">
+            <label class="ca-form-label">Question Text <span class="req">*</span></label>
+            <textarea class="ca-input f-text" rows="3" placeholder="Enter the question text..."></textarea>
+        </div>
+        <div class="col-12">
+            <label class="ca-form-label">Instruction <span style="color:#94a3b8;font-weight:400">(optional)</span></label>
+            <input type="text" class="ca-input f-instruction" placeholder="e.g. Choose the best answer">
+        </div>
+        <div class="col-sm-6">
+            <label class="ca-form-label">Order</label>
+            <input type="number" value="0" min="0" class="ca-input f-order">
+        </div>
+        <div class="col-sm-6">
+            <label class="ca-form-label">Image (optional)</label>
+            <input type="file" class="ca-input f-image" accept="image/*">
+        </div>
+
+        <!-- auto-options note -->
+        <div class="col-12" id="${id}-auto-note" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;font-size:0.83rem;color:#15803d"></div>
+
+        <!-- ── Answer Options Section ── -->
+        <div class="col-12 q-opts-section" id="${id}-opts">
+            <div style="border-top:2px solid #e2e8f0;margin-top:8px;padding-top:16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                    <label class="ca-form-label" style="margin:0;display:flex;align-items:center;gap:6px">
+                        <i class="bi bi-list-check" style="color:#6366f1"></i> Answer Options
+                    </label>
+                    <button type="button" onclick="addOptRow('${id}')" class="ca-btn-outline" style="padding:4px 12px;font-size:0.78rem">
+                        <i class="bi bi-plus-lg"></i> Add Option
+                    </button>
+                </div>
+                <div class="q-opt-rows" style="display:flex;flex-direction:column;gap:8px">
+                </div>
+                <div style="margin-top:8px">
+                    <button type="button" onclick="addOptRow('${id}')" style="background:none;border:2px dashed #cbd5e1;border-radius:8px;padding:10px;width:100%;color:#94a3b8;cursor:pointer;font-size:0.82rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#cbd5e1';this.style.color='#94a3b8'">
+                        <i class="bi bi-plus-circle"></i> Click to add another option
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="inline-err" style="display:none;background:#fee2e2;color:#dc2626;padding:8px 12px;border-radius:7px;font-size:0.82rem;margin-bottom:10px"></div>
+            <div style="display:flex;gap:8px">
+                <button type="button" onclick="saveQ('${id}')" class="ca-btn-primary" style="padding:8px 18px">
+                    <i class="bi bi-check-circle-fill"></i> Save Question with Options
+                </button>
+                <button type="button" onclick="removeCard('${id}')" class="ca-btn-outline" style="padding:8px 14px">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>`;
+    inlineCard('q-cards', header, body, id);
+    addOptRow(id);
+    addOptRow(id);
+    document.querySelector(`#${id} .f-text`).focus();
+}
+
+function toggleOptSection(cardId, qType) {
+    const section = document.getElementById(`${cardId}-opts`);
+    const autoNote = document.getElementById(`${cardId}-auto-note`);
+    const noOptTypes = ['FILL_BLANK','EMAIL_WRITING','SHORT_PARAGRAPH','OPINION_TEXT','ROLE_PLAY','TOPIC_MONOLOGUE'];
+    const autoOptTypes = ['TRUE_FALSE','YES_NO_NOT_MENTIONED'];
+    if (noOptTypes.includes(qType)) {
+        section.style.display = 'none';
+        if (autoNote) autoNote.style.display = 'none';
+    } else if (autoOptTypes.includes(qType)) {
+        section.style.display = 'none';
+        if (autoNote) {
+            autoNote.style.display = 'block';
+            const label = qType === 'TRUE_FALSE' ? 'True / False' : 'Yes / No / Not Mentioned';
+            autoNote.innerHTML = `<i class="bi bi-info-circle-fill"></i> <strong>${label}</strong> options will be created automatically.`;
+        }
+    } else {
+        section.style.display = '';
+        if (autoNote) autoNote.style.display = 'none';
+    }
+}
+
+function addOptRow(cardId) {
+    const container = document.querySelector(`#${cardId} .q-opt-rows`);
+    const idx = container.children.length + 1;
+    const rowId = `${cardId}-opt-${uid()}`;
+    const html = `
+    <div id="${rowId}" style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div style="width:28px;height:28px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#475569;flex-shrink:0">
+            ${idx}
+        </div>
+        <div style="flex:1;min-width:180px">
+            <input type="text" class="ca-input opt-text" placeholder="Option text..." style="font-size:0.85rem;padding:7px 12px">
+        </div>
+        <div style="min-width:130px">
+            <input type="file" class="opt-file" style="font-size:0.75rem;width:130px" title="Attach file (optional)">
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;padding:4px 10px;border-radius:6px;font-size:0.8rem;font-weight:600;transition:all 0.15s" class="opt-correct-label">
+            <input type="checkbox" class="opt-correct" onchange="styleCorrectLabel(this)">
+            <i class="bi bi-check-circle"></i>
+            <span>Correct</span>
+        </label>
+        <button type="button" onclick="document.getElementById('${rowId}').remove();renumberOpts('${cardId}')"
+                style="background:none;border:none;color:#ef4444;cursor:pointer;padding:4px;font-size:1rem;flex-shrink:0" title="Remove">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+    styleCorrectLabel(container.lastElementChild.querySelector('.opt-correct'));
+}
+
+function renumberOpts(cardId) {
+    const rows = document.querySelectorAll(`#${cardId} .q-opt-rows > div`);
+    rows.forEach((row, i) => {
+        const numEl = row.querySelector('div:first-child');
+        if (numEl) numEl.textContent = i + 1;
+    });
+}
+
+function styleCorrectLabel(checkbox) {
+    const label = checkbox.closest('.opt-correct-label');
+    if (checkbox.checked) {
+        label.style.background = '#dcfce7';
+        label.style.color = '#16a34a';
+    } else {
+        label.style.background = '#f8fafc';
+        label.style.color = '#94a3b8';
+    }
+}
+
+async function saveQ(cardId) {
+    const card = document.getElementById(cardId);
+    const errEl = card.querySelector('.inline-err');
+    const qType = card.querySelector('.f-type').value;
+    const text = card.querySelector('.f-text').value.trim();
+    const instruction = card.querySelector('.f-instruction').value.trim();
+    const marks = card.querySelector('.f-marks').value;
+    const order = card.querySelector('.f-order').value;
+    const imageInput = card.querySelector('.f-image');
+
+    if (!text) { showInlineError(errEl, 'Question text is required.'); return; }
+    errEl.style.display = 'none';
+
+    const btn = card.querySelector('button[onclick^="saveQ"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+
+    // Step 1: Save the question
+    const fd = new FormData();
+    fd.append('question_type', qType);
+    fd.append('text', text);
+    fd.append('instruction', instruction);
+    fd.append('marks', marks);
+    fd.append('order_index', order);
+    fd.append('exercise_context', CTX_ID);
+    fd.append('video', VIDEO_ID);
+    if (imageInput.files[0]) fd.append('image', imageInput.files[0]);
+    fd.append('is_active', 'on');
+    fd.append('csrfmiddlewaretoken', CSRF);
+
+    try {
+        const resp = await fetch('/panel/questions/create/', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd,
+        });
+        const data = await resp.json();
+        if (!data.success) {
+            const msg = Object.values(data.errors).flat().join(' ');
+            showInlineError(errEl, msg || 'Validation error.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Question with Options';
+            return;
+        }
+
+        // Step 2: Save each option
+        const optRows = card.querySelectorAll('.q-opt-rows > div');
+        let optCount = 0;
+        let optFailed = false;
+        for (let i = 0; i < optRows.length; i++) {
+            const row = optRows[i];
+            const optText = row.querySelector('.opt-text').value.trim();
+            const optFile = row.querySelector('.opt-file');
+            const isCorrect = row.querySelector('.opt-correct').checked;
+            if (!optText && !(optFile && optFile.files[0])) continue;
+
+            const ofd = new FormData();
+            ofd.append('text', optText);
+            ofd.append('order_index', i);
+            ofd.append('question', data.id);
+            if (isCorrect) ofd.append('is_correct', 'on');
+            if (optFile && optFile.files[0]) ofd.append('file', optFile.files[0]);
+            ofd.append('csrfmiddlewaretoken', CSRF);
+
+            try {
+                const oResp = await fetch('/panel/options/create/', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: ofd,
+                });
+                const oData = await oResp.json();
+                if (oData.success) optCount++;
+                else optFailed = true;
+            } catch { optFailed = true; }
+        }
+
+        data.option_count = optCount;
+        card.remove();
+        appendQRow(data);
+        updateBadge('q-badge', 1);
+        const sc = document.getElementById('q-summary-count');
+        if (sc) sc.textContent = parseInt(sc.textContent || 0) + 1;
+        const empty = document.getElementById('q-empty');
+        if (empty) empty.remove();
+
+        if (optFailed) {
+            alert('Question saved but some options failed. Click Edit to fix them.');
+        }
+    } catch {
+        showInlineError(errEl, 'Network error. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Question with Options';
+    }
+}
+
+function appendQRow(d) {
+    const tbody = document.getElementById('q-tbody');
+    const count = tbody.querySelectorAll('tr:not(#q-empty)').length + 1;
+    const row = document.createElement('tr');
+    row.id = `q-row-${d.id}`;
+    row.innerHTML = `
+        <td style="color:#64748b;font-weight:600">${count}</td>
+        <td style="color:#0f172a;max-width:300px">
+            <div style="font-weight:600;margin-bottom:2px">${esc(d.text.substring(0,60))}${d.text.length>60?'…':''}</div>
+        </td>
+        <td>
+            <span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700;white-space:nowrap">
+                ${esc(d.question_type_display)}
+            </span>
+        </td>
+        <td>
+            <span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:12px;font-size:0.78rem;font-weight:600">${d.option_count || 0}</span>
+        </td>
+        <td style="color:#64748b;font-weight:600">${d.marks}</td>
+        <td><div style="display:flex;gap:6px;justify-content:flex-end">
+            <a href="${d.edit_url}" class="ca-btn-edit"><i class="bi bi-pencil-fill"></i> Edit</a>
+            <button type="button" onclick="delQ(${d.id})" class="ca-btn-del"><i class="bi bi-trash-fill"></i></button>
+        </div></td>`;
+    tbody.appendChild(row);
+}
+
+async function delQ(pk) {
+    if (!confirm('Delete this question and all its options?')) return;
+    try {
+        const resp = await fetch(`/panel/questions/${pk}/delete/`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': CSRF },
+        });
+        const data = await resp.json();
+        if (data.success) {
+            document.getElementById(`q-row-${pk}`)?.remove();
+            updateBadge('q-badge', -1);
+            const sc = document.getElementById('q-summary-count');
+            if (sc) sc.textContent = Math.max(0, parseInt(sc.textContent || 0) - 1);
+            const tbody = document.getElementById('q-tbody');
+            if (!tbody.querySelector('tr:not([style*="display:none"])')) {
+                tbody.innerHTML = `<tr id="q-empty"><td colspan="6" style="text-align:center;padding:28px;color:#94a3b8;font-size:0.85rem">
+                    <i class="bi bi-question-circle" style="font-size:1.5rem;display:block;margin-bottom:6px"></i>
+                    No questions yet. <a href="#" onclick="addQCard();return false" style="color:#6366f1">Add a question</a></td></tr>`;
+            }
+        }
+    } catch { alert('Delete failed.'); }
+}
+</script>
+{% endif %}
+{% endblock %}

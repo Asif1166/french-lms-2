@@ -6,9 +6,9 @@
 <style>
     :root {
         --book-primary: #0055A4;
-        --book-secondary: #002654;
+        --book-secondary: #001a6e;
         --text-dark: #1f2937;
-        --gold: #FFD700;
+        --gold: #0055A4;
         --light-bg: #f8fafc;
         --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
@@ -20,11 +20,10 @@
     /* Library Header */
     .library-header {
         background: #0055A4;
-        padding: 4rem 0;
+        padding: 3rem 0;
         margin-bottom: 3rem;
         color: white;
         text-align: center;
-        border-bottom: 4px solid var(--gold);
     }
 
     .library-title {
@@ -32,6 +31,7 @@
         font-size: 3.5rem;
         font-weight: 800;
         margin-bottom: 1rem;
+        color: #ffffff !important;
     }
 
     .library-subtitle {
@@ -107,7 +107,7 @@
 
     .card-top {
         padding: 2.5rem 2rem;
-        background: linear-gradient(135deg, #0055A4 0%, #003366 100%);
+        background: linear-gradient(135deg, #0055A4 0%, #001a6e 100%);
         color: white;
         text-align: center;
         position: relative;
@@ -117,8 +117,8 @@
         position: absolute;
         top: 1.5rem;
         right: 1.5rem;
-        background: var(--gold);
-        color: #000;
+        background: rgba(255, 255, 255, 0.95);
+        color: #0055A4;
         padding: 0.4rem 1rem;
         border-radius: 50px;
         font-size: 0.75rem;
@@ -140,7 +140,7 @@
 
     .icon-wrapper i {
         font-size: 2.5rem;
-        color: var(--gold);
+        color: #fff;
     }
 
     .exam-name {
@@ -357,10 +357,17 @@
                             <i class="fas fa-play-circle"></i>
                         </a>
                         {% else %}
-                        <a href="{% url 'exams:pricing' %}" class="btn-purchase-exam" style="grid-column: span 2;">
-                            <span>PURCHASE NOW</span>
-                            <i class="fas fa-shopping-cart"></i>
-                        </a>
+                            {% if exam.package %}
+                            <a href="{% url 'exams:purchase_package' exam.package.id %}" class="btn-purchase-exam" style="grid-column: span 2;">
+                                <span>PURCHASE NOW</span>
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'exams:pricing' %}" class="btn-purchase-exam" style="grid-column: span 2;">
+                                <span>PURCHASE NOW</span>
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>

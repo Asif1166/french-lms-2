@@ -1,0 +1,92 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}Users{% endblock %}
+{% block page_title %}Users{% endblock %}
+{% block breadcrumb %}<span>/</span><span>Users</span>{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>Users</h2>
+        <p>{{ total }} total users &middot; {{ students }} students &middot; {{ admins }} admins</p>
+    </div>
+</div>
+
+<div class="ca-card">
+    <div class="ca-card-head">
+        <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1">
+            <input type="text" name="q" value="{{ search }}" class="ca-input" style="max-width:280px" placeholder="Search by name or email...">
+            <select name="role" class="ca-input" style="max-width:160px" onchange="this.form.submit()">
+                <option value="">All Roles</option>
+                <option value="STUDENT" {% if role_filter == 'STUDENT' %}selected{% endif %}>Student</option>
+                <option value="INSTRUCTOR" {% if role_filter == 'INSTRUCTOR' %}selected{% endif %}>Instructor</option>
+                <option value="ADMIN" {% if role_filter == 'ADMIN' %}selected{% endif %}>Admin</option>
+            </select>
+            <button class="ca-btn-primary" style="padding:8px 14px"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div style="overflow-x:auto">
+        <table class="ca-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Phone</th>
+                    <th>Verified</th>
+                    <th>Enrollments</th>
+                    <th>Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:36px;height:36px;border-radius:50%;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;flex-shrink:0">
+                                {{ u.email|first|upper }}
+                            </div>
+                            <div>
+                                <div style="font-weight:600;color:#0f172a">{{ u.get_full_name|default:u.username }}</div>
+                                <div style="font-size:0.75rem;color:#94a3b8">{{ u.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if u.is_superuser %}
+                        <span style="background:#fee2e2;color:#dc2626;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">Superuser</span>
+                        {% elif u.role == 'ADMIN' %}
+                        <span style="background:#e0e7ff;color:#4338ca;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">Admin</span>
+                        {% elif u.role == 'INSTRUCTOR' %}
+                        <span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">Instructor</span>
+                        {% else %}
+                        <span style="background:#dbeafe;color:#2563eb;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700">Student</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#64748b;font-size:0.85rem">{{ u.phone|default:"—" }}</td>
+                    <td>
+                        {% if u.is_verified %}
+                        <i class="bi bi-check-circle-fill" style="color:#16a34a"></i>
+                        {% else %}
+                        <i class="bi bi-x-circle-fill" style="color:#dc2626"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:12px;font-size:0.78rem;font-weight:600">
+                            {{ u.enrollments.count }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b;font-size:0.82rem;white-space:nowrap">{{ u.created_at|date:"d M Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:40px;color:#94a3b8">
+                        <i class="bi bi-people" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        No users found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

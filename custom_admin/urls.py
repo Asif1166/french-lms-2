@@ -52,4 +52,57 @@ urlpatterns = [
     path('courses/create/', views.course_create, name='course_create'),
     path('courses/<int:pk>/edit/', views.course_edit, name='course_edit'),
     path('courses/<int:pk>/delete/', views.course_delete, name='course_delete'),
+
+    # Exercises (Exercise Contexts)
+    path('exercises/create/', views.exercise_context_create, name='exercise_context_create'),
+    path('exercises/<int:pk>/edit/', views.exercise_context_edit, name='exercise_context_edit'),
+    path('exercises/<int:pk>/delete/', views.exercise_context_delete, name='exercise_context_delete'),
+
+    # Questions
+    path('questions/create/', views.question_create, name='question_create'),
+    path('questions/<int:pk>/edit/', views.question_edit, name='question_edit'),
+    path('questions/<int:pk>/delete/', views.question_delete, name='question_delete'),
+
+    # Options
+    path('options/create/', views.option_create, name='option_create'),
+    path('options/<int:pk>/delete/', views.option_delete, name='option_delete'),
+
+    # Mock Exams
+    path('mock-exams/', views.mock_exam_list, name='mock_exam_list'),
+    path('mock-exams/create/', views.mock_exam_create, name='mock_exam_create'),
+    path('mock-exams/<int:pk>/edit/', views.mock_exam_edit, name='mock_exam_edit'),
+    path('mock-exams/<int:pk>/delete/', views.mock_exam_delete, name='mock_exam_delete'),
+
+    # Mock Exam Sections
+    path('mock-exam-sections/create/', views.mock_exam_section_create, name='mock_exam_section_create'),
+    path('mock-exam-sections/<int:pk>/edit/', views.mock_exam_section_edit, name='mock_exam_section_edit'),
+    path('mock-exam-sections/<int:pk>/delete/', views.mock_exam_section_delete, name='mock_exam_section_delete'),
+
+    # Mock Exam Packages
+    path('mock-exam-packages/', views.mock_exam_package_list, name='mock_exam_package_list'),
+    path('mock-exam-packages/create/', views.mock_exam_package_create, name='mock_exam_package_create'),
+    path('mock-exam-packages/<int:pk>/edit/', views.mock_exam_package_edit, name='mock_exam_package_edit'),
+    path('mock-exam-packages/<int:pk>/delete/', views.mock_exam_package_delete, name='mock_exam_package_delete'),
+
+    # Package Features
+    path('package-features/create/', views.package_feature_create, name='package_feature_create'),
+
+    # Mock Exam Questions
+    path('mock-exam-questions/create/', views.mock_exam_question_create, name='mock_exam_question_create'),
+    path('mock-exam-questions/<int:pk>/delete/', views.mock_exam_question_delete, name='mock_exam_question_delete'),
+
+    # Mock Exam Attempts (Submissions)
+    path('mock-exam-attempts/', views.mock_exam_attempt_list, name='mock_exam_attempt_list'),
+
+    # Mock Exam Purchases
+    path('mock-exam-purchases/', views.mock_exam_purchase_list, name='mock_exam_purchase_list'),
+
+    # Users
+    path('users/', views.user_list, name='user_list'),
+
+    # Enrollments
+    path('enrollments/', views.enrollment_list, name='enrollment_list'),
+
+    # Payments
+    path('payments/', views.payment_list, name='payment_list'),
 ]

@@ -95,7 +95,7 @@ def create_payment_view(request, course_id):
             amount=course.price,
             currency=course.currency,
             status='PENDING',
-            gateway_response=intent
+            gateway_response=json.loads(str(intent))
         )
         
         context = {
@@ -158,7 +158,7 @@ def create_level_payment_view(request, level_id):
             amount=price,
             currency=level.currency,
             status='PENDING',
-            gateway_response=intent
+            gateway_response=json.loads(str(intent))
         )
         
         context = {
@@ -197,7 +197,7 @@ def payment_success_view(request):
                     
                     if intent.status == 'succeeded':
                         transaction.status = 'SUCCESS'
-                        transaction.gateway_response = intent
+                        transaction.gateway_response = json.loads(str(intent))
                         transaction.save()
                         
                         # Create enrollment

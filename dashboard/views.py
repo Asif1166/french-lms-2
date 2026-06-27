@@ -92,11 +92,13 @@ def my_courses_view(request):
         if target_level:
             # Get all videos for the level this enrollment provides access to
             level_videos = VideoLesson.objects.filter(
-                chapter__level=target_level,
+                chapter__course__level=target_level,
                 is_active=True
             ).order_by('chapter__order_index', 'order_index')
-        
-        total_videos = level_videos.count()
+            total_videos = level_videos.count()
+        else:
+            level_videos = VideoLesson.objects.none()
+            total_videos = 0
         
         if total_videos > 0:
             # Get completed videos for this user in this level

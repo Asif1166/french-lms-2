@@ -605,8 +605,7 @@
                             </div>
                             {% endfor %}
                         </div>
-                        {% elif q_data.question.question_type == 'TRUE_FALSE' or q_data.question.question_type ==
-                        'YES_NO_NOT_MENTIONED' %}
+                        {% elif q_data.question.question_type == 'TRUE_FALSE' or q_data.question.question_type == 'YES_NO_NOT_MENTIONED' %}
                         <div class="question-options">
                             {% for option in q_data.question.options.all %}
                             <div class="option-item">
@@ -618,16 +617,13 @@
                             </div>
                             {% endfor %}
                         </div>
-                        {% elif q_data.question.question_type == 'FILL_BLANK' or q_data.question.question_type ==
-                        'INFORMATION_EXTRACTION' %}
+                        {% elif q_data.question.question_type == 'FILL_BLANK' or q_data.question.question_type == 'INFORMATION_EXTRACTION' %}
                         <input type="text" name="question_{{ q_data.question.id }}" class="text-answer-line"
                             placeholder="Votre réponse...">
-                        {% elif q_data.question.question_type == 'EMAIL_WRITING' or q_data.question.question_type ==
-                        'SHORT_PARAGRAPH' or q_data.question.question_type == 'OPINION_TEXT' %}
+                        {% elif q_data.question.question_type == 'EMAIL_WRITING' or q_data.question.question_type == 'SHORT_PARAGRAPH' or q_data.question.question_type == 'OPINION_TEXT' %}
                         <textarea name="question_{{ q_data.question.id }}" class="text-answer-area"
                             placeholder="Écrivez votre réponse ici..."></textarea>
-                        {% elif q_data.question.question_type == 'ROLE_PLAY' or q_data.question.question_type ==
-                        'IMAGE_DESCRIPTION' or q_data.question.question_type == 'TOPIC_MONOLOGUE' %}
+                        {% elif q_data.question.question_type == 'ROLE_PLAY' or q_data.question.question_type == 'IMAGE_DESCRIPTION' or q_data.question.question_type == 'TOPIC_MONOLOGUE' %}
                         <div style="margin: 10px 0;">
                             <label style="display: block; margin-bottom: 5px; font-weight: 600;">Upload your audio
                                 response:</label>
@@ -678,8 +674,7 @@
                         </div>
                         {% endfor %}
                     </div>
-                    {% elif q_data.question.question_type == 'TRUE_FALSE' or q_data.question.question_type ==
-                    'YES_NO_NOT_MENTIONED' %}
+                    {% elif q_data.question.question_type == 'TRUE_FALSE' or q_data.question.question_type == 'YES_NO_NOT_MENTIONED' %}
                     <div class="question-options">
                         {% for option in q_data.question.options.all %}
                         <div class="option-item">
@@ -692,16 +687,13 @@
                         </div>
                         {% endfor %}
                     </div>
-                    {% elif q_data.question.question_type == 'FILL_BLANK' or q_data.question.question_type ==
-                    'INFORMATION_EXTRACTION' %}
+                    {% elif q_data.question.question_type == 'FILL_BLANK' or q_data.question.question_type == 'INFORMATION_EXTRACTION' %}
                     <input type="text" name="question_{{ q_data.question.id }}" class="text-answer-line"
                         placeholder="Votre réponse...">
-                    {% elif q_data.question.question_type == 'EMAIL_WRITING' or q_data.question.question_type ==
-                    'SHORT_PARAGRAPH' or q_data.question.question_type == 'OPINION_TEXT' %}
+                    {% elif q_data.question.question_type == 'EMAIL_WRITING' or q_data.question.question_type == 'SHORT_PARAGRAPH' or q_data.question.question_type == 'OPINION_TEXT' %}
                     <textarea name="question_{{ q_data.question.id }}" class="text-answer-area"
                         placeholder="Écrivez votre réponse ici..."></textarea>
-                    {% elif q_data.question.question_type == 'ROLE_PLAY' or q_data.question.question_type ==
-                    'IMAGE_DESCRIPTION' or q_data.question.question_type == 'TOPIC_MONOLOGUE' %}
+                    {% elif q_data.question.question_type == 'ROLE_PLAY' or q_data.question.question_type == 'IMAGE_DESCRIPTION' or q_data.question.question_type == 'TOPIC_MONOLOGUE' %}
                     <div style="margin: 10px 0;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 600;">Upload your audio
                             response:</label>

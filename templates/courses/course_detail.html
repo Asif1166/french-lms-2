@@ -177,18 +177,18 @@
     .cd-includes-list li i { color: #0055A4; width: 16px; text-align: center; }
 
     /* ── Coupon ── */
-    .cd-coupon { display: flex; gap: 8px; margin-bottom: 16px; }
-    .cd-coupon input {
+    .cd-coupon-unused { display: flex; gap: 8px; margin-bottom: 16px; }
+    .cd-coupon-unused input {
         flex: 1; border: 1px solid #d1d5db; border-radius: 6px;
         padding: 9px 12px; font-size: 0.83rem; outline: none;
     }
-    .cd-coupon input:focus { border-color: #0055A4; }
-    .cd-coupon button {
+    .cd-coupon-unused input:focus { border-color: #0055A4; }
+    .cd-coupon-unused button {
         background: #0055A4; color: #fff; border: none; border-radius: 6px;
         padding: 9px 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
         white-space: nowrap;
     }
-    .cd-coupon button:hover { background: #003d7a; }
+    .cd-coupon-unused button:hover { background: #003d7a; }
 
     /* ── Learning path ── */
     .cd-lp-title { font-size: 0.85rem; font-weight: 800; color: #111827; margin-bottom: 4px; }
@@ -475,17 +475,6 @@
                             </li>
                             <li><i class="fas fa-certificate"></i> Certificate of completion</li>
                         </ul>
-
-                        <!-- Coupon -->
-                        <div style="border-top:1px solid #f3f4f6;padding-top:14px;margin-bottom:14px">
-                            <div style="color:#0055A4;font-size:0.82rem;font-weight:700;margin-bottom:8px;cursor:pointer">
-                                <i class="fas fa-tag me-1"></i> Discount Coupon
-                            </div>
-                            <div class="cd-coupon">
-                                <input type="text" placeholder="Enter Promo">
-                                <button type="button"><i class="fas fa-check me-1"></i>Apply</button>
-                            </div>
-                        </div>
 
                         <!-- Learning path -->
                         <div style="border-top:1px solid #f3f4f6;padding-top:14px">

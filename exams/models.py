@@ -159,6 +159,7 @@ class MockExam(models.Model):
     is_active = models.BooleanField(default=True)
     package = models.ForeignKey('MockExamPackage', on_delete=models.SET_NULL, null=True, blank=True, related_name='exams', help_text="Package this exam belongs to")
     is_free = models.BooleanField(default=False, help_text="If true, exam is accessible without purchase")
+    included_with_enrollment = models.BooleanField(default=False, help_text="If true, course-enrolled students get free access")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -192,14 +193,7 @@ class MockExamPackage(models.Model):
     """
     Represents a purchasable package of mock exams for a specific level
     """
-    LEVEL_CHOICES = [
-        ('A1', 'A1 - Beginner'),
-        ('A2', 'A2 - Elementary'),
-        ('B1', 'B1 - Intermediate'),
-        ('B2', 'B2 - Advanced'),
-    ]
-    
-    level = models.CharField(max_length=2, choices=LEVEL_CHOICES, db_index=True)
+    level = models.ForeignKey('courses.LevelCode', on_delete=models.CASCADE, related_name='mock_exam_packages', db_index=True)
     name = models.CharField(max_length=200, help_text="Package name (e.g., 'A1 Complete Mock Exam Package')")
     description = models.TextField(help_text="Detailed description of what's included")
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Package price")
@@ -219,8 +213,8 @@ class MockExamPackage(models.Model):
         verbose_name_plural = 'Mock Exam Packages'
     
     def __str__(self):
-        return f"{self.level} - {self.name}"
-    
+        return f"{self.level.code} - {self.name}"
+
     def get_exam_count(self):
         """Get actual count of exams in this package"""
         return self.exams.filter(is_active=True).count()

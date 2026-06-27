@@ -404,10 +404,10 @@
                 <i class="bi bi-collection-fill"></i> Chapters
             </a>
             <a href="{% url 'custom_admin:video_lesson_list' %}"
-               class="{% if 'video_lesson' in request.resolver_match.url_name or 'lesson_resource' in request.resolver_match.url_name or 'word_meaning' in request.resolver_match.url_name %}active{% endif %}">
+               class="{% if 'video_lesson' in request.resolver_match.url_name or 'lesson_resource' in request.resolver_match.url_name or 'word_meaning' in request.resolver_match.url_name or 'exercise_context' in request.resolver_match.url_name or 'question' in request.resolver_match.url_name or 'option' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-play-circle-fill"></i> Video Lessons
             </a>
-            <!-- Resources & Word Meanings are managed inside Video Lesson edit page -->
+            <!-- Resources, Word Meanings & Exercises are managed inside Video Lesson edit page -->
             <a href="{% url 'custom_admin:lesson_resource_list' %}"
                style="padding-left:28px;font-size:0.8rem;{% if 'lesson_resource' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
                class="{% if 'lesson_resource' in request.resolver_match.url_name %}active{% endif %}">
@@ -418,27 +418,47 @@
                class="{% if 'word_meaning' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-translate" style="font-size:0.85rem"></i> Word Meanings
             </a>
+            <a href="{% url 'custom_admin:video_lesson_list' %}"
+               style="padding-left:28px;font-size:0.8rem;{% if 'exercise_context' in request.resolver_match.url_name or 'question' in request.resolver_match.url_name or 'option' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
+               class="{% if 'exercise_context' in request.resolver_match.url_name or 'question' in request.resolver_match.url_name or 'option' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-pencil-square" style="font-size:0.85rem"></i> Exercises
+            </a>
         </div>
     </div>
 
     <div class="ca-nav-section">
         <div class="ca-nav-label">Management</div>
         <div class="ca-nav">
-            <a href="#">
+            <a href="{% url 'custom_admin:user_list' %}"
+               class="{% if 'user_list' == request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-people-fill"></i> Users
-                <span class="soon">Soon</span>
             </a>
-            <a href="#">
+            <a href="{% url 'custom_admin:payment_list' %}"
+               class="{% if 'payment_list' == request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-credit-card-fill"></i> Payments
-                <span class="soon">Soon</span>
             </a>
-            <a href="#">
-                <i class="bi bi-clipboard2-check-fill"></i> Exams
-                <span class="soon">Soon</span>
+            <a href="{% url 'custom_admin:mock_exam_list' %}"
+               class="{% if 'mock_exam_list' == request.resolver_match.url_name or 'mock_exam_create' == request.resolver_match.url_name or 'mock_exam_edit' == request.resolver_match.url_name or 'mock_exam_section' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-clipboard2-check-fill"></i> Mock Exams
             </a>
-            <a href="#">
+            <a href="{% url 'custom_admin:mock_exam_package_list' %}"
+               style="padding-left:28px;font-size:0.8rem;{% if 'mock_exam_package' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
+               class="{% if 'mock_exam_package' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-box-seam-fill" style="font-size:0.85rem"></i> Packages
+            </a>
+            <a href="{% url 'custom_admin:mock_exam_attempt_list' %}"
+               style="padding-left:28px;font-size:0.8rem;{% if 'mock_exam_attempt' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
+               class="{% if 'mock_exam_attempt' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-journal-check" style="font-size:0.85rem"></i> Submissions
+            </a>
+            <a href="{% url 'custom_admin:mock_exam_purchase_list' %}"
+               style="padding-left:28px;font-size:0.8rem;{% if 'mock_exam_purchase' in request.resolver_match.url_name %}{% else %}opacity:0.6{% endif %}"
+               class="{% if 'mock_exam_purchase' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-receipt" style="font-size:0.85rem"></i> Purchases
+            </a>
+            <a href="{% url 'custom_admin:enrollment_list' %}"
+               class="{% if 'enrollment_list' == request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-bar-chart-line-fill"></i> Enrollments
-                <span class="soon">Soon</span>
             </a>
         </div>
     </div>

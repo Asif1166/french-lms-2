@@ -1,0 +1,163 @@
+{% extends "custom_admin/base.html" %}
+{% block title %}{{ action }} Package{% endblock %}
+{% block page_title %}{{ action }} Package{% endblock %}
+{% block breadcrumb %}
+<span>/</span><a href="{% url 'custom_admin:mock_exam_list' %}">Mock Exams</a>
+<span>/</span><a href="{% url 'custom_admin:mock_exam_package_list' %}">Packages</a>
+<span>/</span><span>{{ action }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="ca-page-head">
+    <div>
+        <h2>{{ action }} Package</h2>
+        <p>{% if action == 'Create' %}Create a purchasable exam package{% else %}Update package details{% endif %}</p>
+    </div>
+    <a href="{% url 'custom_admin:mock_exam_package_list' %}" class="ca-btn-outline">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Package Details</h3></div>
+            <div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+                <div class="row g-3">
+                    <div class="col-sm-8">
+                        <label class="ca-form-label">Package Name <span class="req">*</span></label>
+                        <input type="text" name="name" value="{{ form.name.value|default:'' }}"
+                               class="ca-input {% if form.name.errors %}err{% endif %}" placeholder="e.g. A1 Complete Mock Exam Package">
+                        {% for e in form.name.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="ca-form-label">Level <span class="req">*</span></label>
+                        <select name="level" class="ca-input {% if form.level.errors %}err{% endif %}">
+                            <option value="">— Select —</option>
+                            {% for lc in form.level.field.queryset %}
+                            <option value="{{ lc.pk }}" {% if form.level.value|stringformat:"s" == lc.pk|stringformat:"s" %}selected{% endif %}>{{ lc.code }}{% if lc.name %} - {{ lc.name }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                        {% for e in form.level.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <label class="ca-form-label">Description <span class="req">*</span></label>
+                    <textarea name="description" rows="3" class="ca-input {% if form.description.errors %}err{% endif %}"
+                              placeholder="What's included in this package...">{{ form.description.value|default:'' }}</textarea>
+                    {% for e in form.description.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <label class="ca-form-label">Price <span class="req">*</span></label>
+                        <input type="number" name="price" step="0.01" value="{{ form.price.value|default:'' }}"
+                               class="ca-input {% if form.price.errors %}err{% endif %}" min="0" placeholder="29.99">
+                        {% for e in form.price.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="ca-form-label">Currency</label>
+                        <input type="text" name="currency" value="{{ form.currency.value|default:'EUR' }}"
+                               class="ca-input" maxlength="3">
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="ca-form-label">Exam Count <span class="req">*</span></label>
+                        <input type="number" name="exam_count" value="{{ form.exam_count.value|default:'' }}"
+                               class="ca-input {% if form.exam_count.errors %}err{% endif %}" min="1" placeholder="5">
+                        {% for e in form.exam_count.errors %}<div class="ca-field-error">{{ e }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="ca-form-label">Features</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+                        {% for feat in features %}
+                        <label style="display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.83rem;transition:all 0.15s">
+                            <input type="checkbox" name="features" value="{{ feat.pk }}"
+                                   {% if feat.pk in form.features.value %}checked{% endif %}
+                                   style="accent-color:#6366f1">
+                            <i class="{{ feat.icon }}" style="color:#6366f1"></i>
+                            {{ feat.name }}
+                        </label>
+                        {% empty %}
+                        <span style="color:#94a3b8;font-size:0.83rem">No features created yet.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if action == 'Edit' and package_exams %}
+        <div class="ca-card mb-4" style="border-left:4px solid #6366f1;background:#f5f3ff">
+            <div class="ca-card-head" style="background:#ede9fe">
+                <h3 style="display:flex;align-items:center;gap:8px;margin:0">
+                    <i class="bi bi-clipboard2-check-fill" style="color:#6366f1"></i>
+                    Exams in this Package
+                    <span style="background:#ddd6fe;color:#6d28d9;font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:12px">{{ package_exams.count }}</span>
+                </h3>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="ca-table">
+                    <thead><tr><th>Exam</th><th>Level</th><th>Duration</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+                    <tbody>
+                        {% for exam in package_exams %}
+                        <tr>
+                            <td style="font-weight:600;color:#0f172a">{{ exam.title }}</td>
+                            <td><span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700">{{ exam.level.code }}</span></td>
+                            <td style="color:#64748b">{{ exam.duration_minutes }} min</td>
+                            <td>
+                                {% if exam.is_active %}<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:12px;font-size:0.72rem;font-weight:700">Active</span>
+                                {% else %}<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:12px;font-size:0.72rem;font-weight:700">Inactive</span>{% endif %}
+                            </td>
+                            <td style="text-align:right">
+                                <a href="{% url 'custom_admin:mock_exam_edit' exam.pk %}" class="ca-btn-edit" style="font-size:0.78rem"><i class="bi bi-pencil-fill"></i> Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="ca-card mb-4">
+            <div class="ca-card-head"><h3>Settings</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div>
+                    <label class="ca-form-label">Display Order</label>
+                    <input type="number" name="display_order" value="{{ form.display_order.value|default:'0' }}" class="ca-input" min="0">
+                </div>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Active</div>
+                        <div class="ca-toggle-desc">Visible on pricing page</div>
+                    </div>
+                </label>
+                <label class="ca-toggle">
+                    <input type="checkbox" name="is_popular" {% if form.is_popular.value %}checked{% endif %}>
+                    <div>
+                        <div class="ca-toggle-title">Popular</div>
+                        <div class="ca-toggle-desc">Show "Popular" badge</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="ca-btn-primary w-100" style="justify-content:center;padding:12px">
+            <i class="bi bi-{% if action == 'Create' %}plus-circle-fill{% else %}check-circle-fill{% endif %}"></i>
+            {{ action }} Package
+        </button>
+        {% if action == 'Edit' %}
+        <div style="margin-top:10px">
+            <a href="{% url 'custom_admin:mock_exam_package_delete' obj.pk %}" class="ca-btn-del w-100" style="justify-content:center;padding:10px">
+                <i class="bi bi-trash-fill"></i> Delete
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</form>
+{% endblock %}

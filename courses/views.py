@@ -55,13 +55,13 @@ def chapter_detail_view(request, chapter_id):
         status='ACTIVE'
     )
     for enrollment in enrollments:
-        if enrollment.has_access_to_level(chapter.level):
+        if enrollment.has_access_to_level(chapter.course.level):
             has_access = True
             break
-    
+
     if not has_access:
         messages.warning(request, 'You need to enroll in this course to access content')
-        return redirect('courses:level_detail', level_id=chapter.level.id)
+        return redirect('courses:level_detail', level_id=chapter.course.level.id)
     
     # Get progress
     chapter_progress, _ = ChapterProgress.objects.get_or_create(
@@ -97,13 +97,13 @@ def video_detail_view(request, video_id):
         status='ACTIVE'
     )
     for enrollment in enrollments:
-        if enrollment.has_access_to_level(video.chapter.level):
+        if enrollment.has_access_to_level(video.chapter.course.level):
             has_access = True
             break
-    
+
     if not has_access:
         messages.warning(request, 'You need to enroll in this course to access content')
-        return redirect('courses:level_detail', level_id=video.chapter.level.id)
+        return redirect('courses:level_detail', level_id=video.chapter.course.level.id)
     
     # Get or create video progress
     video_progress, _ = VideoProgress.objects.get_or_create(
@@ -134,14 +134,14 @@ def video_detail_view(request, video_id):
     standalone_questions = questions.filter(exercise_context__isnull=True).order_by('order_index')
     
     # Get all chapters and videos for this level to show in sidebar
-    level_chapters = video.chapter.level.chapters.filter(is_active=True).prefetch_related(
+    level_chapters = video.chapter.course.chapters.filter(is_active=True).prefetch_related(
         Prefetch('videos', queryset=VideoLesson.objects.filter(is_active=True).order_by('order_index'))
     ).order_by('order_index')
     
     # Get all completed video IDs for this level
     completed_video_ids = VideoProgress.objects.filter(
         user=request.user,
-        video__chapter__level=video.chapter.level,
+        video__chapter__course=video.chapter.course,
         is_completed=True
     ).values_list('video_id', flat=True)
     
@@ -190,7 +190,7 @@ def course_detail_view(request, course_id):
     total_videos = 0
     total_exercises = 0
     if course.is_full_access and course.level:
-        chapters = course.level.chapters.filter(is_active=True).prefetch_related('videos__questions').order_by('order_index')
+        chapters = Chapter.objects.filter(course__level=course.level, is_active=True).prefetch_related('videos__questions').order_by('order_index')
     else:
         chapters = course.chapters.filter(is_active=True).prefetch_related('videos__questions').order_by('order_index')
     for chapter in chapters:
