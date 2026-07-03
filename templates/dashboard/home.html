@@ -110,32 +110,14 @@
 
     .modern-hero {
         padding: 12rem 0 15rem;
-        background: #0055A4;
+        background: #27275e;
         color: white;
         overflow: hidden;
         position: relative;
     }
 
-    /* Glossy Overlay */
-    .modern-hero::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-        opacity: 0.03;
-        pointer-events: none;
-    }
-
     .hero-glow-lux {
-        position: absolute;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(100px);
-        z-index: 1;
-        top: 20%;
-        right: 10%;
+        display: none;
     }
 
     .hero-title {
