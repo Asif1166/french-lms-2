@@ -10,71 +10,83 @@ from .models import User, EmailVerification
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard:home')
-    
+
     if request.method == 'POST':
-        email = request.POST.get('email', '').strip()
+        login_method = request.POST.get('login_method', 'email')
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
         password_confirm = request.POST.get('password_confirm', '')
         role = request.POST.get('role', 'STUDENT')
-        
-        # Validation
+
+        email = request.POST.get('email', '').strip()
+        phone_raw = request.POST.get('phone', '').strip()
+        country_code = request.POST.get('country_code', '').strip()
+        phone = f"{country_code}{phone_raw}" if phone_raw else ''
+
         errors = []
-        
-        if not email:
-            errors.append('Email is required')
-        elif User.objects.filter(email=email).exists():
-            errors.append('Email already exists')
-        
+
         if not username:
             errors.append('Username is required')
         elif User.objects.filter(username=username).exists():
             errors.append('Username already exists')
-        
+
         if not password:
             errors.append('Password is required')
         elif len(password) < 8:
             errors.append('Password must be at least 8 characters long')
-        
+
         if password != password_confirm:
             errors.append('Passwords do not match')
-        
+
+        if login_method == 'email':
+            if not email:
+                errors.append('Email is required')
+            elif User.objects.filter(email=email).exists():
+                errors.append('Email already registered')
+        else:
+            if not phone_raw:
+                errors.append('Phone number is required')
+            elif not country_code:
+                errors.append('Country code is required')
+            elif User.objects.filter(phone=phone).exists():
+                errors.append('Phone number already registered')
+            # generate placeholder email for phone-only users
+            email = f"phone_{phone.replace('+', '')}@noemail.local"
+            if User.objects.filter(email=email).exists():
+                errors.append('Phone number already registered')
+
         if errors:
             for error in errors:
                 messages.error(request, error)
-            return render(request, 'accounts/register.html', {
-                'email': email,
-                'username': username,
-                'role': role
-            })
-        
+            return render(request, 'accounts/register.html', {'login_method': login_method})
+
         try:
             user = User.objects.create_user(
                 email=email,
                 username=username,
                 password=password,
                 role=role,
-                is_verified=False  # User is not verified yet
+                phone=phone if login_method == 'phone' else '',
+                is_verified=login_method == 'phone',  # phone users skip email verify
             )
-            
-            # Send verification email
-            if user.send_verification_email():
-                messages.success(request, f'Registration successful! Please check your email ({email}) for the verification code.')
-                # Store user email in session for verification page
-                request.session['verification_email'] = email
-                return redirect('accounts:verify_email')
+
+            if login_method == 'email':
+                if user.send_verification_email():
+                    messages.success(request, f'Registration successful! Please check your email ({email}) for the verification code.')
+                    request.session['verification_email'] = email
+                    return redirect('accounts:verify_email')
+                else:
+                    messages.error(request, 'Registration successful but failed to send verification email.')
+                    return redirect('accounts:login')
             else:
-                messages.error(request, 'Registration successful but failed to send verification email. Please contact support.')
-                return redirect('accounts:login')
-                
+                login(request, user)
+                messages.success(request, f'Registration successful! Welcome, {user.username}!')
+                return redirect('dashboard:home')
+
         except Exception as e:
             messages.error(request, f'Registration failed: {str(e)}')
-            return render(request, 'accounts/register.html', {
-                'email': email,
-                'username': username,
-                'role': role
-            })
-    
+            return render(request, 'accounts/register.html', {'login_method': login_method})
+
     return render(request, 'accounts/register.html')
 
 
@@ -174,26 +186,32 @@ def resend_verification_view(request):
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard:home')
-    
+
     if request.method == 'POST':
-        email = request.POST.get('email')
+        login_method = request.POST.get('login_method', 'email')
         password = request.POST.get('password')
-        
-        user = authenticate(request, username=email, password=password)
+
+        if login_method == 'phone':
+            phone_raw = request.POST.get('phone', '').strip()
+            country_code = request.POST.get('country_code', '').strip()
+            identifier = f"{country_code}{phone_raw}"
+        else:
+            identifier = request.POST.get('email', '').strip()
+
+        user = authenticate(request, username=identifier, password=password)
         if user:
-            # Check if user is verified
             if not user.is_verified:
-                messages.warning(request, 'Please verify your email before logging in. Check your email for the verification code.')
-                request.session['verification_email'] = email
+                messages.warning(request, 'Please verify your email before logging in.')
+                request.session['verification_email'] = user.email
                 return redirect('accounts:verify_email')
-            
+
             login(request, user)
-            messages.success(request, f'Welcome back, {user.email}!')
+            messages.success(request, f'Welcome back, {user.username}!')
             next_url = request.GET.get('next', 'dashboard:home')
             return redirect(next_url)
         else:
-            messages.error(request, 'Invalid email or password')
-    
+            messages.error(request, 'Invalid credentials. Please try again.')
+
     return render(request, 'accounts/login.html')
 
 

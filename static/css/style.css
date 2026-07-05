@@ -8,7 +8,7 @@
     --accent-color: #e21b3c; /* Kahoot Red */
     --success-color: #26890c; /* Kahoot Green */
     --info-color: #45a3e5; /* Kahoot Light Blue */
-    --warning-color: #ffa602; /* Kahoot Yellow */
+    --warning-color: #27275e;
     --danger-color: #e21b3c;
     --dark-color: #333333;
     --light-color: #f2f2f2;
@@ -850,7 +850,7 @@ html {
 
 /* ========== Modern Hero Section ========== */
 .modern-hero {
-    background-color: #0055A4 !important;
+    background: linear-gradient(135deg, #0d1657 0%, #1a237e 25%, #27275e 50%, #0d47a1 75%, #1565c0 100%) !important;
     padding: 100px 0 140px;
     color: white;
     position: relative;

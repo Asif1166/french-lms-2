@@ -250,7 +250,7 @@
     <link rel="stylesheet" href="{% static 'public/css/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'public/css/preloader.css' %}">
     <link rel="stylesheet" href="{% static 'public/css/app.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5">
 
 
     {% block extra_css %}{% endblock %}
@@ -364,9 +364,27 @@
 
                     {% if user.is_authenticated %}
 
-                    <li class="nav-item">
-                        <a href="{% url 'dashboard:profile' %}" class="btn btn-outline-primary"
-                            style="border-radius: 50px; padding: 6px 20px; border-color: var(--primary-color); color: var(--primary-color);">Account</a>
+                    <li class="nav-item" style="list-style: none; position: relative;">
+                        <a href="#" class="btn btn-outline-primary" id="userDropdownBtn"
+                            style="border-radius: 50px; padding: 6px 20px; border-color: var(--primary-color); color: var(--primary-color);"
+                            onclick="toggleUserMenu(event)">
+                            <i class="fas fa-user-circle me-1"></i> {{ user.username }} <i class="fas fa-chevron-down ms-1" style="font-size:.7rem;"></i>
+                        </a>
+                        <div id="userDropdownMenu" style="display:none; position:absolute; right:0; top:calc(100% + 8px); background:white; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); min-width:190px; z-index:9999; overflow:hidden;">
+                            <a href="{% url 'dashboard:profile' %}" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#333; text-decoration:none; font-size:.9rem; font-weight:500;">
+                                <i class="fas fa-user" style="color:#27275e; width:16px;"></i> Profile
+                            </a>
+                            <a href="{% url 'dashboard:my_courses' %}" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#333; text-decoration:none; font-size:.9rem; font-weight:500;">
+                                <i class="fas fa-book" style="color:#27275e; width:16px;"></i> My Courses
+                            </a>
+                            <hr style="margin:4px 0; border-color:#f1f5f9;">
+                            <form method="post" action="{% url 'accounts:logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#c0392b; background:none; border:none; width:100%; text-align:left; font-size:.9rem; font-weight:500; cursor:pointer;">
+                                    <i class="fas fa-sign-out-alt" style="width:16px;"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </li>
                     {% else %}
                     <ul class="nav navbar-nav ml-auto mr-0">
@@ -638,6 +656,21 @@
                 });
             }, 5000);
         })()
+    </script>
+
+    <script>
+        function toggleUserMenu(e) {
+            e.preventDefault();
+            var menu = document.getElementById('userDropdownMenu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+        document.addEventListener('click', function(e) {
+            var btn = document.getElementById('userDropdownBtn');
+            var menu = document.getElementById('userDropdownMenu');
+            if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
     </script>
 
 </body>

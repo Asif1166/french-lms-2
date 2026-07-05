@@ -6,203 +6,104 @@
 {% block extra_css %}
 <style>
     :root {
-        --auth-primary: #46178f; /* Kahoot Purple */
+        --auth-primary: #27275e;
         --auth-bg: #f2f2f2;
-        --input-border: #f2f2f2;
+        --input-border: #e2e8f0;
         --text-main: #333333;
         --text-muted: #666666;
     }
-
-    body {
-        background-color: var(--auth-bg);
-    }
+    body { background-color: var(--auth-bg); }
 
     .auth-wrapper {
         min-height: calc(100vh - 100px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         padding: 40px 20px;
     }
-
     .auth-card {
-        background: white;
-        width: 100%;
-        max-width: 440px;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: white; width: 100%; max-width: 460px;
+        padding: 40px; border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.05);
+        border: 1px solid rgba(0,0,0,.05);
     }
-
-    .auth-header {
-        text-align: center;
-        margin-bottom: 32px;
-    }
-
+    .auth-header { text-align: center; margin-bottom: 28px; }
     .auth-logo {
-        width: 80px;
-        height: 80px;
-        background: white;
-        border-radius: 16px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 24px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        padding: 12px;
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        width: 70px; height: 70px; background: white; border-radius: 14px;
+        display: inline-flex; align-items: center; justify-content: center;
+        margin-bottom: 18px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
+        padding: 10px; border: 1px solid rgba(0,0,0,.05);
+    }
+    .auth-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .auth-title { font-family:'Outfit',sans-serif; font-size:1.7rem; font-weight:700; color:var(--text-main); margin-bottom:6px; }
+    .auth-subtitle { color:var(--text-muted); font-size:.9rem; }
+
+    /* Method Toggle */
+    .method-toggle {
+        display: flex; background: #f1f5f9; border-radius: 12px;
+        padding: 4px; margin-bottom: 24px; gap: 4px;
+    }
+    .method-btn {
+        flex: 1; padding: 10px; border: none; border-radius: 9px;
+        background: transparent; font-weight: 600; font-size: .9rem;
+        color: var(--text-muted); cursor: pointer; transition: all .2s;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .method-btn.active {
+        background: white; color: var(--auth-primary);
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
     }
 
-    .auth-logo img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
+    /* Phone input with flag dropdown */
+    .phone-input-group {
+        display: flex; border: 1.5px solid var(--input-border);
+        border-radius: 12px; overflow: hidden; background: #f8fafc;
+        transition: all .2s;
+    }
+    .phone-input-group:focus-within {
+        border-color: var(--auth-primary); background: white;
+        box-shadow: 0 0 0 4px rgba(39,39,94,.1);
+    }
+    .country-select-wrap { position: relative; flex-shrink: 0; }
+    .country-select {
+        appearance: none; border: none; background: transparent;
+        padding: 12px 28px 12px 10px; font-size: .75rem; font-weight: 600;
+        color: var(--text-main); cursor: pointer; outline: none;
+        min-width: 150px; max-width: 165px;
+    }
+    .country-select-arrow {
+        position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+        pointer-events: none; color: #94a3b8; font-size: .7rem;
+    }
+    .country-divider {
+        width: 1px; background: var(--input-border); align-self: stretch;
+        margin: 8px 0;
+    }
+    .phone-number-input {
+        flex: 1; border: none; background: transparent;
+        padding: 12px 14px; font-size: 1rem; outline: none; color: var(--text-main);
     }
 
-    .auth-title {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-main);
-        margin-bottom: 8px;
-    }
-
-    .auth-subtitle {
-        color: var(--text-muted);
-        font-size: 0.95rem;
-    }
-
-    /* Social Login */
-    .social-auth {
-        margin-bottom: 24px;
-    }
-
-    .btn-google {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px;
-        background: white;
-        border: 1px solid var(--input-border);
-        border-radius: 12px;
-        color: var(--text-main);
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-        text-decoration: none;
-    }
-
-    .btn-google:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .btn-google img {
-        width: 20px;
-        margin-right: 12px;
-    }
-
-    .divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 24px 0;
-        color: #cbd5e1;
-        font-size: 0.85rem;
-    }
-
-    .divider::before,
-    .divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .divider:not(:empty)::before {
-        margin-right: .75em;
-    }
-
-    .divider:not(:empty)::after {
-        margin-left: .75em;
-    }
-
-    /* Form Styles */
-    .form-label {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--text-main);
-        margin-bottom: 8px;
-    }
-
-    .input-wrapper {
-        position: relative;
-        margin-bottom: 20px;
-    }
-
+    .form-label { font-weight:600; font-size:.9rem; color:var(--text-main); margin-bottom:6px; display:block; }
     .form-control-custom {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1.5px solid var(--input-border);
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.2s ease;
-        background: #f8fafc;
+        width:100%; padding:12px 14px; border:1.5px solid var(--input-border);
+        border-radius:12px; font-size:1rem; transition:all .2s; background:#f8fafc;
     }
-
     .form-control-custom:focus {
-        outline: none;
-        border-color: var(--auth-primary);
-        background: white;
-        box-shadow: 0 0 0 4px rgba(0, 85, 164, 0.1);
+        outline:none; border-color:var(--auth-primary); background:white;
+        box-shadow:0 0 0 4px rgba(39,39,94,.1);
     }
-
     .btn-submit {
-        width: 100%;
-        padding: 16px;
-        background: var(--auth-primary);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 1.1rem;
-        font-weight: 800;
-        transition: all 0.2s ease;
-        margin-top: 10px;
-        box-shadow: 0 4px 0 0 #33106b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        width:100%; padding:15px; background:var(--auth-primary); color:white;
+        border:none; border-radius:12px; font-size:1.05rem; font-weight:800;
+        transition:all .2s; margin-top:10px; box-shadow:0 4px 0 0 #1a1a40;
+        text-transform:uppercase; letter-spacing:.5px;
     }
-
-    .btn-submit:hover {
-        background: var(--auth-primary);
-        transform: translateY(-3px);
-        box-shadow: 0 6px 0 0 #33106b, 0 12px 24px rgba(70, 23, 143, 0.2);
-    }
-
-    .btn-submit:active {
-        transform: translateY(2px);
-        box-shadow: none;
-    }
-
-    .auth-footer {
-        text-align: center;
-        margin-top: 32px;
-        font-size: 0.95rem;
-        color: var(--text-muted);
-    }
-
-    .auth-footer a {
-        color: var(--auth-primary);
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    .auth-footer a:hover {
-        text-decoration: underline;
-    }
+    .btn-submit:hover { transform:translateY(-3px); box-shadow:0 6px 0 0 #1a1a40,0 12px 24px rgba(39,39,94,.2); }
+    .btn-submit:active { transform:translateY(2px); box-shadow:none; }
+    .auth-footer { text-align:center; margin-top:28px; font-size:.9rem; color:var(--text-muted); }
+    .auth-footer a { color:var(--auth-primary); font-weight:600; text-decoration:none; }
+    .auth-footer a:hover { text-decoration:underline; }
+    .mb-3 { margin-bottom: 16px; }
+    .mb-4 { margin-bottom: 20px; }
 </style>
 {% endblock %}
 
@@ -217,37 +118,95 @@
             <p class="auth-subtitle">Join us to start learning French</p>
         </div>
 
-        <div class="social-auth">
-            <a href="#" class="btn-google">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                Continue with Google
-            </a>
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} py-2 px-3" style="border-radius:10px;font-size:.9rem;">{{ message }}</div>
+            {% endfor %}
         </div>
+        {% endif %}
 
-        <div class="divider">OR</div>
+        <!-- Method Toggle -->
+        <div class="method-toggle">
+            <button type="button" class="method-btn active" id="togglePhone" onclick="switchMethod('phone')">
+                <i class="fas fa-mobile-alt"></i> Phone Number
+            </button>
+            <button type="button" class="method-btn" id="toggleEmail" onclick="switchMethod('email')">
+                <i class="fas fa-envelope"></i> Email
+            </button>
+        </div>
 
         <form method="post" id="registerForm">
             {% csrf_token %}
+            <input type="hidden" name="login_method" id="loginMethod" value="phone">
 
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control-custom" id="username" name="username" placeholder="johndoe" required>
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control-custom" name="username" placeholder="johndoe" required>
+            </div>
+
+            <!-- Email Section -->
+            <div id="emailSection" class="mb-3" style="display:none;">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control-custom" id="emailInput" name="email" placeholder="name@example.com">
+            </div>
+
+            <!-- Phone Section -->
+            <div id="phoneSection" class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <div class="phone-input-group">
+                    <div class="country-select-wrap">
+                        <select class="country-select" name="country_code" id="countryCode">
+                            <option value="+33">🇫🇷 France +33</option>
+                            <option value="+880" selected>🇧🇩 Bangladesh +880</option>
+                            <option value="+1">🇺🇸 USA +1</option>
+                            <option value="+44">🇬🇧 UK +44</option>
+                            <option value="+49">🇩🇪 Germany +49</option>
+                            <option value="+32">🇧🇪 Belgium +32</option>
+                            <option value="+41">🇨🇭 Switzerland +41</option>
+                            <option value="+31">🇳🇱 Netherlands +31</option>
+                            <option value="+34">🇪🇸 Spain +34</option>
+                            <option value="+39">🇮🇹 Italy +39</option>
+                            <option value="+351">🇵🇹 Portugal +351</option>
+                            <option value="+46">🇸🇪 Sweden +46</option>
+                            <option value="+47">🇳🇴 Norway +47</option>
+                            <option value="+45">🇩🇰 Denmark +45</option>
+                            <option value="+358">🇫🇮 Finland +358</option>
+                            <option value="+212">🇲🇦 Morocco +212</option>
+                            <option value="+213">🇩🇿 Algeria +213</option>
+                            <option value="+216">🇹🇳 Tunisia +216</option>
+                            <option value="+221">🇸🇳 Senegal +221</option>
+                            <option value="+225">🇨🇮 Ivory Coast +225</option>
+                            <option value="+237">🇨🇲 Cameroon +237</option>
+                            <option value="+91">🇮🇳 India +91</option>
+                            <option value="+92">🇵🇰 Pakistan +92</option>
+                            <option value="+971">🇦🇪 UAE +971</option>
+                            <option value="+966">🇸🇦 Saudi Arabia +966</option>
+                            <option value="+90">🇹🇷 Turkey +90</option>
+                            <option value="+61">🇦🇺 Australia +61</option>
+                            <option value="+81">🇯🇵 Japan +81</option>
+                            <option value="+86">🇨🇳 China +86</option>
+                            <option value="+82">🇰🇷 South Korea +82</option>
+                            <option value="+55">🇧🇷 Brazil +55</option>
+                            <option value="+52">🇲🇽 Mexico +52</option>
+                        </select>
+                        <span class="country-select-arrow"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="country-divider"></div>
+                    <input type="tel" class="phone-number-input" id="phoneInput" name="phone"
+                           placeholder="612 345 678" inputmode="numeric">
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control-custom" id="email" name="email" placeholder="name@example.com" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label class="form-label">Password</label>
                 <input type="password" class="form-control-custom" id="password" name="password" placeholder="At least 8 characters" required>
             </div>
 
             <div class="mb-4">
-                <label for="password_confirm" class="form-label">Confirm Password</label>
+                <label class="form-label">Confirm Password</label>
                 <input type="password" class="form-control-custom" id="password_confirm" name="password_confirm" placeholder="Repeat your password" required>
-                <div id="passwordError" style="color: #e53e3e; font-size: 0.85rem; margin-top: 5px; display: none;">Passwords do not match</div>
+                <div id="passwordError" style="color:#e53e3e;font-size:.85rem;margin-top:5px;display:none;">Passwords do not match</div>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">Sign Up</button>
@@ -262,35 +221,61 @@
 
 {% block extra_js %}
 <script>
-    const form = document.getElementById('registerForm');
+    function switchMethod(method) {
+        document.getElementById('loginMethod').value = method;
+        const emailSection = document.getElementById('emailSection');
+        const phoneSection = document.getElementById('phoneSection');
+        const emailInput = document.getElementById('emailInput');
+        const phoneInput = document.getElementById('phoneInput');
+        const toggleEmail = document.getElementById('toggleEmail');
+        const togglePhone = document.getElementById('togglePhone');
+
+        if (method === 'email') {
+            emailSection.style.display = '';
+            phoneSection.style.display = 'none';
+            emailInput.required = true;
+            phoneInput.required = false;
+            toggleEmail.classList.add('active');
+            togglePhone.classList.remove('active');
+        } else {
+            emailSection.style.display = 'none';
+            phoneSection.style.display = '';
+            emailInput.required = false;
+            phoneInput.required = true;
+            togglePhone.classList.add('active');
+            toggleEmail.classList.remove('active');
+        }
+    }
+
+    // Password match validation
     const password = document.getElementById('password');
     const confirm = document.getElementById('password_confirm');
     const errorMsg = document.getElementById('passwordError');
-    const submitBtn = document.getElementById('submitBtn');
 
     function validatePasswords() {
         if (confirm.value && password.value !== confirm.value) {
             errorMsg.style.display = 'block';
             confirm.style.borderColor = '#e53e3e';
             return false;
-        } else {
-            errorMsg.style.display = 'none';
-            confirm.style.borderColor = '';
-            return true;
         }
+        errorMsg.style.display = 'none';
+        confirm.style.borderColor = '';
+        return true;
     }
 
     password.addEventListener('input', validatePasswords);
     confirm.addEventListener('input', validatePasswords);
 
-    form.addEventListener('submit', function (e) {
-        if (!validatePasswords()) {
-            e.preventDefault();
-            return;
-        }
-        
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating account...';
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        if (!validatePasswords()) { e.preventDefault(); return; }
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating account...';
+    });
+
+    // Only allow digits in phone input
+    document.getElementById('phoneInput').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
     });
 </script>
 {% endblock %}

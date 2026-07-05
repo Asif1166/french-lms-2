@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static exam_filters %}
 
 {% block title %}Home - French Learning Platform{% endblock %}
 
@@ -12,7 +12,7 @@
         --shelf-wood: #f8f8f8;
         --page-cream: #ffffff;
         --text-dark: #333333;
-        --gold: #ffa602; /* Kahoot Yellow */
+        --gold: #27275e;
         --france-blue: #46178f;
         --france-red: #e21b3c;
         --shadow-book: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -40,13 +40,13 @@
 
     .btn-primary-custom {
         padding: 1.1rem 2.5rem;
-        background: var(--gold);
-        color: white;
+        background: white;
+        color: #27275e;
         font-weight: 800;
         border-radius: 12px;
         border: none;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: 0 4px 0 0 #cc8400; /* Darker yellow for 3D effect */
+        box-shadow: 0 4px 0 0 #c0c0d8;
         display: inline-flex;
         align-items: center;
         text-decoration: none;
@@ -57,9 +57,9 @@
 
     .btn-primary-custom:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 0 0 #cc8400, 0 10px 25px rgba(255, 166, 2, 0.4);
-        background: #ffb733;
-        color: white;
+        box-shadow: 0 6px 0 0 #c0c0d8, 0 10px 25px rgba(39, 39, 94, 0.3);
+        background: #f0f0f8;
+        color: #27275e;
     }
 
     .btn-primary-custom:active {
@@ -110,7 +110,7 @@
 
     .modern-hero {
         padding: 12rem 0 15rem;
-        background: #27275e;
+        background: linear-gradient(135deg, #0d1657 0%, #1a237e 25%, #27275e 50%, #0d47a1 75%, #1565c0 100%);
         color: white;
         overflow: hidden;
         position: relative;
@@ -428,7 +428,7 @@
     }
 
     .section-title::after {
-        content: '';
+        content: none;
         position: absolute;
         bottom: -15px;
         left: 50%;
@@ -933,7 +933,7 @@
         right: -20%;
         width: 200px;
         height: 200px;
-        background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(39, 39, 94, 0.1) 0%, transparent 70%);
     }
 
     .course-card-header h5 {
@@ -1533,7 +1533,7 @@
         left: 2rem;
         right: 2rem;
         bottom: 2rem;
-        border: 2px solid rgba(255, 215, 0, 0.3);
+        border: 2px solid rgba(39, 39, 94, 0.15);
         border-radius: 8px;
         pointer-events: none;
     }
@@ -2178,23 +2178,7 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
-    .price-card-header {
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        color: white;
-        letter-spacing: 1px;
-    }
-
-    .price-card-header { background: #0055A4; }
-    .level-A1 .price-card-header { background: #4f46e5; }
-    .level-A2 .price-card-header { background: #7c3aed; }
-    .level-B1 .price-card-header { background: #db2777; }
-    .level-B2 .price-card-header { background: #0891b2; }
+    .price-card-header { display: none; }
 
     .price-card { background: linear-gradient(to bottom, #ffffff, #f0f9ff); }
     .price-card.level-A1 { background: linear-gradient(to bottom, #ffffff, #f5f3ff); }
@@ -2275,8 +2259,8 @@
     }
 
     .price-currency {
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 22px;
+        font-weight: 700;
         margin-right: 3px;
     }
 
@@ -2447,12 +2431,7 @@
             {% for level in levels %}
             <div class="inspired-card-glow h-100">
                 <div class="price-card level-{{ level.code }} h-100" style="border: none; border-radius: 20px;">
-                    <div class="price-card-header">
-                        {% if level.code == 'A1' %}FOR BEGINNERS
-                        {% elif level.code == 'A2' %}FOR ELEMENTARY
-                        {% elif level.code == 'B1' %}FOR INTERMEDIATE
-                        {% elif level.code == 'B2' %}FOR PROFESSIONALS{% endif %}
-                    </div>
+                    <div class="price-card-header"></div>
                     <div class="price-card-body">
                         <div class="level-logo-box">
                             <div class="level-logo-text">{{ level.code }}</div>
@@ -2470,8 +2449,8 @@
                         <div class="price-box">
                             <span class="price-from">Starting from</span>
                             <div class="price-amount">
-                                <span class="price-currency">{{ level.currency }}</span>
-                                {% if level.discounted_price %}{{ level.discounted_price }}{% else %}{{ level.price }}{% endif %}
+                                <span class="price-currency">€</span>
+                                {% if level.discounted_price %}{{ level.discounted_price|euro_price }}{% else %}{{ level.price|euro_price }}{% endif %}
                             </div>
                         </div>
 
@@ -2765,7 +2744,7 @@
         <div class="filter-tabs-nav">
             <button class="filter-tab-btn active" data-filter="all">All Courses</button>
             {% for level in levels %}
-            <button class="filter-tab-btn" data-filter="{{ level.code }}">{{ level.title }}</button>
+            <button class="filter-tab-btn" data-filter="{{ level.code }}">{{ level.code }}</button>
             {% endfor %}
         </div>
 

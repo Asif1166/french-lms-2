@@ -4,6 +4,15 @@ import re
 
 register = template.Library()
 
+@register.filter(name='euro_price')
+def euro_price(value):
+    """Format price with comma as decimal separator (European style)."""
+    try:
+        formatted = f"{float(value):.2f}".replace('.', ',')
+        return formatted
+    except (ValueError, TypeError):
+        return value
+
 @register.filter(name='render_inline_blanks')
 def render_inline_blanks(text, question_id):
     """
