@@ -149,8 +149,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # Payment Gateway Settings
-STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY", default="pk_test_placeholder")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="sk_test_placeholder")
 STRIPE_WEBHOOK_SECRET = ''
 
 # Email Settings
