@@ -548,46 +548,79 @@
 
     /* Trusted By Section */
     .trusted-by-section {
-        padding: 60px 0;
+        padding: 50px 0;
         background: white;
         text-align: center;
+        overflow: hidden;
     }
 
     .trusted-title {
         font-size: 1.2rem;
         font-weight: 800;
         color: var(--primary-color);
-        margin-bottom: 50px;
+        margin-bottom: 40px;
         text-transform: uppercase;
         letter-spacing: 2px;
         opacity: 0.8;
     }
 
-    .logo-grid {
+    .logo-marquee-wrapper {
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    .logo-marquee-wrapper::before,
+    .logo-marquee-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 120px;
+        z-index: 2;
+    }
+    .logo-marquee-wrapper::before {
+        left: 0;
+        background: linear-gradient(to right, white, transparent);
+    }
+    .logo-marquee-wrapper::after {
+        right: 0;
+        background: linear-gradient(to left, white, transparent);
+    }
+
+    .logo-marquee-track {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
         align-items: center;
-        gap: 50px 80px;
-        opacity: 0.5;
+        gap: 80px;
+        width: max-content;
+        animation: marquee-scroll 20s linear infinite;
+        opacity: 0.55;
+    }
+
+    .logo-marquee-track:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes marquee-scroll {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
     }
 
     .trusted-logo {
-        height: auto;
-        transition: all 0.4s ease;
-        padding: 10px;
+        flex-shrink: 0;
+        padding: 10px 20px;
+        transition: opacity 0.3s ease;
     }
 
     .trusted-logo span {
         font-family: 'Outfit', sans-serif;
         text-transform: uppercase;
         letter-spacing: 1px;
+        white-space: nowrap;
     }
 
-    .trusted-logo:hover {
+    .logo-marquee-track:hover .trusted-logo:hover {
         opacity: 1;
-        transform: translateY(-5px);
-        filter: drop-shadow(0 10px 20px rgba(0, 85, 164, 0.2));
     }
 
     /* Inspired By Section */
@@ -694,7 +727,7 @@
         position: relative;
         z-index: 1;
         background: transparent;
-        padding: 5px; /* Thicker border space */
+        padding: 3px;
         border-radius: 24px;
         transition: all 0.4s ease;
         overflow: hidden; /* Keep the glow contained but intense */
@@ -2475,9 +2508,29 @@
 
 <!-- Trusted By Section -->
 <section class="trusted-by-section">
-    <div class="container">
-        <h3 class="trusted-title">Trusted by leading companies and universities worldwide</h3>
-        <div class="logo-grid">
+    <h3 class="trusted-title">Trusted by leading companies and universities worldwide</h3>
+    <div class="logo-marquee-wrapper">
+        <div class="logo-marquee-track">
+            <!-- Original set -->
+            <div class="trusted-logo">
+                <span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; color: #1e293b;">UNIVERSITY</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 700; font-family: 'Georgia', serif; font-size: 1.8rem; color: #1e293b;">Kempinski</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 800; font-size: 1.5rem; color: #e11d48;">Scotiabank</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 900; font-size: 1.6rem; color: #1e293b;">CSI</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 800; font-size: 1.5rem; color: #0ea5e9;">Capgemini</span>
+            </div>
+            <div class="trusted-logo">
+                <span style="font-weight: 900; font-size: 1.5rem; color: #0284c7;">Salesforce</span>
+            </div>
+            <!-- Duplicate set for seamless loop -->
             <div class="trusted-logo">
                 <span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; color: #1e293b;">UNIVERSITY</span>
             </div>

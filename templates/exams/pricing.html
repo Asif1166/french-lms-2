@@ -22,7 +22,7 @@
     .pricing-hero {
         position: relative;
         padding: 70px 0 120px;
-        background: #0055A4;
+        background: linear-gradient(135deg, #0d1657 0%, #1a237e 25%, #27275e 50%, #0d47a1 75%, #1565c0 100%);
         color: white;
         text-align: center;
         overflow: hidden;
@@ -179,10 +179,10 @@
     }
 
     .btn-enroll {
-        display: block;
-        padding: 14px;
-        background: #f1f5f9;
-        color: #0f172a;
+        display: block !important;
+        padding: 14px !important;
+        background: #0055A4 !important;
+        color: #ffffff !important;
         border-radius: 10px;
         text-align: center;
         font-weight: 700;
@@ -191,22 +191,18 @@
         font-size: 0.85rem;
         text-decoration: none !important;
         transition: all 0.2s ease;
+        border: none;
     }
 
-    .popular-card .btn-enroll {
-        background: var(--price-primary);
-        color: white;
-    }
-
-    .btn-enroll:hover {
+    .btn-enroll:hover,
+    .btn-enroll:visited,
+    .btn-enroll:focus,
+    .btn-enroll:active {
+        background: #001a6e !important;
+        color: #ffffff !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .popular-card .btn-enroll:hover {
-        background: var(--price-secondary);
-        color: white;
         box-shadow: 0 4px 12px rgba(0, 35, 149, 0.3);
+        text-decoration: none !important;
     }
 
     .btn-enroll:active {

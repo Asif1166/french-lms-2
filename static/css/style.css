@@ -20,6 +20,33 @@
     --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
     --shadow-xl: 0 12px 32px rgba(0,0,0,0.15);
     --border-radius: 12px;
+    --hero-gradient: linear-gradient(135deg, #0d1657 0%, #1a237e 25%, #27275e 50%, #0d47a1 75%, #1565c0 100%);
+}
+
+/* ========== Sticky Navbar (replaces MDK data-fixed to avoid white gap) ========== */
+#header {
+    position: sticky !important;
+    top: 0;
+    z-index: 1030;
+    width: 100%;
+}
+
+/* MDK must not add padding-top when not using data-fixed */
+.mdk-header-layout__content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* ========== Global Hero / Breadcrumb Background ========== */
+.library-hero,
+.pricing-hero,
+.page-hero,
+.hero-section,
+.breadcrumb-hero,
+.exam-hero,
+.course-hero,
+.chapter-hero {
+    background: var(--hero-gradient) !important;
 }
 
 /* Global Select Improvements */
