@@ -1141,8 +1141,111 @@
             padding: 3rem 0;
         }
 
+        /* ── FAQ Section Mobile Fix ── */
+        .faq-section {
+            padding: 40px 0 !important;
+        }
+
+        .section-title-faq {
+            font-size: 1.6rem !important;
+            letter-spacing: -0.5px !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        .section-subtitle-faq {
+            font-size: 0.88rem !important;
+            margin-bottom: 2rem !important;
+        }
+
+        /* ── Inspired Section Mobile Fix ── */
+        .inspired-section {
+            padding: 40px 0;
+        }
+
+        .inspired-header {
+            margin-bottom: 30px;
+        }
+
+        .inspired-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .inspired-header p {
+            font-size: 0.88rem;
+        }
+
+        /* ── Hero Mobile Fix ── */
+        .modern-hero {
+            padding: 3rem 0 2rem;
+        }
+
         .hero-title {
             font-size: 2rem;
+            letter-spacing: -0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-cta-group {
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-hero-primary,
+        .btn-hero-secondary {
+            width: 100%;
+            text-align: center;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Hide floating stats on mobile — replace with inline row */
+        .floating-stat {
+            display: none;
+        }
+
+        .hero-illustration-box {
+            margin-top: 2rem;
+        }
+
+        .illustration-3d-wrapper {
+            max-width: 100%;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4));
+        }
+
+        /* Stat row below hero on mobile */
+        .hero-stats-mobile {
+            display: flex !important;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1.2rem 1rem;
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            margin-top: 1.5rem;
+        }
+
+        .hero-stat-item {
+            text-align: center;
+        }
+
+        .hero-stat-item .stat-val {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: block;
+        }
+
+        .hero-stat-item .stat-txt {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
         .hero-description {
@@ -1400,7 +1503,6 @@
     /* Mobile Step Image */
     .mobile-step-image {
         width: 100%;
-        height: 180px;
         border-radius: 15px;
         overflow: hidden;
         margin-bottom: 1.5rem;
@@ -1409,8 +1511,8 @@
 
     .mobile-step-image img {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
+        display: block;
     }
 
     /* Filter Tabs (replaced subtitle) */
@@ -2011,6 +2113,13 @@
         transform: translateY(-3px);
     }
 
+    @media (max-width: 768px) {
+        .faq-section { padding: 40px 0; }
+        .section-title-faq { font-size: 1.6rem; letter-spacing: -0.5px; margin-bottom: 0.75rem; }
+        .section-subtitle-faq { font-size: 0.88rem; margin-bottom: 2rem; }
+        .btn-faq-primary, .btn-faq-outline { padding: 0.9rem 1.5rem; font-size: 0.9rem; }
+    }
+
     /* ═══════ Founder Speech Section ═══════ */
     .founder-section {
         padding: 80px 0;
@@ -2372,6 +2481,22 @@
                     <div class="hero-cta-group">
                         <a href="{% url 'courses:level_list' %}" class="btn-hero-primary" style="background-color: white;">এখনই শুরু করুন</a>
                         <a href="{% url 'exams:mock_exam_list' %}" class="btn-hero-secondary">মক টেস্ট নিন</a>
+                    </div>
+
+                    <!-- Mobile-only stats row -->
+                    <div class="hero-stats-mobile" style="display:none;">
+                        <div class="hero-stat-item">
+                            <span class="stat-val">৫০০০+</span>
+                            <span class="stat-txt">শিক্ষার্থী</span>
+                        </div>
+                        <div class="hero-stat-item">
+                            <span class="stat-val">৫০+</span>
+                            <span class="stat-txt">কোর্স</span>
+                        </div>
+                        <div class="hero-stat-item">
+                            <span class="stat-val">২৪/৭</span>
+                            <span class="stat-txt">সাপোর্ট</span>
+                        </div>
                     </div>
                 </div>
             </div>
