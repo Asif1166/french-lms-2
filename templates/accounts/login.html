@@ -67,6 +67,33 @@
         color: var(--text-main); cursor: pointer; outline: none;
         min-width: 150px; max-width: 165px;
     }
+    @media (max-width: 480px) {
+        .country-select {
+            opacity: 0;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .country-select-wrap {
+            min-width: 72px;
+            max-width: 80px;
+        }
+        .country-display {
+            display: flex !important;
+            align-items: center;
+            font-size: .85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            padding: 12px 8px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .country-select-arrow { display: none; }
+        .phone-number-input { padding: 12px 8px; font-size: .95rem; }
+        .method-btn { white-space: nowrap; font-size: .72rem !important; padding: 8px 6px !important; gap: 4px !important; }
+    }
     .country-select-arrow {
         position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
         pointer-events: none; color: #94a3b8; font-size: .7rem;
@@ -156,9 +183,10 @@
                 <label class="form-label">Phone Number</label>
                 <div class="phone-input-group">
                     <div class="country-select-wrap">
+                        <span class="country-display" id="countryDisplay" style="display:none;">🇧🇩 +880</span>
                         <select class="country-select" name="country_code" id="countryCode">
-                            <option value="+33">🇫🇷 France +33</option>
-                            <option value="+880" selected>🇧🇩 Bangladesh +880</option>
+                            <option value="+33" data-flag="🇫🇷">🇫🇷 France +33</option>
+                            <option value="+880" data-flag="🇧🇩" selected>🇧🇩 Bangladesh +880</option>
                             <option value="+1">🇺🇸 USA +1</option>
                             <option value="+44">🇬🇧 UK +44</option>
                             <option value="+49">🇩🇪 Germany +49</option>
@@ -259,5 +287,21 @@
     document.getElementById('phoneInput').addEventListener('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
+
+    // Mobile: show only flag + code
+    (function() {
+        var sel = document.getElementById('countryCode');
+        var display = document.getElementById('countryDisplay');
+        function updateDisplay() {
+            if (window.innerWidth <= 480) {
+                var opt = sel.options[sel.selectedIndex];
+                var flag = opt.getAttribute('data-flag') || '';
+                display.textContent = flag + ' ' + sel.value;
+            }
+        }
+        sel.addEventListener('change', updateDisplay);
+        updateDisplay();
+        window.addEventListener('resize', updateDisplay);
+    })();
 </script>
 {% endblock %}
